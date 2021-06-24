@@ -1,13 +1,24 @@
 <template>
-  <h1>HomePage</h1>
+  <ToggleDark />
+  <SwitchLocale />
+  <h1>{{ t("hello") }}</h1>
 </template>
 
 <script lang="ts">
 import { defineComponent } from "vue";
+import { useI18n } from "vue-i18n";
+
+import SwitchLocale from "./components/SwitchLocale.vue";
+import ToggleDark from "./components/ToggleDark.vue";
 
 export default defineComponent({
   name: "App",
-  components: {},
+  components: { ToggleDark, SwitchLocale },
+  setup() {
+    const { locale, t } = useI18n();
+
+    return { locale, t };
+  },
 });
 </script>
 
@@ -17,7 +28,10 @@ export default defineComponent({
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
   text-align: center;
-  color: #2c3e50;
   margin-top: 60px;
+}
+.dark {
+  background-color: #212121;
+  color: #f1f1f1;
 }
 </style>
