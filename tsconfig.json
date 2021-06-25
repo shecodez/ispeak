@@ -1,7 +1,7 @@
 {
   "compilerOptions": {
     "target": "esnext",
-    "types": ["@intlify/vite-plugin-vue-i18n/client"],
+    "types": ["node", "@intlify/vite-plugin-vue-i18n/client"],
     "module": "esnext",
     "moduleResolution": "node",
     "strict": true,

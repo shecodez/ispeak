@@ -1,34 +1,33 @@
 <template>
-  <ToggleDark />
-  <SwitchLocale />
-  <h1>{{ t("hello") }}</h1>
+  <header><Navbar /></header>
+  <main class="flex-1">
+    <router-view></router-view>
+  </main>
+  <footer class="text-center">Made with ❤️ shecodez</footer>
 </template>
 
 <script lang="ts">
 import { defineComponent } from "vue";
-import { useI18n } from "vue-i18n";
-
-import SwitchLocale from "./components/SwitchLocale.vue";
-import ToggleDark from "./components/ToggleDark.vue";
+import Navbar from "./components/Navbar.vue";
 
 export default defineComponent({
+  components: { Navbar },
   name: "App",
-  components: { ToggleDark, SwitchLocale },
-  setup() {
-    const { locale, t } = useI18n();
-
-    return { locale, t };
-  },
 });
 </script>
 
 <style>
+html,
+body {
+  height: 100%;
+}
 #app {
   font-family: Avenir, Helvetica, Arial, sans-serif;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
-  text-align: center;
-  margin-top: 60px;
+  display: flex;
+  flex-direction: column;
+  height: 100%;
 }
 .dark {
   background-color: #212121;
