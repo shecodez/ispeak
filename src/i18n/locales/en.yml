@@ -1,3 +1,34 @@
 language: Language
 english: English
 hello: Hello, World!
+
+made_with_love: Made with ❤️
+
+prev: Prev
+next: Next
+back: Back
+
+hi: Hi
+or: or
+
+login: Login
+sign_in_with: Sign in with
+username: Username
+email: Email
+password: Password
+create_an_account: Create an Account
+returning_user: Returning user?
+hey_welcome_back: Hey, welcome back!
+new_user: New user?
+submit: Submit
+forgot_password: Forgot password?
+reset_password: Reset password
+send_reset_email: Send reset email
+logged_in_as: Logged in as {email}
+
+editor: editor
+trending: trending
+tags: tags
+bookmarked: bookmarked
+notifications: notifications
+logout: logout

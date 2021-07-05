@@ -1,18 +1,21 @@
 <template>
-  <header><Navbar /></header>
-  <main class="flex-1">
-    <router-view></router-view>
+  <Header />
+  <main class="flex-1 ml-16 flex flex-col">
+    <router-view />
   </main>
-  <footer class="text-center">Made with ❤️ shecodez</footer>
+  <Footer />
 </template>
 
 <script lang="ts">
-import { defineComponent } from "vue";
-import Navbar from "./components/Navbar.vue";
+import { defineComponent } from 'vue';
+
+import Header from '@/components/shared/Header.vue';
+import Footer from '@/components/shared/Footer.vue';
 
 export default defineComponent({
-  components: { Navbar },
-  name: "App",
+  name: 'App',
+  components: { Header, Footer },
+  setup() {},
 });
 </script>
 
@@ -30,7 +33,9 @@ body {
   height: 100%;
 }
 .dark {
-  background-color: #212121;
-  color: #f1f1f1;
+  @apply bg-gray-900 text-white;
+}
+.btn {
+  @apply px-3 py-2 font-semibold rounded;
 }
 </style>
