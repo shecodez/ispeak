@@ -14,7 +14,7 @@
 
         <button @click="google()">
           <span class="flex items-center space-x-1"
-            >{{ t('sign_in_with') }} <i-logos-google class="google-icon"
+            >{{ t('sign_up_with') }} <i-logos-google class="google-icon"
           /></span>
         </button>
         <div class="my-4 text-sm uppercase">{{ t('or') }}</div>

@@ -1,19 +1,19 @@
 <template>
   <header>
-    <Topnav />
-    <Sidenav />
+    <TopNav />
+    <SideNav />
   </header>
 </template>
 
 <script lang="ts">
 import { defineComponent } from 'vue';
 
-import Topnav from '@/components/shared/Topnav.vue';
-import Sidenav from '@/components/shared/Sidenav.vue';
+import TopNav from '@/components/shared/TopNavigation.vue';
+import SideNav from '@/components/shared/SideNavigation.vue';
 
 export default defineComponent({
   name: 'Header',
-  components: { Topnav, Sidenav },
+  components: { TopNav, SideNav },
   setup() {},
 });
 </script>

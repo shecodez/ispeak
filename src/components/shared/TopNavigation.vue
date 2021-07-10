@@ -1,13 +1,13 @@
 <template>
-  <nav class="w-full h-16 grid grid-cols-3 relative">
+  <nav class="w-full h-16 flex lg:grid lg:grid-cols-3 relative">
     <button class="flex w-16 h-full items-center justify-center text-2xl">🔍</button>
 
-    <div class="flex flex-auto h-16 items-center justify-center text-2xl font-bold">
+    <div class="hidden md:flex flex-auto h-16 items-center justify-center text-2xl font-bold">
       <router-link to="/">🎙️ iSpeak!</router-link>
       <span class="beta">BETA</span>
     </div>
 
-    <ul class="flex ml-auto items-center text-2xl">
+    <ul class="flex h-16 ml-auto items-center text-2xl">
       <li><router-link class="bg-indigo-400 rounded-bl-3xl" to="/gems">💎</router-link></li>
       <li v-for="navli in navListItems" :key="navli.tooltip">
         <button class="bg-gray-300 dark:bg-gray-700" @click="navli.action">

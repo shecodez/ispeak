@@ -12,7 +12,7 @@ hi: Hi
 or: or
 
 login: Login
-sign_in_with: Sign in with
+sign_up_with: Sign up with
 username: Username
 email: Email
 password: Password
@@ -27,8 +27,33 @@ send_reset_email: Send reset email
 logged_in_as: Logged in as {email}
 
 editor: editor
-trending: trending
+hot: hot
 tags: tags
 bookmarked: bookmarked
 notifications: notifications
 logout: logout
+
+my_kanbans: My Kanbans
+untitled: Untitled Kanban
+kanban: kanban
+board: board
+edit_title: Edit Title
+delete_kanban: Delete Kanban
+kanban_settings: Kanban Settings
+add_board: Add Board
+delete_board: Delete Board
+edit_board: Edit Board
+move_board: Move Board
+add_note: Add Note
+edit_note: Update Note
+preview: Preview
+
+members: mbrs
+publish: publish
+settings: settings
+
+delete: delete
+cancel: cancel
+confirm: confirm
+confirm_delete: Confirm Delete?
+save: save

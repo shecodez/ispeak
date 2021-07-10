@@ -1,20 +1,25 @@
 <template>
   <nav class="h-full w-16 max-w-16 fixed z-10">
     <div class="w-full h-16 bg-green-300 rounded-tr-3xl f-center">
-      <router-link to="/kanban"> ➕<span class="sr-only">Create Kanban</span> </router-link>
+      <router-link to="/kanban">
+        <Tooltip :text="t('editor')" placement="right">➕</Tooltip> <span class="sr-only">Kanban Editor</span>
+      </router-link>
     </div>
 
     <ul class="h-full flex flex-col items-center text-2xl bg-gray-300 dark:bg-gray-700">
       <li v-for="navli in navListItems" :key="navli.text" v-show="!navli.reqAuth || (navli.reqAuth && isLoggedIn)">
         <button v-if="navli.isBtn">
-          {{ navli.text }}
-          <span class="sr-only">{{ navli.tooltip }}</span>
+          <Tooltip :text="t(navli.tooltip)" placement="right">
+            {{ navli.text }}
+          </Tooltip>
         </button>
         <router-link v-else :to="navli.route" class="h-full f-center">
-          <component v-if="navli.component" :is="navli.component" />
-          <span v-else>{{ navli.text }}</span>
-          <span class="sr-only">{{ navli.tooltip }}</span>
+          <Tooltip :text="t(navli.tooltip)" placement="right">
+            <component v-if="navli.component" :is="navli.component" />
+            <span v-else>{{ navli.text }}</span>
+          </Tooltip>
         </router-link>
+        <span class="sr-only">{{ navli.tooltip }}</span>
       </li>
       <li>
         <button v-if="isLoggedIn" class="f-center">
@@ -29,7 +34,12 @@
         </router-link>
       </li>
       <li v-if="isLoggedIn">
-        <button @click="logout()" class="text-red-500"><i-ant-design-logout-outlined /></button>
+        <button @click="logout()" class="text-red-500">
+          <Tooltip :text="t('logout')" placement="right">
+            <i-ant-design-logout-outlined />
+          </Tooltip>
+          <span class="sr-only">logout</span>
+        </button>
       </li>
     </ul>
   </nav>
@@ -41,10 +51,11 @@ import { useI18n } from 'vue-i18n';
 import FaSolidTags from 'virtual:vite-icons/fa-solid/tags';
 
 import { useAuthState } from '../../firebase/auth';
+import Tooltip from '../Tooltip.vue';
 
 export default defineComponent({
   name: 'Sidenav',
-  components: { FaSolidTags },
+  components: { FaSolidTags, Tooltip },
   setup() {
     const { user, isLoggedIn, logout } = useAuthState();
     const { t } = useI18n();

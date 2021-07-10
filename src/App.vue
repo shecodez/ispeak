@@ -1,13 +1,14 @@
 <template>
   <Header />
   <main class="flex-1 ml-16 flex flex-col">
+    <Banner :showBanner="showBanner" text="Example banner text" />
     <router-view />
   </main>
   <Footer />
 </template>
 
 <script lang="ts">
-import { defineComponent } from 'vue';
+import { defineComponent, ref } from 'vue';
 
 import Header from '@/components/shared/Header.vue';
 import Footer from '@/components/shared/Footer.vue';
@@ -15,7 +16,11 @@ import Footer from '@/components/shared/Footer.vue';
 export default defineComponent({
   name: 'App',
   components: { Header, Footer },
-  setup() {},
+  setup() {
+    const showBanner = ref(false);
+
+    return { showBanner };
+  },
 });
 </script>
 
@@ -37,5 +42,9 @@ body {
 }
 .btn {
   @apply px-3 py-2 font-semibold rounded;
+}
+
+.f-center {
+  @apply flex items-center justify-center;
 }
 </style>

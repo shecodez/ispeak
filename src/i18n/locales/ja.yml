@@ -12,7 +12,7 @@ hi: こんにちは！
 or: 又
 
 login: ログイン
-sign_in_with: サインイン
+sign_up_with: サインアップ
 username: ユーザー名
 email: Eメール
 password: パスワード
@@ -32,3 +32,28 @@ tags: タグ
 bookmarked: ブックマーク
 notifications: 通知
 logout: ログアウト
+
+my_kanbans: 私のかんばん
+kanban: かんばん
+board: ボード
+untitled: 無題かんばん
+edit_title: タイトルを更新
+delete_kanban: かんばんを削除
+kanban_settings: かんばん設定
+add_board: ボードを追加
+delete_board: ボードを削除
+edit_board: ボードを編集
+move_board: ボードを動かす
+add_note: メモを追加
+edit_note: メモを更新する
+preview: プレビュー
+
+members: メンバー
+publish: 公開する
+settings: 設定
+
+delete: 削除
+cancel: キャンセル
+confirm: 確認
+confirm_delete: 確認削除？
+save: セーブ
