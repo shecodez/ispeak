@@ -12,7 +12,7 @@
 <script lang="ts">
 import { defineComponent, ref } from 'vue';
 
-import Draggable from './Draggable.vue';
+import Draggable from './Draggable-x.vue';
 
 export default defineComponent({
   name: 'DropZone',

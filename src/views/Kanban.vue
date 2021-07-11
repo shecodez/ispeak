@@ -1,17 +1,17 @@
 <template>
   <div class="m-3 flex flex-wrap md:justify-between">
     <div class="flex items-center space-x-2">
-      <button class="text-2xl hover:transform hover:scale-110">
+      <router-link to="/kanbans" class="text-2xl hover:transform hover:scale-110">
         <Tooltip :text="t('my_kanbans')" placement="top-right">🍱</Tooltip>
         <span class="sr-only">My Kanbans</span>
-      </button>
+      </router-link>
       <h1 class="text-xl whitespace-nowrap">{{ t('untitled') }}</h1>
       <Tooltip :text="t('edit_title')">
         <button class="btn hover:bg-yellow-500">✏️<span class="sr-only">Edit Title</span></button>
       </Tooltip>
     </div>
 
-    <div class="flex flex-wrap items-center justify-between">
+    <div class="flex flex-wrap items-center justify-between md:space-x-2">
       <div class="flex items-center m-3 md:m-0">
         <template v-for="i in 3" :key="i">
           <div class="overlapping-icon-group">
@@ -25,7 +25,7 @@
           <button class="btn bg-green-500 whitespace-nowrap">{{ t('publish') }} ✔️</button>
         </template>
       </Menu>
-      <button class="md:pl-2 text-2xl hover:transform hover:scale-110" @click="openKanbanSettingsDialog">
+      <button class="text-2xl hover:transform hover:scale-110" @click="openKanbanSettingsDialog">
         <Tooltip :text="t('kanban_settings')" placement="bottom-left">⚙️</Tooltip>
         <span class="sr-only">Kanban Settings</span>
       </button>

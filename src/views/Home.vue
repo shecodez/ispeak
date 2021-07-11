@@ -49,8 +49,8 @@
 import { computed, defineComponent, ref } from 'vue';
 import { useI18n } from 'vue-i18n';
 
-import DropZone from '../components/drag-n-drop/DropZone.vue';
-import Draggable from '../components/drag-n-drop/Draggable.vue';
+import DropZone from '../components/drag-n-drop/DropZone-x.vue';
+import Draggable from '../components/drag-n-drop/Draggable-x.vue';
 
 export default defineComponent({
   name: 'Home',
