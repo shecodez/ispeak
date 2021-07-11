@@ -1,12 +1,10 @@
 <template>
   <ul class="flex-1 grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-5 gap-4">
     <li v-for="board in boards" :key="board.id">
-      <div class="bg-gray-600 bg-opacity-30 rounded p-2">
-        <Board :board="board" />
-      </div>
+      <Board :board="board" />
     </li>
     <li class="border-4 border-dashed h-80 flex items-center justify-center rounded">
-      <button @click="openBoardDialog" class="px-3 py-2 rounded bg-green-300 font-semibold">
+      <button @click="openBoardDialog" class="px-3 py-2 rounded bg-green-500 font-semibold">
         {{ t('add_board') }}
       </button>
     </li>

@@ -21,10 +21,41 @@ const routes: Array<RouteRecordRaw> = [
     //meta: { requiresUnauth: true }
   },
   {
-    path: '/kanban',
+    path: '/gems',
+    name: 'Gems',
+    component: () => import('./views/Gems.vue'),
+  },
+  {
+    path: '/kanbans',
+    name: 'Kanbans',
+    component: () => import('./views/Kanbans.vue'),
+    meta: { requiresAuth: true },
+  },
+  {
+    path: '/k/:id',
     name: 'Kanban',
     component: () => import('./views/Kanban.vue'),
     meta: { requiresAuth: true },
+  },
+  {
+    path: '/preview/:id/',
+    name: 'Preview',
+    component: () => import('./views/Preview.vue'),
+  },
+  {
+    path: '/sagas',
+    name: 'Sagas',
+    component: () => import('./views/Sagas.vue'),
+  },
+  {
+    path: '/s/:id',
+    name: 'Saga',
+    component: () => import('./views/Saga.vue'),
+  },
+  {
+    path: '/tags',
+    name: 'Tags',
+    component: () => import('./views/Tags.vue'),
   },
   // {
   //   path: '*',

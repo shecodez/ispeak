@@ -27,11 +27,14 @@ send_reset_email: リセットメールを送信する
 logged_in_as: '{email}としてログイン'
 
 editor: エディタ
+add_kanban: 新しいかんばん
 hot: トレンド
 tags: タグ
 bookmarked: ブックマーク
-notifications: 通知
+likes: 好き
+sagas: サガ
 logout: ログアウト
+notifications: 通知
 
 my_kanbans: 私のかんばん
 kanban: かんばん

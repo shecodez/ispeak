@@ -1,5 +1,5 @@
 <template>
-  <footer class="text-center">{{ t('made_with_love') }} <a href="http://www.shecodez.com">shecodez</a></footer>
+  <footer class="text-center text-sm">{{ t('made_with_love') }} <a href="http://www.shecodez.com">shecodez</a></footer>
 </template>
 
 <script lang="ts">
@@ -18,6 +18,6 @@ export default defineComponent({
 
 <style scoped>
 a {
-  @apply text-indigo-300 opacity-80 hover:opacity-100 hover:underline;
+  @apply font-semibold hover:underline;
 }
 </style>

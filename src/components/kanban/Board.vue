@@ -1,47 +1,52 @@
 <template>
-  <div class="flex items-center justify-between m-2">
-    <div class="my-2">
-      <div class="flex space-x-1">
-        <h3 class="text-xl font-bold">{{ board.title }}</h3>
-        <button>
-          <Tooltip :text="t('preview')">🎬</Tooltip>
-          <span class="sr-only">Preview</span>
-        </button>
+  <div
+    class="bg-gray-600 bg-opacity-30 rounded p-2 border-t-4"
+    :class="board.isPublished ? ' border-green-500' : 'border-gray-500'"
+  >
+    <div class="flex items-center justify-between m-2">
+      <div class="my-2">
+        <div class="flex space-x-1">
+          <h3 class="text-xl font-bold">{{ board.title }}</h3>
+          <button>
+            <Tooltip :text="t('preview')">🎬</Tooltip>
+            <span class="sr-only">Preview</span>
+          </button>
+        </div>
+        <p class="text-xs text-indigo-500 dark:text-indigo-300">{{ board.id }}</p>
       </div>
-      <p class="text-xs text-indigo-500 dark:text-indigo-300">{{ board.id }}</p>
-    </div>
-    <Tooltip :text="t('move_board')">
-      <button class="text-2xl cursor-move">📌<span class="sr-only">Move Board</span></button>
-    </Tooltip>
-  </div>
-
-  <ul>
-    <li v-for="note in board.notes" :key="note.id">
-      <div
-        @click="openEditNoteDialog(note)"
-        class="note p-4 my-1 rounded cursor-pointer"
-        :style="`background-color: ${note.color};`"
-      >
-        <p>{{ note.text }}</p>
-      </div>
-    </li>
-  </ul>
-
-  <div class="flex my-2">
-    <Tooltip :text="t('add_note')">
-      <button @click="openNoteDialog" class="btn hover:bg-green-300">➕<span class="sr-only">add note</span></button>
-    </Tooltip>
-    <Tooltip :text="t('edit_board')">
-      <button @click="openEditBoardDialog(board)" class="btn hover:bg-yellow-300">
-        ✏️<span class="sr-only">Edit Board</span>
-      </button>
-    </Tooltip>
-
-    <div class="ml-auto">
-      <Tooltip :text="t('delete_board')">
-        <!-- <button class="btn hover:bg-red-500">🗑️<span class="sr-only">Delete Board / D&D delete Note</span></button> -->
-        <InlineDeleteButton :onDelete="handleDeleteBoard" />
+      <Tooltip :text="t('move_board')">
+        <button class="text-2xl cursor-move">📌<span class="sr-only">Move Board</span></button>
       </Tooltip>
+    </div>
+
+    <ul>
+      <li v-for="note in board.notes" :key="note.id">
+        <div
+          @click="openEditNoteDialog(note)"
+          class="note p-4 my-1 rounded cursor-pointer"
+          :style="`background-color: ${note.color};`"
+        >
+          <p>{{ note.text }}</p>
+        </div>
+      </li>
+    </ul>
+
+    <div class="flex my-2">
+      <Tooltip :text="t('add_note')">
+        <button @click="openNoteDialog" class="btn hover:bg-green-500">➕<span class="sr-only">add note</span></button>
+      </Tooltip>
+      <Tooltip :text="t('edit_board')">
+        <button @click="openEditBoardDialog(board)" class="btn hover:bg-yellow-500">
+          ✏️<span class="sr-only">Edit Board</span>
+        </button>
+      </Tooltip>
+
+      <div class="ml-auto">
+        <Tooltip :text="t('delete_board')">
+          <!-- <button class="btn hover:bg-red-500">🗑️<span class="sr-only">Delete Board / D&D delete Note</span></button> -->
+          <InlineDeleteButton :onDelete="handleDeleteBoard" />
+        </Tooltip>
+      </div>
     </div>
   </div>
 

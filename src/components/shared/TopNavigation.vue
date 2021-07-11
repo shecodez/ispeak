@@ -4,11 +4,11 @@
 
     <div class="hidden md:flex flex-auto h-16 items-center justify-center text-2xl font-bold">
       <router-link to="/">🎙️ iSpeak!</router-link>
-      <span class="beta">BETA</span>
+      <span class="bg-cyan-400 text-xs ml-2 px-1 rounded">BETA</span>
     </div>
 
     <ul class="flex h-16 ml-auto items-center text-2xl">
-      <li><router-link class="bg-indigo-400 rounded-bl-3xl" to="/gems">💎</router-link></li>
+      <li><router-link class="bg-blue-500 rounded-bl-3xl" to="/gems">💎</router-link></li>
       <li v-for="navli in navListItems" :key="navli.tooltip">
         <button class="bg-gray-300 dark:bg-gray-700" @click="navli.action">
           <span v-if="navli.text">{{ navli.text }}</span>
@@ -17,7 +17,7 @@
         </button>
       </li>
       <li>
-        <button class="bg-gray-300 dark:bg-gray-700" @click="toggleMenu">
+        <button class="bg-gray-300 dark:bg-gray-700 f-center" @click="toggleMenu">
           <span v-if="showMenu">❌</span>
           <i-ph-dots-three-outline-vertical-duotone v-else />
           <span class="sr-only">toggle menu</span>
@@ -34,35 +34,23 @@
 <script lang="ts">
 import { defineComponent, ref } from 'vue';
 
-import { useAuthState } from '../../firebase/auth';
-import ToggleDark from '../ToggleDark.vue';
-import SwitchLocale from '../SwitchLocale.vue';
+import ToggleDark from '@/components/ToggleDark.vue';
+import SwitchLocale from '@/components/SwitchLocale.vue';
+import NotificationMenu from '@/components/NotificationMenu.vue';
 
 export default defineComponent({
   name: 'Topnav',
-  components: { ToggleDark, SwitchLocale },
+  components: { ToggleDark, SwitchLocale, NotificationMenu },
   setup() {
-    const { isLoggedIn } = useAuthState();
-
     const showMenu = ref(false);
 
     const toggleMenu = () => {
       showMenu.value = !showMenu.value;
     };
 
-    const goToUserLiked = () => {
-      if (!isLoggedIn) {
-        // TODO: Toast login CTA
-        console.log("You must login to view likes. <a href='/login'>login</a>");
-      } else {
-        // else goto /:username/liked
-        console.log('Go to user liked');
-      }
-    };
-
     const navListItems = [
       { tooltip: 'toggle theme', component: ToggleDark },
-      { tooltip: 'liked', text: '💗', action: goToUserLiked },
+      { tooltip: 'notifications', component: NotificationMenu },
       { tooltip: 'change locale', component: SwitchLocale },
     ];
 
@@ -80,8 +68,5 @@ li > a {
 }
 li > button {
   @apply h-full w-full;
-}
-.beta {
-  @apply bg-cyan-400 text-white text-xs ml-2 px-1 rounded;
 }
 </style>

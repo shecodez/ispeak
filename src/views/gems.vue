@@ -1,11 +1,12 @@
 <template>
-  <h1>Saga</h1>
+  <h1 class="text-2xl m-2">Get Gems</h1>
 </template>
 
 <script lang="ts">
 import { defineComponent } from 'vue';
 
 export default defineComponent({
-  name: 'Saga',
+  name: 'Gems',
+  setup() {},
 });
 </script>

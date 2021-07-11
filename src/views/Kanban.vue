@@ -7,25 +7,25 @@
       </button>
       <h1 class="text-xl whitespace-nowrap">{{ t('untitled') }}</h1>
       <Tooltip :text="t('edit_title')">
-        <button class="btn hover:bg-yellow-300">✏️<span class="sr-only">Edit Title</span></button>
+        <button class="btn hover:bg-yellow-500">✏️<span class="sr-only">Edit Title</span></button>
       </Tooltip>
     </div>
 
-    <div class="flex flex-wrap items-center justify-end md:justify-between">
+    <div class="flex flex-wrap items-center justify-between">
       <div class="flex items-center m-3 md:m-0">
         <template v-for="i in 3" :key="i">
           <div class="overlapping-icon-group">
             {{ i }}
           </div>
         </template>
-        <span class="text-sm mx-2">+5 more</span>
+        <span class="text-sm mx-2 italic text-gray-500">+5 more</span>
       </div>
-      <Menu :list="publishList">
+      <Menu :list="publishList" w="w-48 max-w-56">
         <template v-slot:activator>
-          <button class="btn bg-green-300 whitespace-nowrap">{{ t('publish') }} ✔️</button>
+          <button class="btn bg-green-500 whitespace-nowrap">{{ t('publish') }} ✔️</button>
         </template>
       </Menu>
-      <button class="pl-2 text-2xl hover:transform hover:scale-110" @click="openKanbanSettingsDialog">
+      <button class="md:pl-2 text-2xl hover:transform hover:scale-110" @click="openKanbanSettingsDialog">
         <Tooltip :text="t('kanban_settings')" placement="bottom-left">⚙️</Tooltip>
         <span class="sr-only">Kanban Settings</span>
       </button>
@@ -36,14 +36,14 @@
     <BoardList :boards="boards" />
   </div>
 
-  <div class="mx-3 my-2 md:my-0 flex space-y-2 md:space-y-0 flex-wrap justify-center md:justify-between items-center">
+  <div class="mx-3 mt-3 flex justify-center md:justify-between">
     <Pagination :onPage="7" :totalItems="36" />
-    <Tooltip :text="t('delete_kanban')" placement="left">
-      <button @click="openDeleteKanbanDialog" class="btn bg-red-500">
-        🗑️<span class="sr-only">Delete Kanban/D&D Board</span>
-      </button>
-    </Tooltip>
   </div>
+
+  <button @click="openDeleteKanbanDialog" class="fixed bottom-0 right-0 rounded-tl-3xl w-16 h-16 f-center bg-red-500">
+    <Tooltip :text="t('delete_kanban')" placement="left">🗑️</Tooltip>
+    <span class="sr-only">Delete Kanban/D&D Board</span>
+  </button>
 
   <KanbanSettingsDialog :showDialog="showKanbanSettingsDialog" :onClose="closeKanbanSettingsDialog" />
 
@@ -142,6 +142,6 @@ export default defineComponent({
 
 <style scoped>
 .overlapping-icon-group {
-  @apply w-10 h-10 border bg-blue-400 rounded-full flex items-center justify-center hover:transform hover:scale-110 -ml-2;
+  @apply w-10 h-10 border bg-gray-500 rounded-full flex items-center justify-center hover:transform hover:scale-110 -ml-2;
 }
 </style>

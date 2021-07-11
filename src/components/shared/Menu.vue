@@ -1,49 +1,72 @@
 <template>
-  <div ref="menu" class="flex flex-col relative">
+  <div ref="menu" class="relative flex flex-col items-center">
     <div class="inline-flex" ref="button" @click="toggleMenu">
       <slot name="activator">
         <button class="btn border">Open Menu</button>
       </slot>
     </div>
 
-    <div v-show="isOpen" class="absolute top-12 right-0 bg-gray-600 bg-opacity-30 rounded shadow-lg">
-      <ul class="w-48 max-w-56">
-        <li v-for="item in list" :key="item.id" class="px-2 hover:bg-gray-700">
-          <div class="flex items-center justify-between p-2">
-            <span>{{ item.title }}</span>
-            <input type="checkbox" :checked="item.isChecked" />
-          </div>
-        </li>
+    <div v-show="showMenu" class="absolute top-12 right-0 bg-gray-300 dark:bg-gray-700 rounded shadow-lg z-40">
+      <ul :class="[w, h]">
+        <slot>
+          <li v-for="item in list" :key="item.id" class="px-2 hover:bg-gray-400 dark:hover:bg-gray-700">
+            <div class="flex items-center justify-between p-2 text-base">
+              <span>{{ item.title }}</span>
+              <input type="checkbox" :checked="item.isChecked" />
+            </div>
+          </li>
+        </slot>
       </ul>
     </div>
   </div>
 </template>
 
 <script lang="ts">
-import { defineComponent, ref } from 'vue';
-import { onClickOutside } from '@vueuse/core';
+import { defineComponent, ref, watch } from 'vue';
+import { onClickOutside, useToggle } from '@vueuse/core';
 
 export default defineComponent({
   name: 'Menu',
   props: {
+    isOpen: {
+      type: Boolean,
+      default: false,
+    },
     list: {
       type: Array,
       default: [],
     },
+    w: {
+      type: String,
+      default: 'min-w-36 max-w-48',
+    },
+    h: {
+      type: String,
+      default: 'max-h-1/2',
+    },
   },
-  setup: () => {
-    const isOpen = ref(false);
+  setup: (props) => {
+    const menu = ref();
+    const showMenu = ref(false);
 
-    const toggleMenu = () => {
-      isOpen.value = !isOpen.value;
+    watch(
+      () => props.isOpen,
+      (isOpen) => {
+        showMenu.value = isOpen;
+      }
+    );
+
+    const toggleMenu = useToggle(showMenu);
+
+    const closeMenu = () => {
+      showMenu.value = false;
     };
 
-    const menu = ref();
     onClickOutside(menu, () => {
-      isOpen.value = false;
+      showMenu.value = false;
     });
 
-    return { isOpen, menu, toggleMenu };
+    return { menu, showMenu, toggleMenu, closeMenu };
   },
 });
 </script>

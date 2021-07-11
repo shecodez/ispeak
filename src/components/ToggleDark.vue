@@ -1,6 +1,6 @@
 <template>
-  <div class="opacity-80 hover:opacity-100" @click="toggleDark()">
-    <i-mdi-brightness-5 v-if="isDark" />
+  <div class="opacity-80 hover:opacity-100 f-center" @click="toggleDark()">
+    <i-mdi-brightness-7 v-if="isDark" />
     <i-mdi-weather-night v-else />
   </div>
 </template>

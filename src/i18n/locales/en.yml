@@ -27,11 +27,14 @@ send_reset_email: Send reset email
 logged_in_as: Logged in as {email}
 
 editor: editor
+add_kanban: Add Kanban
 hot: hot
 tags: tags
 bookmarked: bookmarked
-notifications: notifications
+likes: likes
+sagas: sagas
 logout: logout
+notifications: notifications
 
 my_kanbans: My Kanbans
 untitled: Untitled Kanban

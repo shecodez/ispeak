@@ -1,7 +1,7 @@
 <template>
   <div
     v-show="showModal"
-    class="modal-backdrop bg-black bg-opacity-50 absolute inset-0 flex items-center justify-center"
+    class="modal-backdrop bg-black bg-opacity-60 absolute inset-0 flex items-center justify-center"
   >
     <div ref="modal" role="dialog" class="modal-container w-11/12" aria-labelledby="mtitle" aria-describedby="mbody">
       <header class="modal-header flex items-center justify-between mb-4">
@@ -85,7 +85,7 @@ export default defineComponent({
 
 <style scoped>
 .modal-container {
-  @apply flex flex-col md:max-w-lg p-6 bg-gray-700 shadow-lg rounded;
+  @apply flex flex-col md:max-w-lg p-6 bg-gray-300 dark:bg-gray-700 shadow-lg rounded;
 }
 
 .modal-fade-enter,

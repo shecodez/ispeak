@@ -1,18 +1,17 @@
 <template>
-  <div class="relative">
-    <div @click="openMenu = !openMenu"><FlagIcon :locale="locale" /></div>
-    <div v-show="openMenu" class="bg-gray-300 dark:bg-gray-600 absolute right-0 py-4 rounded shadow">
-      <div
-        v-for="l in supportedLocales"
-        :key="l.id"
-        @click="setLocale(l.id)"
-        class="hover:bg-gray-500 px-4 py-1"
-        :class="locale === l.id ? 'bg-gray-500' : ''"
-      >
-        {{ l.name }}
-      </div>
-    </div>
-  </div>
+  <Menu ref="menu">
+    <template v-slot:activator>
+      <FlagIcon :locale="locale" />
+    </template>
+
+    <template v-for="l in supportedLocales" :key="l.id">
+      <MenuItem :isActive="locale === l.id">
+        <div @click="setLocale(l.id)" class="p-2 text-base">
+          {{ l.name }}
+        </div>
+      </MenuItem>
+    </template>
+  </Menu>
 </template>
 
 <script lang="ts">
@@ -20,13 +19,16 @@ import { defineComponent, ref } from 'vue';
 import { useI18n } from 'vue-i18n';
 
 import FlagIcon from './FlagIcon.vue';
+import Menu from '@/components/shared/Menu.vue';
+import MenuItem from '@/components/shared/MenuItem.vue';
 
 export default defineComponent({
-  components: { FlagIcon },
+  components: { FlagIcon, Menu, MenuItem },
   name: 'SwitchLocale',
   setup() {
-    const openMenu = ref(false);
     const { locale } = useI18n();
+
+    const menu = ref();
 
     const supportedLocales = [
       { id: 'en', name: 'English' },
@@ -34,11 +36,13 @@ export default defineComponent({
     ];
 
     const setLocale = (val: string) => {
+      if (val === locale.value) return;
+
       locale.value = val;
-      openMenu.value = false;
+      menu.value.closeMenu();
     };
 
-    return { openMenu, supportedLocales, locale, setLocale };
+    return { locale, menu, supportedLocales, setLocale };
   },
 });
 </script>

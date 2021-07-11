@@ -1,11 +1,16 @@
 <template>
   <div class="flex items-center space-x-2 overflow-hidden">
     <button @click="setCurrentPage(currentPage - 1)" :disabled="currentPage <= 1">{{ t('prev') }}</button>
+
     <ul class="flex items-center space-x-1">
       <li v-if="currentPage - 3 > 0"><button @click="setCurrentPage(1)">1</button> ...</li>
+
       <li v-for="(_, i) in totalPages" :key="`pg-${i}`" v-show="i <= currentPage + 1 && i >= currentPage - 3">
-        <button :class="i + 1 === currentPage ? 'bg-blue-300' : ''" @click="setCurrentPage(i + 1)">{{ i + 1 }}</button>
+        <button :class="i + 1 === currentPage ? 'bg-yellow-500' : ''" @click="setCurrentPage(i + 1)">
+          {{ i + 1 }}
+        </button>
       </li>
+
       <li v-if="currentPage + 2 < totalPages">
         ... <button @click="setCurrentPage(totalPages)">{{ totalPages }}</button>
       </li>

@@ -1,9 +1,11 @@
 <template>
   <nav class="h-full w-16 max-w-16 fixed z-10">
-    <div class="w-full h-16 bg-green-300 rounded-tr-3xl f-center">
-      <router-link to="/kanban">
-        <Tooltip :text="t('editor')" placement="right">➕</Tooltip> <span class="sr-only">Kanban Editor</span>
-      </router-link>
+    <div class="w-full h-16 bg-green-500 rounded-tr-3xl">
+      <button @click="addKanban" class="f-center">
+        <i-gg-spinner v-if="isLoading" class="text-2xl animate-spin" />
+        <Tooltip v-else :text="t('add_kanban')" placement="right">➕</Tooltip>
+        <span class="sr-only">New Kanban</span>
+      </button>
     </div>
 
     <ul class="h-full flex flex-col items-center text-2xl bg-gray-300 dark:bg-gray-700">
@@ -46,7 +48,7 @@
 </template>
 
 <script lang="ts">
-import { defineComponent } from 'vue';
+import { defineComponent, ref } from 'vue';
 import { useI18n } from 'vue-i18n';
 import FaSolidTags from 'virtual:vite-icons/fa-solid/tags';
 
@@ -59,15 +61,31 @@ export default defineComponent({
   setup() {
     const { user, isLoggedIn, logout } = useAuthState();
     const { t } = useI18n();
+    const sleep = (ms: number) => new Promise((resolve) => setTimeout(resolve, ms));
 
     const navListItems = [
-      { route: '/sagas/hot', tooltip: 'hot', text: '🔥' },
+      { route: '/sagas', tooltip: 'hot', text: '🔥' },
       { route: '/tags', tooltip: 'tags', component: FaSolidTags },
       { isBtn: true, tooltip: 'bookmarked', text: '💾', reqAuth: true },
-      { isBtn: true, tooltip: 'notifications', text: '🔔', reqAuth: true },
+      { route: '/kanbans', tooltip: 'my_kanbans', text: '🍱', reqAuth: true },
     ];
 
-    return { navListItems, user, isLoggedIn, logout, t };
+    const isLoading = ref(false);
+    const addKanban = async () => {
+      if (isLoggedIn) {
+        isLoading.value = true;
+        const newKanban = { title: t('untitled'), description: '', boards: [], members: [] };
+        console.log('Add new Kanban', newKanban);
+        await sleep(1200);
+        // if error Toast
+        isLoading.value = false;
+        // go to new route(`/k/${newKanban.id}`)
+      } else {
+        console.log('Toast: please login first.');
+      }
+    };
+
+    return { navListItems, user, isLoggedIn, logout, isLoading, addKanban, t };
   },
 });
 </script>
