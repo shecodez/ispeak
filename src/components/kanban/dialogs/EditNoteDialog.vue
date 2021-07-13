@@ -46,8 +46,8 @@
 import { defineComponent, PropType, reactive, toRefs, watch } from 'vue';
 import { useI18n } from 'vue-i18n';
 
-import Modal from '@/components/shared/Modal.vue';
-import ConfirmDeleteInline from '@/components/shared/ConfirmDeleteInline.vue';
+import Modal from '@/components/ui/Modal.vue';
+import ConfirmDeleteInline from '@/components/ui/ConfirmDeleteInline.vue';
 
 export type EditNote = {
   text: string;

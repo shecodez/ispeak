@@ -60,3 +60,6 @@ cancel: キャンセル
 confirm: 確認
 confirm_delete: 確認削除？
 save: セーブ
+
+login_failed: ログインに失敗しました。
+you_must_be_logged_in: ログインする必要があります！

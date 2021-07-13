@@ -33,7 +33,7 @@
   </div>
 
   <div class="mx-3 flex flex-col flex-1">
-    <BoardList :boards="boards" />
+    <Editor :kanban="kanban" />
   </div>
 
   <div class="mx-3 mt-3 flex justify-center md:justify-between">
@@ -59,48 +59,51 @@ import { computed, defineComponent, ref } from 'vue';
 import { useI18n } from 'vue-i18n';
 
 import BoardList from '@/components/kanban/BoardList.vue';
-import Tooltip from '@/components/Tooltip.vue';
-import Pagination from '@/components/shared/Pagination.vue';
-import ConfirmDeleteDialog from '@/components/shared/ConfirmDeleteDialog.vue';
-import KanbanSettingsDialog from '../components/kanban/dialogs/KanbanSettingsDialog.vue';
-import Menu from '../components/shared/Menu.vue';
+import Tooltip from '@/components/ui/Tooltip.vue';
+import Pagination from '@/components/ui/Pagination.vue';
+import ConfirmDeleteDialog from '@/components/ui/ConfirmDeleteDialog.vue';
+import KanbanSettingsDialog from '@/components/kanban/dialogs/KanbanSettingsDialog.vue';
+import Menu from '@/components/ui/Menu.vue';
+import Editor from '@/components/kanban/Editor.vue';
 
 export default defineComponent({
   name: 'Kanban',
-  components: { BoardList, Tooltip, Pagination, ConfirmDeleteDialog, KanbanSettingsDialog, Menu },
+  components: { BoardList, Tooltip, Pagination, ConfirmDeleteDialog, KanbanSettingsDialog, Menu, Editor },
   setup() {
     const { t } = useI18n();
-    const boards = [
-      {
-        id: 'f9NF1oDUt68PZaPVKauN',
-        priority: 0,
-        title: "Niico's Board",
-        notes: [
-          { id: 1, text: 'Have faith, relax, and give it your all', color: '#fcd34d' },
-          { id: 2, text: 'Here is a brand new task', color: '#6ee7b7' },
-        ],
-        isPublished: true,
-        uid: 'l334',
-      },
-      {
-        id: 'teSyEI3jveltdztYIAdq',
-        priority: 1,
-        title: 'Second Board',
-        notes: [
-          {
-            id: 3,
-            text: 'Everything we hear is an opinion, not a fact. Everything we see is a perspective, not the truth. ~Marcus Airelius',
-            color: '#93c5fd',
-          },
-          { id: 4, text: 'I think it works', color: '#fca5a5' },
-        ],
-        isPublished: false,
-        uid: 'l334',
-      },
-    ];
+    const kanban = {
+      boards: [
+        {
+          id: 'f9NF1oDUt68PZaPVKauN',
+          priority: 0,
+          title: "Niico's Board",
+          notes: [
+            { id: 1, text: 'Have faith, relax, and give it your all', color: '#fcd34d' },
+            { id: 2, text: 'Here is a brand new task', color: '#6ee7b7' },
+          ],
+          isPublished: true,
+          uid: 'l334',
+        },
+        {
+          id: 'teSyEI3jveltdztYIAdq',
+          priority: 1,
+          title: 'Second Board',
+          notes: [
+            {
+              id: 3,
+              text: 'Everything we hear is an opinion, not a fact. Everything we see is a perspective, not the truth. ~Marcus Airelius',
+              color: '#93c5fd',
+            },
+            { id: 4, text: 'I think it works', color: '#fca5a5' },
+          ],
+          isPublished: false,
+          uid: 'l334',
+        },
+      ],
+    };
 
     const publishList = computed(() => {
-      return boards.map((b) => ({ id: b.id, title: b.title, isChecked: b.isPublished }));
+      return kanban.boards.map((b) => ({ id: b.id, title: b.title, isChecked: b.isPublished }));
     });
 
     const showKanbanSettingsDialog = ref(false);
@@ -126,7 +129,7 @@ export default defineComponent({
 
     return {
       t,
-      boards,
+      kanban,
       publishList,
       showKanbanSettingsDialog,
       openKanbanSettingsDialog,

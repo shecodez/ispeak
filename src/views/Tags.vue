@@ -5,7 +5,7 @@
     <template v-for="tag in tags" :key="tag.id">
       <div class="tag btn bg-gray-500 m-1 f-center" :style="`background-color: ${tag.color}`">
         <i-heroicons-solid-hashtag />
-        <span>{{ tag.name }}</span>
+        <router-link :to="{ path: 'sagas', query: { tag: tag.id } }">{{ tag.name }}</router-link>
         <span class="bg-white bg-opacity-40 text-xs ml-2 p-1 px-1.5 rounded-full">{{ tag.count }}</span>
       </div>
     </template>
@@ -26,7 +26,7 @@ export default defineComponent({
       { id: 'romance', name: 'romance', count: 42 },
       { id: 'educational', name: 'educational', count: 99 },
       { id: 'new', name: 'new', count: 16, color: 'green' },
-      { id: 'top7', name: 'top 7', count: 7, color: 'blue' },
+      { id: 'top-7', name: 'top 7', count: 7, color: 'blue' },
     ]);
     //const getTags = () => []
 

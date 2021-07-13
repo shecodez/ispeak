@@ -14,7 +14,7 @@
 import { defineComponent } from 'vue';
 import { useI18n } from 'vue-i18n';
 
-import Modal from '@/components/shared/Modal.vue';
+import Modal from '@/components/ui/Modal.vue';
 
 export default defineComponent({
   name: 'ConfirmDeleteDialog',

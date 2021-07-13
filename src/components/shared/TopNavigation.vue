@@ -8,7 +8,7 @@
     </div>
 
     <ul class="flex h-16 ml-auto items-center text-2xl">
-      <li><router-link class="bg-blue-500 rounded-bl-3xl" to="/gems">💎</router-link></li>
+      <li><router-link class="bg-blue-500 rounded-bl-3xl" to="/shop">💎</router-link></li>
       <li v-for="navli in navListItems" :key="navli.tooltip">
         <button class="bg-gray-300 dark:bg-gray-700" @click="navli.action">
           <span v-if="navli.text">{{ navli.text }}</span>
@@ -34,9 +34,9 @@
 <script lang="ts">
 import { defineComponent, ref } from 'vue';
 
-import ToggleDark from '@/components/ToggleDark.vue';
-import SwitchLocale from '@/components/SwitchLocale.vue';
-import NotificationMenu from '@/components/NotificationMenu.vue';
+import ToggleDark from '@/components/shared/ToggleDark.vue';
+import SwitchLocale from '@/components/shared/SwitchLocale.vue';
+import NotificationMenu from '@/components/shared/NotificationMenu.vue';
 
 export default defineComponent({
   name: 'Topnav',

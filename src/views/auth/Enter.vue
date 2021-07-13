@@ -31,11 +31,11 @@
 import { defineComponent } from 'vue';
 import { useI18n } from 'vue-i18n';
 
-import { useAuthState, useSignIn } from '../firebase/auth';
-import AuthForm from '../components/auth/AuthForm.vue';
+import { useAuthState, useSignIn } from '../../firebase/auth';
+import AuthForm from '../../components/auth/AuthForm.vue';
 
 export default defineComponent({
-  name: 'Authenticate',
+  name: 'Enter',
   components: { AuthForm },
   setup() {
     const { google } = useSignIn();

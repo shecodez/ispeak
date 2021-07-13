@@ -60,3 +60,6 @@ cancel: cancel
 confirm: confirm
 confirm_delete: Confirm Delete?
 save: save
+
+login_failed: Login failed.
+you_must_be_logged_in: You must be logged in!

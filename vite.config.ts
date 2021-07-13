@@ -31,3 +31,8 @@ export default defineConfig({
     }),
   ],
 });
+
+// TODO: replace above alias
+// alias: {
+//   '@': path.resolve(__dirname, './src')
+// }

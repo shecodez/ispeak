@@ -29,6 +29,7 @@ html,
 body {
   height: 100%;
 }
+
 #app {
   font-family: Avenir, Helvetica, Arial, sans-serif;
   -webkit-font-smoothing: antialiased;
@@ -37,9 +38,11 @@ body {
   flex-direction: column;
   height: 100%;
 }
+
 .dark {
   @apply bg-gray-900 text-white;
 }
+
 .btn {
   @apply px-3 py-2 font-semibold rounded;
 }

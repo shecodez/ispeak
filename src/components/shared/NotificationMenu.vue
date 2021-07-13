@@ -1,6 +1,14 @@
 <template>
   <Menu ref="menu" w="w-64 max-w-72">
-    <template v-slot:activator> 🔔<span class="sr-only">notifications</span></template>
+    <template v-slot:activator>
+      <div class="relative inline-flex">
+        🔔<span class="sr-only">notifications</span>
+        <span v-if="isNew" class="absolute right-0 flex h-3 w-3">
+          <span class="absolute animate-ping absolute inline-flex h-full w-full rounded-full bg-blue-400 opacity-75" />
+          <span class="relative inline-flex rounded-full h-3 w-3 bg-blue-500" />
+        </span>
+      </div>
+    </template>
     <div v-if="!notifications.length" class="p-4">No new notifications</div>
     <template v-else v-for="notif in notifications" :key="notif.id">
       <MenuItem>
@@ -15,16 +23,18 @@
 <script lang="ts">
 import { defineComponent, onMounted, ref } from 'vue';
 
-import FlagIcon from './FlagIcon.vue';
-import Menu from '@/components/shared/Menu.vue';
-import MenuItem from '@/components/shared/MenuItem.vue';
-import { useAuthState } from '../firebase';
+import { useAuthState } from '@/firebase';
+import FlagIcon from '@/components/ui/FlagIcon.vue';
+import Menu from '@/components/ui/Menu.vue';
+import MenuItem from '@/components/ui/MenuItem.vue';
 
 export default defineComponent({
   components: { FlagIcon, Menu, MenuItem },
   name: 'NotificationMenu',
   setup() {
     const { isLoggedIn } = useAuthState();
+
+    const isNew = ref(false);
 
     const notifications = ref([]);
     const getNotifications = () => {
@@ -41,7 +51,7 @@ export default defineComponent({
       console.log('actions on notification', notificationId);
     };
 
-    return { notifications, handleClickNotif };
+    return { notifications, isNew, handleClickNotif };
   },
 });
 </script>

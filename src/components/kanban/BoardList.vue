@@ -18,9 +18,9 @@ import { defineComponent, ref } from 'vue';
 import { useI18n } from 'vue-i18n';
 
 import Board from './Board.vue';
-import Tooltip from '../Tooltip.vue';
-import Modal from '../shared/Modal.vue';
 import NewBoardDialog from './dialogs/NewBoardDialog.vue';
+import Modal from '@/components/ui/Modal.vue';
+import Tooltip from '@/components/ui/Tooltip.vue';
 
 export default defineComponent({
   name: 'BoardList',

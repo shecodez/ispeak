@@ -60,11 +60,11 @@
 import { defineComponent, ref } from 'vue';
 import { useI18n } from 'vue-i18n';
 
-import Tooltip from '../Tooltip.vue';
 import NewNoteDialog from './dialogs/NewNoteDialog.vue';
-import InlineDeleteButton from '../shared/ConfirmDeleteInline.vue';
 import EditNoteDialog, { EditNote } from './dialogs/EditNoteDialog.vue';
 import EditBoardDialog, { EditBoard } from './dialogs/EditBoardDialog.vue';
+import InlineDeleteButton from '@/components/ui/ConfirmDeleteInline.vue';
+import Tooltip from '@/components/ui/Tooltip.vue';
 
 export default defineComponent({
   name: 'Board',

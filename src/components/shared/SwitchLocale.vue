@@ -18,9 +18,9 @@
 import { defineComponent, ref } from 'vue';
 import { useI18n } from 'vue-i18n';
 
-import FlagIcon from './FlagIcon.vue';
-import Menu from '@/components/shared/Menu.vue';
-import MenuItem from '@/components/shared/MenuItem.vue';
+import FlagIcon from '@/components/ui/FlagIcon.vue';
+import Menu from '@/components/ui/Menu.vue';
+import MenuItem from '@/components/ui/MenuItem.vue';
 
 export default defineComponent({
   components: { FlagIcon, Menu, MenuItem },

@@ -23,26 +23,32 @@
     <pre>{{ list1 }}</pre>
     <pre>{{ list2 }}</pre>
   </div> -->
+
   <div class="flex">
     <div class="w-3/4">
       <h3>Draggable Kanban</h3>
 
-      <draggable class="grid grid-cols-3 gap-4" :list="kanban.boards" group="boards" @change="log" itemKey="id">
+      <draggable
+        class="grid grid-cols-3 gap-4"
+        :list="kanban.boards"
+        group="boards"
+        @change="log"
+        itemKey="id"
+        handle=".handle"
+      >
         <template #item="{ element, index }">
           <div class="border">
-            <div class="border-green-400">
-              <div class="mx-2 flex items-center">
-                {{ element.title }} {{ index }}
-                <button class="btn ml-auto">📍</button>
-              </div>
-              <draggable class="px-2 pt-2 border pb-4" :list="element.notes" group="notes" @change="log" itemKey="id">
-                <template #item="{ element, index }">
-                  <div class="p-4 m-2 rounded" :style="`background-color: ${element.color}`">
-                    {{ element.text }} {{ index }}
-                  </div>
-                </template>
-              </draggable>
+            <div class="mx-2 flex items-center">
+              {{ element.title }} {{ index }}
+              <div class="handle btn ml-auto cursor-move">📍</div>
             </div>
+            <draggable :list="element.notes" group="notes" @change="log" itemKey="id">
+              <template #item="{ element, index }">
+                <div class="p-4 m-2 rounded" :style="`background-color: ${element.color}`">
+                  {{ element.text }} {{ index }}
+                </div>
+              </template>
+            </draggable>
           </div>
         </template>
       </draggable>
@@ -83,7 +89,7 @@ export default {
               { id: 'AA', color: 'green', text: 'note 1' },
               { id: 'AB', color: 'blue', text: 'note 2' },
             ],
-            title: 'title 0',
+            title: 'WIP',
           },
           {
             id: 'B',
@@ -94,13 +100,13 @@ export default {
               { id: 'BC', color: 'purple', text: 'note 5' },
               { id: 'BD', color: 'orange', text: 'note 6' },
             ],
-            title: 'title 1',
+            title: 'Review',
           },
           {
             id: 'C',
             priority: 2,
             notes: [{ id: 'CA', color: 'cyan', text: 'note 7' }],
-            title: 'title 2',
+            title: 'Done',
           },
         ],
       },

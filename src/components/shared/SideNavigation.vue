@@ -50,10 +50,11 @@
 <script lang="ts">
 import { defineComponent, ref } from 'vue';
 import { useI18n } from 'vue-i18n';
-import FaSolidTags from 'virtual:vite-icons/fa-solid/tags';
+import { useToast } from 'vue-toastification';
+import FaSolidTags from 'virtual:vite-icons/fa-solid/tags.vue';
 
-import { useAuthState } from '../../firebase/auth';
-import Tooltip from '../Tooltip.vue';
+import { useAuthState } from '@/firebase';
+import Tooltip from '@/components/ui/Tooltip.vue';
 
 export default defineComponent({
   name: 'Sidenav',
@@ -61,6 +62,8 @@ export default defineComponent({
   setup() {
     const { user, isLoggedIn, logout } = useAuthState();
     const { t } = useI18n();
+    const toast = useToast();
+
     const sleep = (ms: number) => new Promise((resolve) => setTimeout(resolve, ms));
 
     const navListItems = [
@@ -72,16 +75,16 @@ export default defineComponent({
 
     const isLoading = ref(false);
     const addKanban = async () => {
-      if (isLoggedIn) {
+      if (isLoggedIn.value) {
         isLoading.value = true;
-        const newKanban = { title: t('untitled'), description: '', boards: [], members: [] };
+        const newKanban = { title: t('untitled'), description: '', boards: [], members: [], tags: [] };
         console.log('Add new Kanban', newKanban);
         await sleep(1200);
-        // if error Toast
+        // if error toast.error(t('error'))
         isLoading.value = false;
         // go to new route(`/k/${newKanban.id}`)
       } else {
-        console.log('Toast: please login first.');
+        toast(t('you_must_be_logged_in'), { timeout: 5000 });
       }
     };
 
