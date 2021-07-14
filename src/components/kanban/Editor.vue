@@ -104,9 +104,9 @@ export default defineComponent({
     TooltipButton,
   },
   props: {
-    kanban: {
-      type: Object,
-      default: {},
+    kanbanId: {
+      type: [String, Number],
+      required: true,
     },
   },
   setup() {
@@ -173,6 +173,40 @@ export default defineComponent({
       closeEditNoteDialog,
       log,
       t,
+    };
+  },
+  data() {
+    return {
+      kanban: {
+        boards: [
+          {
+            id: 'f9NF1oDUt68PZaPVKauN',
+            priority: 0,
+            title: "Niico's Board",
+            notes: [
+              { id: 1, text: 'Have faith, relax, and give it your all', color: '#fcd34d' },
+              { id: 2, text: 'Here is a brand new task', color: '#6ee7b7' },
+            ],
+            isPublished: true,
+            uid: 'l334',
+          },
+          {
+            id: 'teSyEI3jveltdztYIAdq',
+            priority: 1,
+            title: 'Second Board',
+            notes: [
+              {
+                id: 3,
+                text: 'Everything we hear is an opinion, not a fact. Everything we see is a perspective, not the truth. ~Marcus Airelius',
+                color: '#93c5fd',
+              },
+              { id: 4, text: 'I think it works', color: '#fca5a5' },
+            ],
+            isPublished: false,
+            uid: 'l334',
+          },
+        ],
+      },
     };
   },
 });

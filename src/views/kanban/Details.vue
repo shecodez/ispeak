@@ -5,10 +5,7 @@
         <Tooltip :text="t('my_kanbans')" placement="top-right">🍱</Tooltip>
         <span class="sr-only">My Kanbans</span>
       </router-link>
-      <h1 class="text-xl whitespace-nowrap">{{ t('untitled') }}</h1>
-      <Tooltip :text="t('edit_title')">
-        <button class="btn hover:bg-yellow-500">✏️<span class="sr-only">Edit Title</span></button>
-      </Tooltip>
+      <EditInputInline ref="titleInput" :text="kanban.title" :tooltip="t('edit_title')" @on-update="updateTitle" />
     </div>
 
     <div class="flex flex-wrap items-center justify-between md:space-x-2">
@@ -33,7 +30,7 @@
   </div>
 
   <div class="mx-3 flex flex-col flex-1">
-    <Editor :kanban="kanban" />
+    <Editor kanbanId="1" />
   </div>
 
   <div class="mx-3 mt-3 flex justify-center md:justify-between">
@@ -46,7 +43,6 @@
   </button>
 
   <KanbanSettingsDialog :showDialog="showKanbanSettingsDialog" :onClose="closeKanbanSettingsDialog" />
-
   <ConfirmDeleteDialog
     :showDialog="showDeleteKanbanDialog"
     :onClose="closeDeleteKanbanDialog"
@@ -58,7 +54,7 @@
 import { computed, defineComponent, ref } from 'vue';
 import { useI18n } from 'vue-i18n';
 
-import BoardList from '@/components/kanban/BoardList.vue';
+import EditInputInline from '@/components/ui/EditInputInline.vue';
 import Tooltip from '@/components/ui/Tooltip.vue';
 import Pagination from '@/components/ui/Pagination.vue';
 import ConfirmDeleteDialog from '@/components/ui/ConfirmDeleteDialog.vue';
@@ -68,10 +64,11 @@ import Editor from '@/components/kanban/Editor.vue';
 
 export default defineComponent({
   name: 'Kanban',
-  components: { BoardList, Tooltip, Pagination, ConfirmDeleteDialog, KanbanSettingsDialog, Menu, Editor },
+  components: { EditInputInline, Tooltip, Pagination, ConfirmDeleteDialog, KanbanSettingsDialog, Menu, Editor },
   setup() {
     const { t } = useI18n();
     const kanban = {
+      title: 'Untitled Kanban',
       boards: [
         {
           id: 'f9NF1oDUt68PZaPVKauN',
@@ -106,6 +103,12 @@ export default defineComponent({
       return kanban.boards.map((b) => ({ id: b.id, title: b.title, isChecked: b.isPublished }));
     });
 
+    const titleInput = ref();
+    const updateTitle = (title: string) => {
+      console.log('Update Kanban Title:', title);
+      titleInput.value.closeEdit();
+    };
+
     const showKanbanSettingsDialog = ref(false);
     const openKanbanSettingsDialog = () => {
       showKanbanSettingsDialog.value = true;
@@ -131,6 +134,8 @@ export default defineComponent({
       t,
       kanban,
       publishList,
+      titleInput,
+      updateTitle,
       showKanbanSettingsDialog,
       openKanbanSettingsDialog,
       closeKanbanSettingsDialog,
