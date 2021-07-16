@@ -42,7 +42,7 @@ export default defineComponent({
     },
     itemsPerPage: {
       type: Number,
-      default: 5,
+      default: 4,
     },
   },
   setup(props) {

@@ -1,8 +1,8 @@
 <template>
   <Header />
-  <main class="flex-1 ml-16 flex flex-col">
+  <main class="flex-1 flex flex-col md:overflow-hidden p-3">
     <Banner :showBanner="showBanner" text="Example banner text" />
-    <router-view />
+    <router-view></router-view>
   </main>
   <Footer />
 </template>
@@ -34,9 +34,7 @@ body {
   font-family: Avenir, Helvetica, Arial, sans-serif;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
-  display: flex;
-  flex-direction: column;
-  height: 100%;
+  @apply flex flex-col h-full md:max-h-screen md:overflow-hidden;
 }
 
 .dark {
@@ -49,5 +47,13 @@ body {
 
 .f-center {
   @apply flex items-center justify-center;
+}
+
+.fixed-bottom-btn {
+  @apply fixed bottom-0 right-0 rounded-tl-3xl w-16 h-16 flex items-center justify-center;
+}
+
+.flex-toolbar-h {
+  @apply flex flex-wrap items-center md:justify-between;
 }
 </style>

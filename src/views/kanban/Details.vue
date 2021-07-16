@@ -1,10 +1,11 @@
 <template>
-  <div class="m-3 flex flex-wrap md:justify-between">
+  <div class="kanban-details-header mb-3 flex-toolbar-h">
     <div class="flex items-center space-x-2">
-      <router-link to="/kanbans" class="text-2xl hover:transform hover:scale-110">
+      <span class="text-2xl hover:transform hover:scale-110">⭐</span>
+      <!-- <router-link to="/kanbans" class="text-2xl hover:transform hover:scale-110">
         <Tooltip :text="t('my_kanbans')" placement="top-right">🍱</Tooltip>
         <span class="sr-only">My Kanbans</span>
-      </router-link>
+      </router-link> -->
       <EditInputInline ref="titleInput" :text="kanban.title" :tooltip="t('edit_title')" @on-update="updateTitle" />
     </div>
 
@@ -29,15 +30,15 @@
     </div>
   </div>
 
-  <div class="mx-3 flex flex-col flex-1">
+  <div class="kanban-details-main flex-1 flex overflow-hidden">
     <Editor kanbanId="1" />
   </div>
 
-  <div class="mx-3 mt-3 flex justify-center md:justify-between">
+  <div class="kanban-details-footer mt-3 flex justify-center md:justify-between">
     <Pagination :onPage="7" :totalItems="36" />
   </div>
 
-  <button @click="openDeleteKanbanDialog" class="fixed bottom-0 right-0 rounded-tl-3xl w-16 h-16 f-center bg-red-500">
+  <button @click="openDeleteKanbanDialog" class="fixed-bottom-btn bg-red-500">
     <Tooltip :text="t('delete_kanban')" placement="left">🗑️</Tooltip>
     <span class="sr-only">Delete Kanban/D&D Board</span>
   </button>
@@ -151,5 +152,10 @@ export default defineComponent({
 <style scoped>
 .overlapping-icon-group {
   @apply w-10 h-10 border bg-gray-500 rounded-full flex items-center justify-center hover:transform hover:scale-110 -ml-2;
+}
+.kanban-details-header,
+.kanban-details-main,
+.kanban-details-footer {
+  @apply ml-16;
 }
 </style>

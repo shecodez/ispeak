@@ -6,11 +6,12 @@
     @change="log"
     itemKey="id"
     handle=".handle"
+    :animation="200"
   >
     <template #item="{ element, index }">
-      <div class="board-container">
+      <div class="board-container overflow-hidden">
         <div
-          class="board bg-gray-600 bg-opacity-30 rounded p-2 border-t-4"
+          class="board rounded p-2 border-t-4 overflow-hidden max-h-screen md:max-h-full flex flex-col"
           :class="element.isPublished ? ' border-green-500' : 'border-gray-500'"
         >
           <div class="board-header m-2 flex items-center justify-between">
@@ -27,14 +28,22 @@
             </div>
           </div>
 
-          <draggable class="note-container pb-2" :list="element.notes" group="notes" @change="log" itemKey="id">
-            <template #item="{ element, index }">
+          <draggable
+            class="note-container flex flex-col space-y-2 overflow-y-auto md:overflow-x-hidden"
+            :list="element.notes"
+            group="notes"
+            @change="log"
+            itemKey="id"
+            :animation="200"
+            ghost-class="ghost"
+          >
+            <template #item="{ element }">
               <div
                 @click="openEditNoteDialog(element)"
-                class="note p-4 m-2 rounded cursor-pointer"
+                class="note p-4 mx-2 rounded cursor-pointer"
                 :style="`background-color: ${element.color}`"
               >
-                <p>{{ element.text }} {{ index }}</p>
+                <p>{{ element.text }}</p>
               </div>
             </template>
           </draggable>
@@ -111,6 +120,13 @@ export default defineComponent({
   },
   setup() {
     const { t } = useI18n();
+
+    // computed(() => {
+    //   kanban: {
+    //     get() { return store.state.kanban },
+    //     set(value) { store.commit('UPDATE_KANBAN', value)}
+    //   }
+    // })
 
     const showBoardDialog = ref(false);
     const openBoardDialog = () => {
@@ -201,6 +217,16 @@ export default defineComponent({
                 color: '#93c5fd',
               },
               { id: 4, text: 'I think it works', color: '#fca5a5' },
+              {
+                id: 5,
+                text: 'Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Enim eu turpis egestas pretium aenean pharetra magna ac placerat. Elit ullamcorper dignissim cras tincidunt. ',
+                color: '#fcd34d',
+              },
+              {
+                id: 6,
+                text: 'Ultricies lacus sed turpis tincidunt id aliquet risus. Donec pretium vulputate sapien nec sagittis aliquam. Tristique senectus et netus et malesuada. Facilisi cras fermentum odio eu. Porttitor rhoncus dolor purus non enim praesent elementum facilisis leo. Lorem ipsum dolor sit amet consectetur adipiscing elit.',
+                color: '#6ee7b7',
+              },
             ],
             isPublished: false,
             uid: 'l334',
@@ -213,7 +239,16 @@ export default defineComponent({
 </script>
 
 <style scoped>
-.ghost-card {
-  @apply opacity-50 border border-blue-500 bg-gray-200;
+.board {
+  @apply bg-gray-600 bg-opacity-30;
+}
+.ghost {
+  @apply opacity-50 border-dashed border border-cyan-300;
+}
+.drag {
+  @apply opacity-100;
+}
+.note-container {
+  @apply scrollbar-thin scrollbar-thumb-rounded scrollbar-thumb-gray-500 scrollbar-track-gray-300 dark:scrollbar-track-gray-700;
 }
 </style>
