@@ -6,29 +6,49 @@
         <textarea
           v-model="text"
           class="sticky-note"
-          :class="color === '#222428' ? 'text-white' : 'text-black'"
-          :style="`background-color: ${color}`"
+          :style="`background-color: ${noteColor}; color: ${textColor};`"
           rows="4"
           placeholder="Enter note text..."
         />
       </div>
 
-      <div class="form-group">
-        <label>Color</label>
-        <div class="grid grid-cols-5 gap-2 py-1 md:max-w-1/2">
-          <button v-for="c in getDefaultColors" :key="c" @click.prevent="setNoteColor(c)">
-            <div :style="`background: ${c};`" class="color-btn f-center">
-              <i-icomoon-free-checkmark
-                v-show="color === c"
-                :class="color === '#f4f5f8' ? 'text-black' : 'text-white'"
-              />
-            </div>
-          </button>
-          <button>
-            <div class="color-btn border f-center">
-              <i-eva-color-picker-fill class="text-xl" />
-            </div>
-          </button>
+      <div class="flex flex-wrap md:flex-nowrap md:space-x-4">
+        <div class="form-group md:max-w-1/2">
+          <label>Text Color</label>
+          <div class="grid grid-cols-5 gap-2 py-1">
+            <button v-for="c in getTextColors" :key="c" @click.prevent="setTextColor(c)">
+              <div :style="`background-color: ${c};`" class="color-btn f-center">
+                <i-icomoon-free-checkmark
+                  v-show="textColor === c"
+                  :class="textColor === '#333' ? 'text-white' : 'text-black'"
+                />
+              </div>
+            </button>
+            <!-- <button>
+              <div class="color-btn border f-center">
+                <i-eva-color-picker-fill class="text-xl" />
+              </div>
+            </button> -->
+          </div>
+        </div>
+
+        <div class="form-group md:max-w-1/2">
+          <label>Note Color</label>
+          <div class="grid grid-cols-5 gap-2 py-1">
+            <button v-for="c in getNoteColors" :key="c" @click.prevent="setNoteColor(c)">
+              <div :style="`background: ${c};`" class="color-btn f-center">
+                <i-icomoon-free-checkmark
+                  v-show="noteColor === c"
+                  :class="noteColor === '#333' ? 'text-white' : 'text-black'"
+                />
+              </div>
+            </button>
+            <!-- <button>
+              <div class="color-btn border f-center">
+                <i-eva-color-picker-fill class="text-xl" />
+              </div>
+            </button> -->
+          </div>
         </div>
       </div>
     </form>
@@ -49,9 +69,23 @@ import { useI18n } from 'vue-i18n';
 import Modal from '@/components/ui/Modal.vue';
 import ConfirmDeleteInline from '@/components/ui/ConfirmDeleteInline.vue';
 
+export enum Color {
+  blue = '#a9e6ff',
+  purple = '#eddef2',
+  mint = '#b6ffe0',
+  yellow = '#fdffa4',
+  pink = '#f3ddf3',
+  red = '#de7477',
+  gray = '#999',
+  light = '#f3f3f3',
+  dark = '#333',
+}
+
 export type EditNote = {
+  //id: string;
   text: string;
-  color: string;
+  noteColor: Color;
+  textColor: Color;
 };
 
 export default defineComponent({
@@ -73,25 +107,39 @@ export default defineComponent({
     const { t } = useI18n();
 
     // blue, indigo, green, yellow, red, white, light-grey, dark-gray, custom
-    const getDefaultColors = ['#93c5fd', '#818cf8', '#6ee7b7', '#fcd34d', '#fca5a5', '#f4f5f8', '#92949c', '#222428'];
+    // ['#93c5fd', '#818cf8', '#6ee7b7', '#fcd34d', '#fca5a5', '#f4f5f8', '#92949c', '#222428'];
+    const getNoteColors = [
+      Color.blue,
+      Color.purple,
+      Color.mint,
+      Color.yellow,
+      Color.red,
+      Color.light,
+      Color.gray,
+      Color.dark,
+    ];
+
+    const getTextColors = [Color.dark, Color.light];
 
     // const getKanbanMembers = () => {}
     // onMounted(() => getKanbanMembers())
 
     const state = reactive({
+      // assignedTo: [] // or speaker if note isDialogue
       text: '',
-      color: getDefaultColors[3],
-      //translation: '',
-      //speaker: '', // if isDialogue  select 1 from getKanbanMembers
       //audioURL: '',
       //imageURL: ''
+      noteColor: getNoteColors[3],
+      textColor: getTextColors[0],
+      //hint: '', // translation, thoughts, extra line (toggle to show)
     });
 
     const setFields = (note: EditNote | undefined) => {
       if (note) {
-        const { text, color } = note;
+        const { text, noteColor, textColor } = note;
         state.text = text;
-        state.color = color;
+        state.noteColor = noteColor;
+        state.textColor = textColor;
       }
     };
 
@@ -103,8 +151,17 @@ export default defineComponent({
       { immediate: true }
     );
 
-    const setNoteColor = (color: string) => {
-      state.color = color;
+    const setNoteColor = (color: Color) => {
+      if (color === Color.dark) {
+        setTextColor(Color.light);
+      } else {
+        setTextColor(Color.dark);
+      }
+      state.noteColor = color;
+    };
+
+    const setTextColor = (color: Color) => {
+      state.textColor = color;
     };
 
     const updateNote = () => {
@@ -118,26 +175,13 @@ export default defineComponent({
       console.log('Delete Note', props.note);
     };
 
-    return { ...toRefs(state), getDefaultColors, setNoteColor, updateNote, deleteNote, t };
+    return { ...toRefs(state), getNoteColors, setNoteColor, getTextColors, setTextColor, updateNote, deleteNote, t };
   },
 });
 </script>
 
 <style scoped>
-.form-group {
-  @apply my-2;
-}
-label {
-  @apply block text-xs font-semibold;
-}
-input,
-textarea {
-  @apply bg-transparent w-full border rounded p-2;
-}
 .color-btn {
   @apply h-10 w-10 rounded-full;
-}
-.sticky-note {
-  @apply p-2 shadow rounded border-none;
 }
 </style>

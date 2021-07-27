@@ -15,6 +15,7 @@
       @keydown.delete="removeLast"
     />
   </div>
+  <div v-if="hint" class="hint text-xs">{{ hint }}</div>
 </template>
 
 <script lang="ts">
@@ -27,17 +28,40 @@ export default defineComponent({
       type: String,
       default: 'Enter a chip',
     },
+    // maxCharsPerChip
+    maxChars: {
+      type: Number,
+      default: 32,
+    },
+    max: {
+      type: Number,
+      default: 16,
+    },
   },
-  setup() {
+  setup(props) {
     const chips = ref<string[]>([]);
 
+    const hint = ref('');
     const addChip = (event: any) => {
       event.preventDefault();
       const val = event.target.value.trim();
       // TODO: check blacklisted chips
       if (val.length > 0) {
+        if (chips.value.includes(val)) {
+          hint.value = `Item '${val}' is already included.`;
+          return;
+        }
+        if (val.length > props.maxChars) {
+          hint.value = `Chip too long. Must be ${props.maxChars} or less.`;
+          return;
+        }
+        if (chips.value.length + 1 > props.max) {
+          hint.value = `Too many Chips. Must be ${props.max} or less.`;
+          return;
+        }
         chips.value.push(val);
         event.target.value = '';
+        hint.value = '';
       }
     };
 
@@ -51,7 +75,7 @@ export default defineComponent({
       }
     };
 
-    return { chips, addChip, removeChip, removeLast };
+    return { chips, addChip, hint, removeChip, removeLast };
   },
 });
 </script>

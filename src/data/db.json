@@ -1,0 +1,163 @@
+{
+  "kanbans": [
+    {
+      "id": "j404sx",
+      "title": "The first 🍱",
+      "description": "",
+      "uid": "1334",
+      "tags": ["hot", "educational", "top-7"],
+      "members": [],
+      "boards": [
+        {
+          "id": "f9NF1",
+          "title": "Niico's Board",
+          "notes": [
+            {
+              "id": "se4yd",
+              "text": "Have faith, relax, and give it your all",
+              "noteColor": "#fdffa4",
+              "textColor": "#333",
+              "boardId": "f9NF1"
+            },
+            {
+              "id": "bs45r",
+              "text": "Here is a brand new task",
+              "noteColor": "#b6ffe0",
+              "textColor": "#333",
+              "boardId": "f9NF1"
+            }
+          ],
+          "isPublished": true,
+          "uid": "1334",
+          "kanbanId": "j404sx"
+        },
+        {
+          "id": "teSyE",
+          "title": "Second Board",
+          "notes": [
+            {
+              "id": "354fs",
+              "text": "Everything we hear is an opinion, not a fact. Everything we see is a perspective, not the truth. ~Marcus Airelius",
+              "noteColor": "#a9e6ff",
+              "textColor": "#333",
+              "boardId": "teSyE"
+            },
+            {
+              "id": "4xg4f",
+              "text": "I think it works",
+              "noteColor": "#de7477",
+              "textColor": "#333",
+              "boardId": "teSyE"
+            },
+            {
+              "id": "j5h3w",
+              "text": "Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Enim eu turpis egestas pretium aenean pharetra magna ac placerat. Elit ullamcorper dignissim cras tincidunt. ",
+              "noteColor": "#fdffa4",
+              "textColor": "#333",
+              "boardId": "teSyE"
+            },
+            {
+              "id": "49fvk",
+              "text": "Ultricies lacus sed turpis tincidunt id aliquet risus. Donec pretium vulputate sapien nec sagittis aliquam. Tristique senectus et netus et malesuada. Facilisi cras fermentum odio eu. Porttitor rhoncus dolor purus non enim praesent elementum facilisis leo. Lorem ipsum dolor sit amet consectetur adipiscing elit.",
+              "noteColor": "#b6ffe0",
+              "textColor": "#333",
+              "boardId": "teSyE"
+            }
+          ],
+          "isPublished": false,
+          "uid": "1334",
+          "kanbanId": "j404sx"
+        },
+        {
+          "id": "34sdg",
+          "title": "Epic Board",
+          "notes": [
+            {
+              "id": "esgse",
+              "text": "Have faith, relax, and give it your all",
+              "noteColor": "#fdffa4",
+              "textColor": "#333",
+              "boardId": "34sdg"
+            },
+            {
+              "id": "fescd",
+              "text": "Here is a brand new task",
+              "noteColor": "#b6ffe0",
+              "textColor": "#333",
+              "boardId": "34sdg"
+            }
+          ],
+          "isPublished": true,
+          "isEpic": true,
+          "uid": "1334",
+          "kanbanId": "j404sx"
+        },
+        {
+          "id": "dj99d",
+          "title": "Epic Draft",
+          "notes": [
+            {
+              "id": "dsebb",
+              "text": "Have faith, relax, and give it your all",
+              "noteColor": "#fdffa4",
+              "textColor": "#333",
+              "boardId": "dj99d"
+            },
+            {
+              "id": "de33d",
+              "text": "Here is a brand new task",
+              "noteColor": "#b6ffe0",
+              "textColor": "#333",
+              "boardId": "dj99d"
+            }
+          ],
+          "isPublished": false,
+          "isEpic": true,
+          "uid": "1334",
+          "kanbanId": "j404sx"
+        }
+      ]
+    },
+    {
+      "id": 1626652369695,
+      "title": "Untitled Kanban",
+      "description": "",
+      "boards": [],
+      "members": [],
+      "tags": ["new", "mystery", "hot"]
+    },
+    {
+      "id": 1626660014715,
+      "title": "Untitled Kanban",
+      "description": "",
+      "boards": [],
+      "members": [],
+      "tags": ["new", "romance"]
+    },
+    {
+      "id": 1626705745495,
+      "title": "Untitled Kanban",
+      "description": "",
+      "boards": [],
+      "members": [],
+      "tags": ["new"]
+    },
+    {
+      "id": 1626705935949,
+      "title": "Untitled Kanban",
+      "description": "",
+      "boards": [],
+      "members": [],
+      "tags": []
+    }
+  ],
+
+  "tags": [
+    { "id": "hot", "description": "A little bit spicy", "name": "hot", "count": 2 },
+    { "id": "romance", "name": "romance", "count": 1 },
+    { "id": "educational", "name": "educational", "count": 1 },
+    { "id": "new", "name": "new", "count": 3 },
+    { "id": "top-7", "name": "top 7", "count": 1 },
+    { "id": "mystery", "description": "Scooby do be Doooooing", "name": "mystery", "count": 1 }
+  ]
+}

@@ -1,5 +1,5 @@
 <template>
-  <nav class="w-full h-16 flex lg:grid lg:grid-cols-3 relative">
+  <nav class="relative w-screen h-16 flex top-0 lg:grid lg:grid-cols-3">
     <button class="flex w-16 h-full items-center justify-center text-2xl">🔍</button>
 
     <div class="hidden md:flex flex-auto h-16 items-center justify-center text-2xl font-bold">

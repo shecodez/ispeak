@@ -17,6 +17,7 @@ app.use(i18n);
 app.use(router);
 const options: PluginOptions = {
   position: POSITION.BOTTOM_CENTER,
+  timeout: 4200,
 };
 app.use(Toast, options);
 

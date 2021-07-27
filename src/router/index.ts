@@ -10,17 +10,17 @@ const toast = useToast();
 const routes: Array<RouteRecordRaw> = [
   {
     path: '/',
-    name: 'Home',
+    name: 'HomePage',
     component: Home,
   },
   {
     path: '/about',
-    name: 'About',
+    name: 'AboutPage',
     component: () => import('@/views/About.vue'),
   },
   {
     path: '/login',
-    name: 'Login',
+    name: 'LoginPage',
     component: () => import('@/views/auth/Enter.vue'),
     //meta: { requiresUnauth: true }
   },
@@ -31,13 +31,13 @@ const routes: Array<RouteRecordRaw> = [
   },
   {
     path: '/kanbans',
-    name: 'KanbanList',
+    name: 'KanbansPage',
     component: () => import('@/views/kanban/List.vue'),
     meta: { requiresAuth: true },
   },
   {
     path: '/kanbans/:id',
-    name: 'KanbanDetails',
+    name: 'KanbanDetailsPage',
     component: () => import('@/views/kanban/Details.vue'),
     meta: { requiresAuth: true },
     //props: route => ({ ...route.params, id: route.params.id })
@@ -61,12 +61,12 @@ const routes: Array<RouteRecordRaw> = [
   },
   {
     path: '/sagas',
-    name: 'SagaList',
+    name: 'SagasPage',
     component: () => import('@/views/saga/List.vue'),
   },
   {
-    path: '/:username/s/:id',
-    name: 'SagaDetails',
+    path: '/sagas/:id',
+    name: 'SagaDetailsPage',
     component: () => import('@/views/saga/Details.vue'),
   },
   {
@@ -77,8 +77,13 @@ const routes: Array<RouteRecordRaw> = [
   },
   {
     path: '/tags',
-    name: 'Tags',
-    component: () => import('@/views/Tags.vue'),
+    name: 'TagsPage',
+    component: () => import('@/views/tag/List.vue'),
+  },
+  {
+    path: '/tags/:tag',
+    name: 'TagDetailsPage',
+    component: () => import('@/views/tag/Details.vue'),
   },
   {
     path: '/:pathMatch(.*)*',

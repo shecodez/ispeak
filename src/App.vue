@@ -25,6 +25,8 @@ export default defineComponent({
 </script>
 
 <style>
+@import url('https://fonts.googleapis.com/css2?family=Reenie+Beanie&display=swap');
+
 html,
 body {
   height: 100%;
@@ -55,5 +57,38 @@ body {
 
 .flex-toolbar-h {
   @apply flex flex-wrap items-center md:justify-between;
+}
+
+.form-group {
+  @apply my-2;
+}
+.form-group label {
+  @apply block text-xs font-semibold;
+}
+.form-group input,
+.form-group textarea {
+  @apply bg-transparent w-full border rounded p-2;
+}
+
+.thin-scrollbar {
+  /* scrollbar-thumb-rounded  */
+  @apply scrollbar-thin scrollbar-thumb-gray-500 scrollbar-track-gray-300 dark:scrollbar-track-gray-700;
+}
+
+.sticky-note {
+  @apply rounded-br-2xl shadow;
+  font-family: 'Reenie Beanie', cursive;
+  font-size: 1.4rem;
+}
+/* .note-text::before, */
+.sticky-note .note-text::after {
+  content: '';
+  position: absolute;
+  z-index: 1;
+  right: -5px;
+  bottom: -5px;
+  width: 20px;
+  height: 20px;
+  box-shadow: 0px 5px 20px rgba(0, 0, 0, 0.5);
 }
 </style>

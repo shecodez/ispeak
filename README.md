@@ -25,3 +25,8 @@ Run `Volar: Switch TS Plugin on/off` from VSCode command palette.
 3. Open `src/main.ts` in VSCode
 4. Open the VSCode command palette
 5. Search and run "Select TypeScript version" -> "Use workspace version"
+
+### Json Server:
+
+$ npm i -g json-server
+$ json-server -p 3001 --watch src/data/db.json --routes src/data/routes.json

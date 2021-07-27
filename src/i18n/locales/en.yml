@@ -30,6 +30,7 @@ editor: editor
 add_kanban: Add Kanban
 hot: hot
 tags: tags
+saved: saved
 bookmarked: bookmarked
 likes: likes
 sagas: sagas
@@ -63,3 +64,5 @@ save: save
 
 login_failed: Login failed.
 you_must_be_logged_in: You must be logged in!
+
+under_construction_message: This content is under construction.

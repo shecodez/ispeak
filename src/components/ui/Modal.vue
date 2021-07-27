@@ -1,7 +1,7 @@
 <template>
   <div
     v-show="showModal"
-    class="modal-backdrop bg-black bg-opacity-60 absolute inset-0 flex items-center justify-center"
+    class="modal-backdrop bg-black bg-opacity-60 absolute inset-0 flex items-center justify-center z-40"
   >
     <div ref="modal" role="dialog" class="modal-container w-11/12" aria-labelledby="mtitle" aria-describedby="mbody">
       <header class="modal-header flex items-center justify-between mb-4">

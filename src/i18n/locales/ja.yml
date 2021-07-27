@@ -30,6 +30,7 @@ editor: エディタ
 add_kanban: 新しいかんばん
 hot: トレンド
 tags: タグ
+saved: セーブしました
 bookmarked: ブックマーク
 likes: 好き
 sagas: サガ
@@ -63,3 +64,5 @@ save: セーブ
 
 login_failed: ログインに失敗しました。
 you_must_be_logged_in: ログインする必要があります！
+
+under_construction_message: このコンテンツは現在準備中です。

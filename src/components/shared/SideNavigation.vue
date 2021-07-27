@@ -1,5 +1,5 @@
 <template>
-  <nav class="h-full w-16 max-w-16 fixed z-10">
+  <nav class="h-full w-16 max-w-16 fixed">
     <div class="w-full h-16 bg-green-500 rounded-tr-3xl">
       <button @click="addKanban" class="f-center">
         <i-gg-spinner v-if="isLoading" class="text-2xl animate-spin" />
@@ -24,12 +24,14 @@
         <span class="sr-only">{{ navli.tooltip }}</span>
       </li>
       <li>
-        <button v-if="isLoggedIn" class="f-center">
-          <div class="w-12 h-12">
-            <img v-if="user" class="rounded-full overflow-hidden" :src="user?.photoURL" alt="Display Photo" />
-            <div v-else class="rounded-full w-full h-full bg-blue-300 f-center">U</div>
-          </div>
-        </button>
+        <template v-if="isLoggedIn">
+          <router-link to="/@me" class="flex flex-col h-full f-center">
+            <div class="w-12 h-12">
+              <img v-if="user" class="rounded-full overflow-hidden" :src="user?.photoURL" alt="Display Photo" />
+              <div v-else class="rounded-full w-full h-full bg-blue-300 f-center">U</div>
+            </div>
+          </router-link>
+        </template>
         <router-link v-else to="/login" class="flex flex-col h-full f-center">
           <i-grommet-icons-google />
           <span class="text-sm font-bold">{{ t('login') }}</span>
@@ -48,41 +50,45 @@
 </template>
 
 <script lang="ts">
-import { defineComponent, ref } from 'vue';
+import { defineComponent } from 'vue';
 import { useI18n } from 'vue-i18n';
+import { useRouter } from 'vue-router';
 import { useToast } from 'vue-toastification';
-import FaSolidTags from 'virtual:vite-icons/fa-solid/tags.vue';
+import FaSolidTags from 'virtual:vite-icons/fa-solid/tags';
 
 import { useAuthState } from '@/firebase';
+import useApi from '@/use/api';
 import Tooltip from '@/components/ui/Tooltip.vue';
 
 export default defineComponent({
   name: 'Sidenav',
   components: { FaSolidTags, Tooltip },
   setup() {
-    const { user, isLoggedIn, logout } = useAuthState();
     const { t } = useI18n();
     const toast = useToast();
-
-    const sleep = (ms: number) => new Promise((resolve) => setTimeout(resolve, ms));
+    const router = useRouter();
+    const { user, isLoggedIn, logout } = useAuthState();
+    const { isLoading, post } = useApi('/kanbans');
 
     const navListItems = [
-      { route: '/sagas', tooltip: 'hot', text: '🔥' },
+      { route: '/sagas', tooltip: 'sagas', text: '🎬' },
       { route: '/tags', tooltip: 'tags', component: FaSolidTags },
-      { isBtn: true, tooltip: 'bookmarked', text: '💾', reqAuth: true },
+      { isBtn: true, tooltip: 'saved', text: '💾', reqAuth: true },
       { route: '/kanbans', tooltip: 'my_kanbans', text: '🍱', reqAuth: true },
     ];
 
-    const isLoading = ref(false);
     const addKanban = async () => {
       if (isLoggedIn.value) {
-        isLoading.value = true;
-        const newKanban = { title: t('untitled'), description: '', boards: [], members: [], tags: [] };
-        console.log('Add new Kanban', newKanban);
-        await sleep(1200);
-        // if error toast.error(t('error'))
-        isLoading.value = false;
-        // go to new route(`/k/${newKanban.id}`)
+        const id = Date.now();
+        const payload = { id, title: t('untitled'), description: '', boards: [], members: [], tags: [] };
+
+        try {
+          await post(payload);
+          //toast.success('New Kanban created!', { timeout: 4000 });
+          router.push(`/kanbans/${id}`);
+        } catch (err) {
+          console.log(err);
+        }
       } else {
         toast(t('you_must_be_logged_in'), { timeout: 5000 });
       }
@@ -103,5 +109,8 @@ button,
 }
 .f-center {
   @apply flex items-center justify-center;
+}
+a.router-link-active {
+  @apply bg-gray-400 bg-opacity-50 dark:bg-gray-900 dark:bg-opacity-50;
 }
 </style>

@@ -1,7 +1,7 @@
 <template>
   <draggable
     class="flex-1 grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-5 gap-4"
-    :list="kanban.boards"
+    :list="kanban?.boards"
     group="boards"
     @change="log"
     itemKey="id"
@@ -12,7 +12,7 @@
       <div class="board-container overflow-hidden">
         <div
           class="board rounded p-2 border-t-4 overflow-hidden max-h-screen md:max-h-full flex flex-col"
-          :class="element.isPublished ? ' border-green-500' : 'border-gray-500'"
+          :class="element.isPublished ? (element.isEpic ? 'border-indigo-500' : 'border-green-500') : 'border-gray-500'"
         >
           <div class="board-header m-2 flex items-center justify-between">
             <div class="my-2">
@@ -29,7 +29,7 @@
           </div>
 
           <draggable
-            class="note-container flex flex-col space-y-2 overflow-y-auto md:overflow-x-hidden"
+            class="note-container thin-scrollbar flex flex-col space-y-2 overflow-y-auto md:overflow-x-hidden"
             :list="element.notes"
             group="notes"
             @change="log"
@@ -40,15 +40,17 @@
             <template #item="{ element }">
               <div
                 @click="openEditNoteDialog(element)"
-                class="note p-4 mx-2 rounded cursor-pointer"
-                :style="`background-color: ${element.color}`"
+                class="sticky-note mx-2 cursor-pointer"
+                :style="`background-color: ${element.noteColor}; color: ${element.textColor}`"
               >
-                <p>{{ element.text }}</p>
+                <div class="relative overflow-hidden">
+                  <p class="note-text p-2">{{ element.text }}</p>
+                </div>
               </div>
             </template>
           </draggable>
 
-          <div class="board-footer mb-2 flex items-center">
+          <div class="board-footer mt-1 mb-2 flex items-center">
             <TooltipButton
               iconBtn
               :tooltip="t('add_note')"
@@ -88,7 +90,7 @@
 </template>
 
 <script lang="ts">
-import { defineComponent, ref } from 'vue';
+import { defineComponent, PropType, ref } from 'vue';
 import draggable from 'vuedraggable';
 import { useI18n } from 'vue-i18n';
 
@@ -99,6 +101,7 @@ import EditBoardDialog, { EditBoard } from './dialogs/EditBoardDialog.vue';
 import InlineDeleteButton from '@/components/ui/ConfirmDeleteInline.vue';
 import Tooltip from '@/components/ui/Tooltip.vue';
 import TooltipButton from '@/components/ui/TooltipButton.vue';
+import { Kanban } from '@/views/kanban/Details.vue';
 
 export default defineComponent({
   name: 'KanbanEditor',
@@ -113,9 +116,8 @@ export default defineComponent({
     TooltipButton,
   },
   props: {
-    kanbanId: {
-      type: [String, Number],
-      required: true,
+    kanban: {
+      type: Object as PropType<Kanban>,
     },
   },
   setup() {
@@ -191,7 +193,7 @@ export default defineComponent({
       t,
     };
   },
-  data() {
+  /*data() {
     return {
       kanban: {
         boards: [
@@ -234,7 +236,7 @@ export default defineComponent({
         ],
       },
     };
-  },
+  },*/
 });
 </script>
 
@@ -247,8 +249,5 @@ export default defineComponent({
 }
 .drag {
   @apply opacity-100;
-}
-.note-container {
-  @apply scrollbar-thin scrollbar-thumb-rounded scrollbar-thumb-gray-500 scrollbar-track-gray-300 dark:scrollbar-track-gray-700;
 }
 </style>

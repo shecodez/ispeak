@@ -74,7 +74,7 @@ export default defineComponent({
     const auth = getAuth();
     const { t } = useI18n();
 
-    const user = reactive({
+    const cred = reactive({
       name: '',
       email: '',
       password: '',
@@ -85,11 +85,11 @@ export default defineComponent({
         name: { required, minLength: minLength(3) },
         email: { required, email },
         password: { required },
-        //confirm: { required, sameAs: sameAs(user.password) }
+        //confirm: { required, sameAs: sameAs(cred.password) }
       };
     });
 
-    const v$ = useValidate(rules, user);
+    const v$ = useValidate(rules, cred);
 
     const authForm = reactive({
       formType: 'register', // 'login' | 'register' | 'reset'
@@ -108,8 +108,8 @@ export default defineComponent({
 
       authForm.isLoading = true;
 
-      const email = user.email;
-      const password = user.password;
+      const email = cred.email;
+      const password = cred.password;
 
       try {
         if (authForm.formType === 'login') {
@@ -145,7 +145,7 @@ export default defineComponent({
       }
     };
 
-    return { ...toRefs(user), v$, ...toRefs(authForm), setFormType, authenticate, t };
+    return { ...toRefs(cred), v$, ...toRefs(authForm), setFormType, authenticate, t };
   },
 });
 </script>

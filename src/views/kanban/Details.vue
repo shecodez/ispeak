@@ -1,12 +1,12 @@
 <template>
   <div class="kanban-details-header mb-3 flex-toolbar-h">
     <div class="flex items-center space-x-2">
-      <span class="text-2xl hover:transform hover:scale-110">⭐</span>
+      <span class="text-2xl hover:transform hover:scale-110">🔓</span>
       <!-- <router-link to="/kanbans" class="text-2xl hover:transform hover:scale-110">
         <Tooltip :text="t('my_kanbans')" placement="top-right">🍱</Tooltip>
         <span class="sr-only">My Kanbans</span>
       </router-link> -->
-      <EditInputInline ref="titleInput" :text="kanban.title" :tooltip="t('edit_title')" @on-update="updateTitle" />
+      <EditInputInline ref="titleInput" :text="kanban?.title" :tooltip="t('edit_title')" @on-update="updateTitle" />
     </div>
 
     <div class="flex flex-wrap items-center justify-between md:space-x-2">
@@ -31,7 +31,9 @@
   </div>
 
   <div class="kanban-details-main flex-1 flex overflow-hidden">
-    <Editor kanbanId="1" />
+    <Spinner v-if="isLoading" />
+    <AlertMessage v-if="error" type="error" :message="error" />
+    <Editor v-else :kanban="kanban" />
   </div>
 
   <div class="kanban-details-footer mt-3 flex justify-center md:justify-between">
@@ -43,7 +45,7 @@
     <span class="sr-only">Delete Kanban/D&D Board</span>
   </button>
 
-  <KanbanSettingsDialog :showDialog="showKanbanSettingsDialog" :onClose="closeKanbanSettingsDialog" />
+  <EditKanbanDialog :showDialog="showKanbanSettingsDialog" :onClose="closeKanbanSettingsDialog" />
   <ConfirmDeleteDialog
     :showDialog="showDeleteKanbanDialog"
     :onClose="closeDeleteKanbanDialog"
@@ -52,57 +54,72 @@
 </template>
 
 <script lang="ts">
-import { computed, defineComponent, ref } from 'vue';
+import { computed, defineComponent, onMounted, ref, watch } from 'vue';
 import { useI18n } from 'vue-i18n';
+import { onBeforeRouteLeave, useRoute, useRouter } from 'vue-router';
 
+import useApi from '@/use/api';
 import EditInputInline from '@/components/ui/EditInputInline.vue';
 import Tooltip from '@/components/ui/Tooltip.vue';
 import Pagination from '@/components/ui/Pagination.vue';
 import ConfirmDeleteDialog from '@/components/ui/ConfirmDeleteDialog.vue';
-import KanbanSettingsDialog from '@/components/kanban/dialogs/KanbanSettingsDialog.vue';
+import EditKanbanDialog from '@/components/kanban/dialogs/EditKanbanDialog.vue';
 import Menu from '@/components/ui/Menu.vue';
 import Editor from '@/components/kanban/Editor.vue';
+import Spinner from '@/components/ui/Spinner.vue';
+import AlertMessage from '@/components/shared/AlertMessage.vue';
 
+export type Kanban = {
+  id: string;
+  title: string;
+  description?: string;
+  boards: [];
+  members?: [];
+  tags?: [];
+  uid: string;
+};
 export default defineComponent({
   name: 'Kanban',
-  components: { EditInputInline, Tooltip, Pagination, ConfirmDeleteDialog, KanbanSettingsDialog, Menu, Editor },
+  components: {
+    EditInputInline,
+    Tooltip,
+    Pagination,
+    ConfirmDeleteDialog,
+    EditKanbanDialog,
+    Menu,
+    Editor,
+    Spinner,
+    AlertMessage,
+  },
+  props: {
+    id: {
+      type: [String, Number],
+    },
+  },
   setup() {
     const { t } = useI18n();
-    const kanban = {
-      title: 'Untitled Kanban',
-      boards: [
-        {
-          id: 'f9NF1oDUt68PZaPVKauN',
-          priority: 0,
-          title: "Niico's Board",
-          notes: [
-            { id: 1, text: 'Have faith, relax, and give it your all', color: '#fcd34d' },
-            { id: 2, text: 'Here is a brand new task', color: '#6ee7b7' },
-          ],
-          isPublished: true,
-          uid: 'l334',
-        },
-        {
-          id: 'teSyEI3jveltdztYIAdq',
-          priority: 1,
-          title: 'Second Board',
-          notes: [
-            {
-              id: 3,
-              text: 'Everything we hear is an opinion, not a fact. Everything we see is a perspective, not the truth. ~Marcus Airelius',
-              color: '#93c5fd',
-            },
-            { id: 4, text: 'I think it works', color: '#fca5a5' },
-          ],
-          isPublished: false,
-          uid: 'l334',
-        },
-      ],
-    };
+    const route = useRoute();
+    const router = useRouter();
+    const { data: kanban, isLoading, error, get, del } = useApi(`/kanbans/${route.params.id}`);
 
-    const publishList = computed(() => {
-      return kanban.boards.map((b) => ({ id: b.id, title: b.title, isChecked: b.isPublished }));
+    const isSaved = ref(true);
+
+    onBeforeRouteLeave((to, from) => {
+      if (!isSaved) {
+        const answer = window.confirm('Do you really want to leave? You have unsaved changes!');
+        // cancel the navigation and stay on the same page
+        if (!answer) return false;
+      }
     });
+
+    onMounted(() => get());
+
+    // TODO: 🔒 -> private 🔓 -> isPublic if(!isPublic)
+    // 🔐-> generate a Key -> [key] 🔑 <- dropdown: copy keyremove key, generate new key
+
+    const publishList = computed(() =>
+      kanban.value?.boards?.map((b) => ({ id: b.id, title: b.title, isChecked: b.isPublished }))
+    );
 
     const titleInput = ref();
     const updateTitle = (title: string) => {
@@ -126,14 +143,16 @@ export default defineComponent({
       showDeleteKanbanDialog.value = false;
     };
     const deleteKanban = () => {
-      console.log('Delete Kanaban');
+      del(); // TODO: toast.success('Success: Kanban deleted.', { timeout: 4000 })
       closeKanbanSettingsDialog();
-      // router.next('/kanbans')
+      router.push('/kanbans');
     };
 
     return {
       t,
       kanban,
+      isLoading,
+      error,
       publishList,
       titleInput,
       updateTitle,
