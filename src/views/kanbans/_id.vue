@@ -1,49 +1,45 @@
 <template>
-  <div class="kanban-details-header mb-3 flex-toolbar-h">
-    <div class="flex items-center space-x-2">
-      <span class="text-2xl hover:transform hover:scale-110">🔓</span>
-      <!-- <router-link to="/kanbans" class="text-2xl hover:transform hover:scale-110">
-        <Tooltip :text="t('my_kanbans')" placement="top-right">🍱</Tooltip>
-        <span class="sr-only">My Kanbans</span>
-      </router-link> -->
-      <EditInputInline ref="titleInput" :text="kanban?.title" :tooltip="t('edit_title')" @on-update="updateTitle" />
-    </div>
-
-    <div class="flex flex-wrap items-center justify-between md:space-x-2">
-      <div class="flex items-center m-3 md:m-0">
-        <template v-for="i in 3" :key="i">
-          <div class="overlapping-icon-group">
-            {{ i }}
-          </div>
-        </template>
-        <span class="text-sm mx-2 italic text-gray-500">+5 more</span>
+  <FixedFrame showBottomFrame isHorizontal>
+    <aside class="toolbar pt-3 px-2">
+      <div class="flex items-center space-x-1">
+        <button class="text-2xl hover:transform hover:scale-110">⭐</button>
+        <EditInputInline ref="titleInput" :text="kanban?.title" :tooltip="t('edit_title')" @on-update="updateTitle" />
       </div>
-      <Menu :list="publishList" w="w-48 max-w-56">
-        <template v-slot:activator>
-          <button class="btn bg-green-500 whitespace-nowrap">{{ t('publish') }} ✔️</button>
-        </template>
-      </Menu>
-      <button class="text-2xl hover:transform hover:scale-110" @click="openKanbanSettingsDialog">
-        <Tooltip :text="t('kanban_settings')" placement="bottom-left">⚙️</Tooltip>
-        <span class="sr-only">Kanban Settings</span>
-      </button>
-    </div>
-  </div>
 
-  <div class="kanban-details-main flex-1 flex overflow-hidden">
+      <div class="flex flex-wrap items-center space-x-2">
+        <button class="btn border mx-2">🔓</button>
+        <div class="flex items-center m-3 md:m-0">
+          <template v-for="i in 3" :key="i">
+            <div class="overlapping-icon-group">
+              {{ i }}
+            </div>
+          </template>
+          <span class="text-sm mx-2 italic text-gray-500">+5</span>
+        </div>
+        <Menu :list="publishList" w="w-48 max-w-56">
+          <template v-slot:activator>
+            <button class="btn bg-green-500 whitespace-nowrap">{{ t('publish') }} ✔️</button>
+          </template>
+        </Menu>
+        <button class="text-2xl hover:transform hover:scale-110 px-2" @click="openKanbanSettingsDialog">
+          <Tooltip :text="t('kanban_settings')" placement="bottom-left">⚙️</Tooltip>
+          <span class="sr-only">Kanban Settings</span>
+        </button>
+      </div>
+    </aside>
+
     <Spinner v-if="isLoading" />
     <AlertMessage v-if="error" type="error" :message="error" />
     <Editor v-else :kanban="kanban" />
-  </div>
+    <!-- <Pagination v-if="kanban" :onPage="7" :totalItems="36" /> -->
 
-  <div class="kanban-details-footer mt-3 flex justify-center md:justify-between">
-    <Pagination :onPage="7" :totalItems="36" />
-  </div>
-
-  <button @click="openDeleteKanbanDialog" class="fixed-bottom-btn bg-red-500">
-    <Tooltip :text="t('delete_kanban')" placement="left">🗑️</Tooltip>
-    <span class="sr-only">Delete Kanban/D&D Board</span>
-  </button>
+    <template v-slot:bottom>
+      <button class="primary-red rounded-tl-3xl h-full w-16" @click="openDeleteKanbanDialog">
+        <Tooltip :text="t('delete_kanban')" placement="left">🗑️</Tooltip>
+        <span class="sr-only">Delete Kanban/D&D Board</span>
+      </button>
+    </template>
+  </FixedFrame>
 
   <EditKanbanDialog :showDialog="showKanbanSettingsDialog" :onClose="closeKanbanSettingsDialog" />
   <ConfirmDeleteDialog
@@ -68,6 +64,7 @@ import Menu from '@/components/ui/Menu.vue';
 import Editor from '@/components/kanban/Editor.vue';
 import Spinner from '@/components/ui/Spinner.vue';
 import AlertMessage from '@/components/shared/AlertMessage.vue';
+import FixedFrame from '@/components/layouts/FixedFrame.vue';
 
 export type Kanban = {
   id: string;
@@ -90,6 +87,7 @@ export default defineComponent({
     Editor,
     Spinner,
     AlertMessage,
+    FixedFrame,
   },
   props: {
     id: {

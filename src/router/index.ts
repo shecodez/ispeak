@@ -9,20 +9,25 @@ const toast = useToast();
 
 const routes: Array<RouteRecordRaw> = [
   {
+    path: '/test',
+    name: 'Test',
+    component: () => import('@/views/Test.vue'),
+  },
+  {
     path: '/',
-    name: 'HomePage',
+    name: 'Home',
     component: Home,
   },
   {
     path: '/about',
-    name: 'AboutPage',
+    name: 'About',
     component: () => import('@/views/About.vue'),
   },
   {
     path: '/login',
-    name: 'LoginPage',
-    component: () => import('@/views/auth/Enter.vue'),
-    //meta: { requiresUnauth: true }
+    name: 'Login',
+    component: () => import('@/views/auth/Login.vue'),
+    //meta: { requiresUnauth:@/views/auth/Login.vue
   },
   {
     path: '/shop',
@@ -31,14 +36,14 @@ const routes: Array<RouteRecordRaw> = [
   },
   {
     path: '/kanbans',
-    name: 'KanbansPage',
-    component: () => import('@/views/kanban/List.vue'),
+    name: 'Kanbans',
+    component: () => import('@/views/kanbans/index.vue'),
     meta: { requiresAuth: true },
   },
   {
     path: '/kanbans/:id',
-    name: 'KanbanDetailsPage',
-    component: () => import('@/views/kanban/Details.vue'),
+    name: 'Kanban',
+    component: () => import('@/views/kanbans/_id.vue'),
     meta: { requiresAuth: true },
     //props: route => ({ ...route.params, id: route.params.id })
     // beforeEnter(to, from) {
@@ -54,20 +59,14 @@ const routes: Array<RouteRecordRaw> = [
     // }
   },
   {
-    path: '/k/:id/preview',
-    name: 'Preview',
-    component: () => import('@/views/saga/Preview.vue'),
-    meta: { requiresAuth: true },
-  },
-  {
     path: '/sagas',
-    name: 'SagasPage',
-    component: () => import('@/views/saga/List.vue'),
+    name: 'Sagas',
+    component: () => import('@/views/sagas/index.vue'),
   },
   {
     path: '/sagas/:id',
-    name: 'SagaDetailsPage',
-    component: () => import('@/views/saga/Details.vue'),
+    name: 'Saga',
+    component: () => import('@/views/sagas/_id.vue'),
   },
   {
     path: '/@me',
@@ -77,13 +76,13 @@ const routes: Array<RouteRecordRaw> = [
   },
   {
     path: '/tags',
-    name: 'TagsPage',
-    component: () => import('@/views/tag/List.vue'),
+    name: 'Tags',
+    component: () => import('@/views/tags/index.vue'),
   },
   {
     path: '/tags/:tag',
-    name: 'TagDetailsPage',
-    component: () => import('@/views/tag/Details.vue'),
+    name: 'Tag',
+    component: () => import('@/views/tags/_id.vue'),
   },
   {
     path: '/:pathMatch(.*)*',

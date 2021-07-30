@@ -5,6 +5,7 @@
         <label>Text</label>
         <textarea
           v-model="text"
+          class="sticky-note"
           :style="`background-color: ${noteColor}; color: ${textColor};`"
           rows="4"
           placeholder="Enter note text..."

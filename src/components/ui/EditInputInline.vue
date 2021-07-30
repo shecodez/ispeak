@@ -1,7 +1,7 @@
 <template>
-  <div class="flex items-center space-x-2">
+  <div class="flex items-center space-x-2 text-xl">
     <input ref="input" v-if="isEdit" type="text" v-model="inputText" @keydown.enter="$emit('on-update', inputText)" />
-    <h1 v-else class="text-xl whitespace-nowrap">{{ text }}</h1>
+    <h1 v-else class="whitespace-nowrap">{{ text }}</h1>
 
     <TooltipButton iconBtn :tooltip="tooltipText" :text="isEdit ? '❌' : '✏️'" @click="toggleEdit" />
     <TooltipButton v-if="isEdit" iconBtn :tooltip="t('save')" text="💾" @click="$emit('on-update', inputText)" />

@@ -1,6 +1,8 @@
 <template>
+  <!-- grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-5 gap-4 -->
   <draggable
-    class="flex-1 grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-5 gap-4"
+    class="p-1 w-full h-full inline-flex thin-scrollbar"
+    :class="isHorizontal ? 'overflow-y-hidden' : 'flex-col overflow-x-hidden'"
     :list="kanban?.boards"
     group="boards"
     @change="log"
@@ -9,10 +11,10 @@
     :animation="200"
   >
     <template #item="{ element, index }">
-      <div class="board-container overflow-hidden">
+      <div class="board-container" :class="isHorizontal ? 'w-board max-h-11/12' : ''">
         <div
-          class="board rounded p-2 border-t-4 overflow-hidden max-h-screen md:max-h-full flex flex-col"
-          :class="element.isPublished ? (element.isEpic ? 'border-indigo-500' : 'border-green-500') : 'border-gray-500'"
+          class="board m-2 p-2 rounded border-t-4 overflow-hidden max-h-full flex flex-col"
+          :class="element.isPublished ? (element.isEpic ? 'border-indigo-400' : 'border-green-400') : 'border-gray-400'"
         >
           <div class="board-header m-2 flex items-center justify-between">
             <div class="my-2">
@@ -20,7 +22,7 @@
                 <h3 class="text-xl font-bold">{{ element.title }}</h3>
                 <TooltipButton iconBtn :tooltip="t('preview')" text="🎬" />
               </div>
-              <p class="text-xs text-gray-500">{{ index }}-{{ element.id }}</p>
+              <p class="text-xs text-gray-400">{{ index }}-{{ element.id }}</p>
             </div>
 
             <div class="handle text-2xl cursor-move">
@@ -29,7 +31,7 @@
           </div>
 
           <draggable
-            class="note-container thin-scrollbar flex flex-col space-y-2 overflow-y-auto md:overflow-x-hidden"
+            class="note-container thin-scrollbar flex flex-col space-y-2 overflow-x-hidden overflow-y-auto"
             :list="element.notes"
             group="notes"
             @change="log"
@@ -54,14 +56,14 @@
             <TooltipButton
               iconBtn
               :tooltip="t('add_note')"
-              buttonCss="btn hover:bg-green-500"
+              buttonCss="btn hover:bg-green-400"
               text="➕"
               @on-click="openNoteDialog"
             />
             <TooltipButton
               iconBtn
               :tooltip="t('edit_board')"
-              buttonCss="btn hover:bg-yellow-500"
+              buttonCss="btn hover:bg-yellow-400"
               text="✏️"
               @on-click="openEditBoardDialog(element)"
             />
@@ -76,8 +78,10 @@
       </div>
     </template>
     <template #footer>
-      <div class="border-4 border-dashed h-80 flex items-center justify-center rounded">
-        <button @click="openBoardDialog" class="btn bg-green-400">{{ t('add_board') }}</button>
+      <div class="add-board-container" :class="isHorizontal ? 'w-board' : ''">
+        <div class="border-4 border-dashed h-80 m-2 rounded f-center">
+          <button @click="openBoardDialog" class="btn primary-green">{{ t('add_board') }}</button>
+        </div>
       </div>
     </template>
   </draggable>
@@ -118,6 +122,10 @@ export default defineComponent({
   props: {
     kanban: {
       type: Object as PropType<Kanban>,
+    },
+    isHorizontal: {
+      type: Boolean,
+      default: true,
     },
   },
   setup() {
@@ -193,50 +201,6 @@ export default defineComponent({
       t,
     };
   },
-  /*data() {
-    return {
-      kanban: {
-        boards: [
-          {
-            id: 'f9NF1oDUt68PZaPVKauN',
-            priority: 0,
-            title: "Niico's Board",
-            notes: [
-              { id: 1, text: 'Have faith, relax, and give it your all', color: '#fcd34d' },
-              { id: 2, text: 'Here is a brand new task', color: '#6ee7b7' },
-            ],
-            isPublished: true,
-            uid: 'l334',
-          },
-          {
-            id: 'teSyEI3jveltdztYIAdq',
-            priority: 1,
-            title: 'Second Board',
-            notes: [
-              {
-                id: 3,
-                text: 'Everything we hear is an opinion, not a fact. Everything we see is a perspective, not the truth. ~Marcus Airelius',
-                color: '#93c5fd',
-              },
-              { id: 4, text: 'I think it works', color: '#fca5a5' },
-              {
-                id: 5,
-                text: 'Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Enim eu turpis egestas pretium aenean pharetra magna ac placerat. Elit ullamcorper dignissim cras tincidunt. ',
-                color: '#fcd34d',
-              },
-              {
-                id: 6,
-                text: 'Ultricies lacus sed turpis tincidunt id aliquet risus. Donec pretium vulputate sapien nec sagittis aliquam. Tristique senectus et netus et malesuada. Facilisi cras fermentum odio eu. Porttitor rhoncus dolor purus non enim praesent elementum facilisis leo. Lorem ipsum dolor sit amet consectetur adipiscing elit.',
-                color: '#6ee7b7',
-              },
-            ],
-            isPublished: false,
-            uid: 'l334',
-          },
-        ],
-      },
-    };
-  },*/
 });
 </script>
 
@@ -249,5 +213,12 @@ export default defineComponent({
 }
 .drag {
   @apply opacity-100;
+}
+.w-board {
+  @apply w-full md:w-1/2 lg:w-1/3 xl:w-1/5;
+}
+.board-container,
+.add-board-container {
+  flex: 0 0 auto;
 }
 </style>

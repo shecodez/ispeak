@@ -36,7 +36,7 @@ import { useI18n } from 'vue-i18n';
 export default defineComponent({
   name: 'Pagination',
   props: {
-    onPage: {
+    page: {
       type: Number,
       default: 1,
     },
@@ -54,12 +54,13 @@ export default defineComponent({
 
     const totalPages = computed(() => Math.ceil(props.totalItems / props.itemsPerPage));
 
-    const currentPage = ref(props.onPage);
+    const currentPage = ref(props.page);
     const goToPage = ref();
     watch(
-      () => currentPage.value,
-      (currentPage) => {
-        goToPage.value = currentPage;
+      () => props.page,
+      (newPage) => {
+        currentPage.value = newPage;
+        goToPage.value = newPage;
       },
       { immediate: true }
     );

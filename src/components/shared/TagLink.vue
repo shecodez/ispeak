@@ -20,7 +20,7 @@
 import { computed, defineComponent } from 'vue';
 
 export default defineComponent({
-  name: 'Tag',
+  name: 'TagLink',
   props: {
     name: {
       type: String,

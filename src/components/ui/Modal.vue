@@ -1,30 +1,32 @@
 <template>
-  <div
-    v-show="showModal"
-    class="modal-backdrop bg-black bg-opacity-60 absolute inset-0 flex items-center justify-center z-40"
-  >
-    <div ref="modal" role="dialog" class="modal-container w-11/12" aria-labelledby="mtitle" aria-describedby="mbody">
-      <header class="modal-header flex items-center justify-between mb-4">
-        <slot name="header">
-          <h4 id="mtitle" class="text-lg font-bold">{{ title }}</h4>
-        </slot>
-        <button @click="close" aria-label="close modal">❌<span class="sr-only">close modal</span></button>
-      </header>
-      <div id="mbody" class="modal-body">
-        <slot>
-          <p>{{ content }}</p>
-        </slot>
-      </div>
-      <footer class="modal-footer flex space-x-2 -mb-1 mt-3">
-        <slot name="footer">
-          <slot name="action">
-            <button class="btn bg-green-300 ml-auto" @click="onAction">Submit</button>
+  <teleport to="body">
+    <div
+      v-if="showModal"
+      class="modal-backdrop bg-black bg-opacity-60 absolute inset-0 flex items-center justify-center z-40"
+    >
+      <div ref="modal" role="dialog" class="modal-container w-11/12" aria-labelledby="mtitle" aria-describedby="mbody">
+        <header class="modal-header flex items-center justify-between mb-4">
+          <slot name="header">
+            <h4 id="mtitle" class="text-lg font-bold">{{ title }}</h4>
           </slot>
-          <button @click="close" aria-label="close modal" class="btn border ml-auto">Cancel</button>
-        </slot>
-      </footer>
+          <button @click="close" aria-label="close modal">❌<span class="sr-only">close modal</span></button>
+        </header>
+        <div id="mbody" class="modal-body">
+          <slot>
+            <p>{{ content }}</p>
+          </slot>
+        </div>
+        <footer class="modal-footer flex space-x-2 -mb-1 mt-3">
+          <slot name="footer">
+            <slot name="action">
+              <button class="btn bg-green-300 ml-auto" @click="onAction">Submit</button>
+            </slot>
+            <button @click="close" aria-label="close modal" class="btn border ml-auto">Cancel</button>
+          </slot>
+        </footer>
+      </div>
     </div>
-  </div>
+  </teleport>
 </template>
 
 <script lang="ts">

@@ -36,10 +36,11 @@ likes: 好き
 sagas: サガ
 logout: ログアウト
 notifications: 通知
+help: ヘルプ
 
 my_kanbans: 私のかんばん
 kanban: かんばん
-board: ボード
+boards: ボード
 untitled: 無題かんばん
 edit_title: タイトルを更新
 delete_kanban: かんばんを削除
@@ -66,3 +67,7 @@ login_failed: ログインに失敗しました。
 you_must_be_logged_in: ログインする必要があります！
 
 under_construction_message: このコンテンツは現在準備中です。
+
+liked_sagas: サガが好き
+favorite_kanbans: 好きなかんばん
+saved_sagas: 保存されたサガ

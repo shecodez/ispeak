@@ -3,14 +3,14 @@
     <button class="flex w-16 h-full items-center justify-center text-2xl">🔍</button>
 
     <div class="hidden md:flex flex-auto h-16 items-center justify-center text-2xl font-bold">
-      <router-link to="/">🎙️ iSpeak!</router-link>
+      <router-link to="/">🎬 {{ appName }}</router-link>
       <span class="bg-cyan-400 text-xs ml-2 px-1 rounded">BETA</span>
     </div>
 
     <ul class="flex h-16 ml-auto items-center text-2xl">
-      <li><router-link class="bg-blue-500 rounded-bl-3xl" to="/shop">💎</router-link></li>
+      <li><router-link class="primary-blue rounded-bl-3xl" to="/shop">💎</router-link></li>
       <li v-for="navli in navListItems" :key="navli.tooltip">
-        <button class="bg-gray-300 dark:bg-gray-700" @click="navli.action">
+        <button class="bg-gray-300 dark:bg-gray-700">
           <span v-if="navli.text">{{ navli.text }}</span>
           <component v-else :is="navli.component" />
           <span class="sr-only">{{ navli.tooltip }}</span>
@@ -23,7 +23,7 @@
           <span class="sr-only">toggle menu</span>
         </button>
 
-        <div v-if="showMenu" class="absolute -bottom-18 right-3 p-4 rounded bg-teal-400">
+        <div v-if="showMenu" class="absolute z-40 -bottom-18 right-3 p-4 rounded bg-teal-400">
           TODO: replace with main dropdown menu
         </div>
       </li>
@@ -42,6 +42,8 @@ export default defineComponent({
   name: 'Topnav',
   components: { ToggleDark, SwitchLocale, NotificationMenu },
   setup() {
+    const appName = import.meta.env.VITE_APP_NAME;
+
     const showMenu = ref(false);
 
     const toggleMenu = () => {
@@ -54,7 +56,7 @@ export default defineComponent({
       { tooltip: 'change locale', component: SwitchLocale },
     ];
 
-    return { navListItems, showMenu, toggleMenu };
+    return { appName, navListItems, showMenu, toggleMenu };
   },
 });
 </script>

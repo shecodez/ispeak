@@ -1,26 +1,13 @@
 <template>
-  <Header />
-  <main class="flex-1 flex flex-col md:overflow-hidden p-3">
-    <Banner :showBanner="showBanner" text="Example banner text" />
-    <router-view></router-view>
-  </main>
-  <Footer />
+  <router-view />
 </template>
 
 <script lang="ts">
-import { defineComponent, ref } from 'vue';
-
-import Header from '@/components/shared/Header.vue';
-import Footer from '@/components/shared/Footer.vue';
+import { defineComponent } from 'vue';
 
 export default defineComponent({
   name: 'App',
-  components: { Header, Footer },
-  setup() {
-    const showBanner = ref(false);
-
-    return { showBanner };
-  },
+  setup() {},
 });
 </script>
 
@@ -28,19 +15,30 @@ export default defineComponent({
 @import url('https://fonts.googleapis.com/css2?family=Reenie+Beanie&display=swap');
 
 html,
-body {
+body,
+#app {
   height: 100%;
+  overflow: hidden;
 }
 
 #app {
   font-family: Avenir, Helvetica, Arial, sans-serif;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
-  @apply flex flex-col h-full md:max-h-screen md:overflow-hidden;
+  /* @apply flex flex-col h-full md:max-h-screen md:overflow-hidden; */
 }
 
 .dark {
   @apply bg-gray-900 text-white;
+}
+.primary-red {
+  @apply bg-red-500 hover:bg-red-400;
+}
+.primary-green {
+  @apply bg-green-400 hover:bg-green-500;
+}
+.primary-blue {
+  @apply bg-blue-400 hover:bg-blue-500;
 }
 
 .btn {
@@ -51,12 +49,8 @@ body {
   @apply flex items-center justify-center;
 }
 
-.fixed-bottom-btn {
-  @apply fixed bottom-0 right-0 rounded-tl-3xl w-16 h-16 flex items-center justify-center;
-}
-
-.flex-toolbar-h {
-  @apply flex flex-wrap items-center md:justify-between;
+.toolbar {
+  @apply flex flex-wrap items-center justify-between;
 }
 
 .form-group {
@@ -67,7 +61,7 @@ body {
 }
 .form-group input,
 .form-group textarea {
-  @apply bg-transparent w-full border rounded p-2;
+  @apply bg-transparent w-full border p-2;
 }
 
 .thin-scrollbar {

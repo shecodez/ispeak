@@ -36,11 +36,12 @@ likes: likes
 sagas: sagas
 logout: logout
 notifications: notifications
+help: Help
 
 my_kanbans: My Kanbans
 untitled: Untitled Kanban
 kanban: kanban
-board: board
+boards: boards
 edit_title: Edit Title
 delete_kanban: Delete Kanban
 kanban_settings: Kanban Settings
@@ -66,3 +67,7 @@ login_failed: Login failed.
 you_must_be_logged_in: You must be logged in!
 
 under_construction_message: This content is under construction.
+
+liked_sagas: liked Sagas
+favorite_kanbans: favorite Kanbans
+saved_sagas: saved Sagas

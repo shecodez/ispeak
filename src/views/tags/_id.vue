@@ -1,34 +1,37 @@
 <template>
-  <div class="ml-16">
+  <FixedFrame>
     <Spinner v-if="isLoading" />
     <AlertMessage v-else-if="error" type="error" :message="error" />
+    <template v-else>
+      <div class="mt-2 mx-4">
+        <TagLink :name="tag?.id" :count="tag?.count" size="text-4xl btn" />
+        <div class="border-4 border-dashed my-2">
+          <p v-if="tag?.description" class="p-4">{{ tag.description }}</p>
+        </div>
 
-    <Tag :name="tag?.id" :count="tag?.count" size="text-4xl btn" />
-
-    <div class="border-4 border-dashed my-2">
-      <p v-if="tag?.description" class="p-4">{{ tag.description }}</p>
-    </div>
-
-    <div class="flex-1">
-      <SagaList query="/kanbans" />
-    </div>
-  </div>
+        <div class="flex-1">
+          <SagaList query="/kanbans" />
+        </div>
+      </div>
+    </template>
+  </FixedFrame>
 </template>
 
 <script lang="ts">
-import { computed, defineComponent, onMounted, watch } from 'vue';
+import { computed, defineComponent } from 'vue';
 import { useI18n } from 'vue-i18n';
 import { useRoute } from 'vue-router';
 
 import useApi from '@/use/api';
+import FixedFrame from '@/components/layouts/FixedFrame.vue';
 import Spinner from '@/components/ui/Spinner.vue';
 import AlertMessage from '@/components/shared/AlertMessage.vue';
 import SagaList from '@/components/saga/SagaList.vue';
-import Tag from '@/components/shared/Tag.vue';
+import TagLink from '@/components/shared/TagLink.vue';
 
 export default defineComponent({
-  name: 'TagDetailsPage',
-  components: { Spinner, AlertMessage, SagaList, Tag },
+  name: 'Tag',
+  components: { FixedFrame, Spinner, AlertMessage, SagaList, TagLink },
   setup() {
     const { t } = useI18n();
     const route = useRoute();

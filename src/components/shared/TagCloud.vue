@@ -11,7 +11,7 @@
 <script lang="ts">
 import { defineComponent } from 'vue';
 
-import Tag from '@/components/shared/Tag.vue';
+import Tag from '@/components/shared/TagLink.vue';
 
 export default defineComponent({
   name: 'TagCloud',

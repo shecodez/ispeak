@@ -1,6 +1,6 @@
 <template>
   <nav class="h-full w-16 max-w-16 fixed">
-    <div class="w-full h-16 bg-green-500 rounded-tr-3xl">
+    <div class="w-full h-16 primary-green rounded-tr-3xl">
       <button @click="addKanban" class="f-center">
         <i-gg-spinner v-if="isLoading" class="text-2xl animate-spin" />
         <Tooltip v-else :text="t('add_kanban')" placement="right">➕</Tooltip>
@@ -10,7 +10,7 @@
 
     <ul class="h-full flex flex-col items-center text-2xl bg-gray-300 dark:bg-gray-700">
       <li v-for="navli in navListItems" :key="navli.text" v-show="!navli.reqAuth || (navli.reqAuth && isLoggedIn)">
-        <button v-if="navli.isBtn">
+        <button v-if="navli.isBtn" @click="navli.action">
           <Tooltip :text="t(navli.tooltip)" placement="right">
             {{ navli.text }}
           </Tooltip>
@@ -47,10 +47,11 @@
       </li>
     </ul>
   </nav>
+  <HelpDialog :showDialog="showHelpDialog" :closeDialogFn="closeHelpDialog" />
 </template>
 
 <script lang="ts">
-import { defineComponent } from 'vue';
+import { defineComponent, ref } from 'vue';
 import { useI18n } from 'vue-i18n';
 import { useRouter } from 'vue-router';
 import { useToast } from 'vue-toastification';
@@ -59,10 +60,11 @@ import FaSolidTags from 'virtual:vite-icons/fa-solid/tags';
 import { useAuthState } from '@/firebase';
 import useApi from '@/use/api';
 import Tooltip from '@/components/ui/Tooltip.vue';
+import HelpDialog from '../ui/HelpDialog.vue';
 
 export default defineComponent({
   name: 'Sidenav',
-  components: { FaSolidTags, Tooltip },
+  components: { FaSolidTags, Tooltip, HelpDialog },
   setup() {
     const { t } = useI18n();
     const toast = useToast();
@@ -70,11 +72,19 @@ export default defineComponent({
     const { user, isLoggedIn, logout } = useAuthState();
     const { isLoading, post } = useApi('/kanbans');
 
+    const showHelpDialog = ref(false);
+    const openHelpDialog = () => {
+      showHelpDialog.value = true;
+    };
+    const closeHelpDialog = () => {
+      showHelpDialog.value = false;
+    };
+
     const navListItems = [
       { route: '/sagas', tooltip: 'sagas', text: '🎬' },
       { route: '/tags', tooltip: 'tags', component: FaSolidTags },
-      { isBtn: true, tooltip: 'saved', text: '💾', reqAuth: true },
-      { route: '/kanbans', tooltip: 'my_kanbans', text: '🍱', reqAuth: true },
+      { route: '/kanbans', tooltip: 'my_kanbans', text: '📋', reqAuth: true },
+      { isBtn: true, tooltip: 'help', text: '🤔', action: openHelpDialog },
     ];
 
     const addKanban = async () => {
@@ -94,7 +104,18 @@ export default defineComponent({
       }
     };
 
-    return { navListItems, user, isLoggedIn, logout, isLoading, addKanban, t };
+    return {
+      navListItems,
+      user,
+      isLoggedIn,
+      logout,
+      isLoading,
+      showHelpDialog,
+      openHelpDialog,
+      closeHelpDialog,
+      addKanban,
+      t,
+    };
   },
 });
 </script>
