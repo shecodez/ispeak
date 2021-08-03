@@ -1,5 +1,5 @@
 <template>
-  <Modal :isOpen="showDialog" :title="t('add_board')" :onClose="closeDialogFn" :onAction="addBoard">
+  <Modal :isOpen="showDialog" :title="t('add_board')" :onClose="onClose" :onAction="submitBoard">
     <form>
       <div class="form-group">
         <label>Title</label>
@@ -7,29 +7,35 @@
       </div>
 
       <div class="form-group">
-        <label>Prologue</label>
-        <textarea v-model="prologue" />
+        <label>Slug</label>
+        <input v-model="slug" readonly />
       </div>
 
-      <!-- <div class="form-group">
-      <label>Epilogue</label>
-      <textarea v-model="epilogue" />
-    </div> -->
+      <div class="form-group">
+        <label>Description <small>(Plain Text)</small></label>
+        <textarea v-model="description" />
+        <p class="text-xs">Rich Text Format Description coming soon!</p>
+      </div>
+
+      <div class="form-group flex items-center text-lg space-x-2">
+        <b>✖️</b><Toggle v-model="isPublished" /><b>✔️</b>
+        <b>{{ isPublished ? 'Published' : 'Draft' }}</b>
+      </div>
+
+      <div class="form-group flex items-center text-lg space-x-2">
+        <b>🈂️</b><Toggle v-model="isEpic" color="bg-indigo-500" /><b>💎</b>
+        <b>{{ isEpic ? 'Epic' : 'Freebie' }}</b>
+      </div>
     </form>
   </Modal>
 </template>
 
 <script lang="ts">
-import { defineComponent, reactive, toRefs } from 'vue';
+import { defineComponent, reactive, toRefs, watch } from 'vue';
 import { useI18n } from 'vue-i18n';
 
+import { Board } from '@/data/interfaces';
 import Modal from '@/components/ui/Modal.vue';
-
-export type NewBoard = {
-  title: string;
-  prologue: string;
-  //isEpic (req gems to view)
-};
 
 export default defineComponent({
   name: 'NewBoardDialog',
@@ -39,42 +45,37 @@ export default defineComponent({
       type: Boolean,
       default: false,
     },
-    closeDialogFn: {
+    onClose: {
       type: Function,
     },
   },
   setup(props) {
     const { t } = useI18n();
 
-    const board = reactive({
-      priority: 1,
+    const state = reactive<Board>({
+      id: '',
       title: '',
-      prologue: '',
-      //epilogue: '',
+      slug: '',
+      description: '',
+      isPublished: false,
+      isEpic: false,
       notes: [],
+      kanbanId: '',
     });
 
-    const addBoard = () => {
-      console.log('Submit Add Board', board);
-      if (props.closeDialogFn) {
-        props.closeDialogFn();
+    watch(
+      () => state.title,
+      (title) => {
+        state.slug = title.toLowerCase().replaceAll(' ', '-');
       }
+    );
+
+    const submitBoard = () => {
+      console.log('Submit Add Board', state);
+      if (props.onClose) props.onClose();
     };
 
-    return { ...toRefs(board), addBoard, t };
+    return { ...toRefs(state), submitBoard, t };
   },
 });
 </script>
-
-<style scoped>
-.form-group {
-  @apply my-2;
-}
-label {
-  @apply block text-xs font-semibold;
-}
-input,
-textarea {
-  @apply bg-transparent w-full border rounded p-2;
-}
-</style>

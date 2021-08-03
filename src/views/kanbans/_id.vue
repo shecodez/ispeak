@@ -7,15 +7,10 @@
       </div>
 
       <div class="flex flex-wrap items-center space-x-2">
-        <button class="btn border mx-2">🔓</button>
-        <div class="flex items-center m-3 md:m-0">
-          <template v-for="i in 3" :key="i">
-            <div class="overlapping-icon-group">
-              {{ i }}
-            </div>
-          </template>
-          <span class="text-sm mx-2 italic text-gray-500">+5</span>
-        </div>
+        <button class="btn border mx-2">
+          {{ kanban.isPublic ? '🌎 Public' : '🔒 Private' }}
+        </button>
+        <IconGroupInline :items="kanban.members" />
         <Menu :list="publishList" w="w-48 max-w-56">
           <template v-slot:activator>
             <button class="btn bg-green-500 whitespace-nowrap">{{ t('publish') }} ✔️</button>
@@ -41,7 +36,7 @@
     </template>
   </FixedFrame>
 
-  <EditKanbanDialog :showDialog="showKanbanSettingsDialog" :onClose="closeKanbanSettingsDialog" />
+  <EditKanbanDialog :edit="kanban" :showDialog="showKanbanSettingsDialog" :onClose="closeKanbanSettingsDialog" />
   <ConfirmDeleteDialog
     :showDialog="showDeleteKanbanDialog"
     :onClose="closeDeleteKanbanDialog"
@@ -50,7 +45,7 @@
 </template>
 
 <script lang="ts">
-import { computed, defineComponent, onMounted, ref, watch } from 'vue';
+import { computed, defineComponent, onMounted, ref } from 'vue';
 import { useI18n } from 'vue-i18n';
 import { onBeforeRouteLeave, useRoute, useRouter } from 'vue-router';
 
@@ -65,16 +60,8 @@ import Editor from '@/components/kanban/Editor.vue';
 import Spinner from '@/components/ui/Spinner.vue';
 import AlertMessage from '@/components/shared/AlertMessage.vue';
 import FixedFrame from '@/components/layouts/FixedFrame.vue';
+import IconGroupInline from '@/components/ui/IconGroupInline.vue';
 
-export type Kanban = {
-  id: string;
-  title: string;
-  description?: string;
-  boards: [];
-  members?: [];
-  tags?: [];
-  uid: string;
-};
 export default defineComponent({
   name: 'Kanban',
   components: {
@@ -88,6 +75,7 @@ export default defineComponent({
     Spinner,
     AlertMessage,
     FixedFrame,
+    IconGroupInline,
   },
   props: {
     id: {
@@ -165,14 +153,3 @@ export default defineComponent({
   },
 });
 </script>
-
-<style scoped>
-.overlapping-icon-group {
-  @apply w-10 h-10 border bg-gray-500 rounded-full flex items-center justify-center hover:transform hover:scale-110 -ml-2;
-}
-.kanban-details-header,
-.kanban-details-main,
-.kanban-details-footer {
-  @apply ml-16;
-}
-</style>

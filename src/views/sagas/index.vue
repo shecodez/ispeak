@@ -4,40 +4,41 @@
       <h1 class="text-2xl capitalize">🎬 {{ t('sagas') }}</h1>
     </aside>
 
-    <div class="mx-4 grid grid-cols-4 gap-4">
-      <h2 class="title text-3xl capitalize">🔥 {{ t('hot') }} {{ `(${hot?.length})` }}</h2>
+    <div class="flex-1">
+      <ul class="mx-4 grid grid-cols-4 gap-4">
+        <li>
+          <h2 v-if="tagged.length" class="title text-3xl capitalize">
+            🔥 {{ filters.tag.replace('-', ' ') }} {{ `(${tagged?.length})` }}
+          </h2>
+        </li>
+        <template v-for="saga in tagged" :key="saga.id">
+          <li class="p-4 border inline-block">
+            <router-link :to="`/sagas/${saga.id}`">{{ saga.title }}</router-link>
+          </li>
+        </template>
 
-      <div class="p-4 border inline-block" v-for="saga in hot" :key="saga.id">
-        <router-link :to="`/sagas/${saga.id}`">
-          {{ saga.title }}
-        </router-link>
-      </div>
-
-      <h2 class="title text-3xl capitalize">Top 7 {{ `(${top7?.length})` }}</h2>
-
-      <div class="p-4 border inline-block" v-for="saga in top7" :key="saga.id">
-        <router-link :to="`/sagas/${saga.id}`">
-          {{ saga.title }}
-        </router-link>
-      </div>
-
-      <h2 class="title text-3xl capitalize">All {{ `(${sagas?.length})` }}</h2>
-
-      <div class="p-4 border inline-block" v-for="saga in sagas" :key="saga.id">
-        <router-link :to="`/sagas/${saga.id}`">
-          {{ saga.title }}
-        </router-link>
-      </div>
+        <li><h2 class="title text-3xl capitalize">All</h2></li>
+        <template v-for="saga in sagas" :key="saga.id">
+          <li class="p-4 border inline-block">
+            <router-link :to="`/sagas/${saga.id}`">{{ saga.title }}</router-link>
+          </li>
+        </template>
+      </ul>
     </div>
-    <!-- <Pagination /> -->
+
+    <Pagination :page="filters._page" :total="total" :limit="filters._limit" />
   </FixedFrame>
 </template>
 
 <script lang="ts">
-import { computed, defineComponent } from 'vue';
+import { computed, defineComponent, onMounted, reactive, ref, toRefs } from 'vue';
 import { useI18n } from 'vue-i18n';
+import { useRoute } from 'vue-router';
+import debounce from 'lodash.debounce';
 
 import useApi from '@/use/api';
+import { useUrlQuery, useUrlParams } from '@/use/fetch';
+import { Kanban } from '@/data/interfaces';
 import FixedFrame from '@/components/layouts/FixedFrame.vue';
 import SagaList from '@/components/saga/SagaList.vue';
 import Pagination from '@/components/ui/Pagination.vue';
@@ -47,19 +48,32 @@ export default defineComponent({
   components: { FixedFrame, SagaList, Pagination },
   setup() {
     const { t } = useI18n();
-
-    const { data: sagas, isLoading, error, get } = useApi('/kanbans');
-    get();
-
-    const hot = computed(() => {
-      return sagas.value.filter((saga: any) => saga.tags.includes('hot'));
+    const route = useRoute();
+    // values will be filtered out if null or empty
+    const filters = reactive({
+      search: '',
+      tag: 'top-7',
+      _page: 1, //route.params.page.toString(),
+      _limit: 2,
     });
 
-    const top7 = computed(() => {
-      return sagas.value.filter((saga: any) => saga.tags.includes('top-7'));
+    //const { data: sagas, isLoading, error, get } = useApi('/kanbans');
+    //get();
+    console.log('PAGE', route.params.page);
+
+    const url = useUrlParams('/kanbans', filters);
+    const { result: sagas, reload, isLoading, error } = useUrlQuery(url, [] as Kanban[]);
+    const total = ref(5); // sagas.total should be returned
+
+    const tagged = computed(() => {
+      return sagas.value?.filter((saga: any) => saga.tags.includes(filters.tag));
     });
 
-    return { sagas, hot, top7, isLoading, error, t };
+    const setSearch = debounce((event: InputEvent) => {
+      filters.search = (event.target as HTMLInputElement).value;
+    }, 200); // prevent reloading after each character
+
+    return { filters, sagas, total, tagged, isLoading, error, t };
   },
 });
 </script>

@@ -1,8 +1,9 @@
 <template>
   <Modal :isOpen="showDialog" title="⚙️ Kanban Settings" :onClose="onClose">
     <form>
-      <div class="form-group">
-        <div class="ml-auto">public🔓toggle🔒private</div>
+      <div class="form-group flex items-center text-lg space-x-2">
+        <b>🔒</b><Toggle v-model="isPublic" /><b>🌎</b>
+        <b>{{ isPublic ? 'Public' : 'Private' }}</b>
       </div>
 
       <div class="form-group">
@@ -17,7 +18,7 @@
 
       <div class="form-group">
         <label>Members</label>
-        <ChipInput placeholder="Add Kanban krew" />
+        <ChipInput v-model="members" placeholder="Add Members" />
       </div>
 
       <div class="form-group">
@@ -29,35 +30,49 @@
               class="border p-2 rounded cursor-pointer"
               :class="board.isPublished ? (board.isEpic ? 'epic' : 'published') : 'draft'"
             >
-              {{ board.title }}
+              <p class="truncate">{{ board.title }}</p>
             </div>
           </template>
+        </div>
+        <div class="flex items-center space-x-2 text-xs py-1">
+          <b>Legend:</b>
+          <div class="draft w-3 h-3" />
+          <i>Draft</i>
+          <div class="published w-3 h-3" />
+          <i>Published</i>
+          <div class="epic w-3 h-3" />
+          <i>Epic</i>
         </div>
       </div>
 
       <div class="form-group">
         <label>Tags</label>
-        <ChipInput placeholder="Enter Tags" :max="10" />
+        <ChipInput v-model="tags" placeholder="Enter Tags" :maxChips="10" />
       </div>
     </form>
 
     <template v-slot:action>
-      <button class="btn bg-green-300 ml-auto" @click="updateKanban">{{ t('save') }}</button>
+      <button class="btn primary-green ml-auto capitalize" @click="submitKanban">{{ t('save') }}</button>
     </template>
   </Modal>
 </template>
 
 <script lang="ts">
-import { defineComponent, reactive, ref, toRefs } from 'vue';
+import { defineComponent, onMounted, PropType, reactive, toRefs, watch } from 'vue';
 import { useI18n } from 'vue-i18n';
 
+import { Kanban, Board } from '@/data/interfaces';
 import Modal from '@/components/ui/Modal.vue';
 import ChipInput from '@/components/ui/ChipInput.vue';
+import Toggle from '@/components/ui/Toggle.vue';
 
 export default defineComponent({
   name: 'EditKanbanDialog',
-  components: { Modal, ChipInput },
+  components: { Modal, ChipInput, Toggle },
   props: {
+    edit: {
+      type: Object as PropType<Kanban>,
+    },
     showDialog: {
       type: Boolean,
       default: false,
@@ -66,57 +81,77 @@ export default defineComponent({
       type: Function,
     },
   },
-  // methods: {
-  //   onClose() {
-  //     this.$emit('closeEvent');
-  //   },
-  //   onSave() {
-  //     this.$emit('saveEvent');
-  //   },
-  // },
-  setup(props) {
+  setup(props, { emit }) {
     const { t } = useI18n();
 
-    const state = reactive({
+    const state = reactive<Kanban>({
+      id: '',
       title: '',
+      slug: '',
       description: '',
+      imageURL: '',
+      isPublic: true,
+      boards: [],
+      members: [],
+      tags: [],
+      uid: '',
+      username: '',
     });
 
-    const updateKanban = () => {
-      console.log('Update Kanaban');
+    const setFields = () => {
+      if (props.edit) {
+        const { title, description, imageURL, isPublic, boards, members, tags } = props.edit;
+        state.title = title;
+        state.description = description;
+        state.imageURL = imageURL;
+        state.isPublic = isPublic;
+        state.boards = boards;
+        state.members = members;
+        state.tags = tags;
+      }
+    };
+    //onMounted(() => setFields());
+    watch(
+      () => props.edit,
+      (edit) => {
+        if (edit) setFields();
+      }
+    );
+
+    const submitKanban = () => {
+      console.log('Update Kanaban', state);
       // if success
       if (props.onClose) props.onClose();
+
+      if (props.edit) {
+        emit('update', state);
+      } else {
+        emit('create', state);
+      }
     };
 
-    const boards = ref([
-      { id: '1', title: 'Chapter 1', isPublished: true, isEpic: false },
-      { id: '2', title: 'Chapter 2', isPublished: false, isEpic: false },
-      { id: '3', title: 'Chapter 3', isPublished: true, isEpic: true },
-      { id: '4', title: 'Chapter 4', isPublished: false, isEpic: true },
-      { id: '5', title: 'Chapter 5', isPublished: false, isEpic: false },
-    ]);
-
-    const setStatus = (board: any, i: number) => {
-      console.log('Board', board, i);
+    // toggleBoardState
+    const setStatus = (board: Board, i: number) => {
+      //console.log('Board', board, i);
       if ((!board.isPublished && !board.isEpic) || (!board.isPublished && board.isEpic)) {
         // draft || epic -> published
-        boards.value[i].isPublished = true;
+        state.boards[i].isPublished = true;
         return;
       }
       if (board.isPublished && !board.isEpic) {
         // published -> epic
-        boards.value[i].isEpic = true;
+        state.boards[i].isEpic = true;
         return;
       }
       if (board.isEpic && board.isPublished) {
         // published && epic -> draft
-        boards.value[i].isEpic = false;
-        boards.value[i].isPublished = false;
+        state.boards[i].isEpic = false;
+        state.boards[i].isPublished = false;
         return;
       }
     };
 
-    return { ...toRefs(state), updateKanban, setStatus, t, boards };
+    return { ...toRefs(state), submitKanban, setStatus, t };
   },
 });
 </script>
@@ -125,10 +160,10 @@ export default defineComponent({
 .draft {
   @apply border-white bg-gray-300 bg-opacity-30;
 }
-.published {
-  @apply border-green-500 bg-green-300 bg-opacity-30;
-}
 .epic {
   @apply border-indigo-500 bg-indigo-300 bg-opacity-30;
+}
+.published {
+  @apply border-green-500 bg-green-300 bg-opacity-30;
 }
 </style>

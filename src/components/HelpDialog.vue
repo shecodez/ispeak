@@ -1,17 +1,17 @@
 <template>
-  <Modal :isOpen="showDialog" :title="`💡 ${t('help')}`" :onClose="closeDialogFn">
+  <Modal :isOpen="showDialog" :title="`ℹ️ ${t('info')}`" :onClose="closeDialogFn">
     <div class="text-center">
       <img v-show="tip.mediaURL" :src="tip.mediaURL" alt="tip visual" />
       <p class="my-2 font-semibold">{{ tip.message }}</p>
 
-      <button class="btn border m-1">Get another tip 🦉</button>
+      <button class="btn border m-1">Get another tip 💡</button>
     </div>
     <template v-slot:footer>
-      <div class="flex w-full justify-around border-t py-2">
-        <span>Contact</span>
-        <span>FAQs</span>
-        <span>Blog</span>
-        <span>Privacy</span>
+      <div class="flex w-full justify-around border-t pt-3 font-semibold">
+        <router-link :to="{ name: 'Contact' }">Contact</router-link>
+        <router-link :to="{ name: 'FAQs' }">FAQs</router-link>
+        <router-link :to="{ name: 'Blog' }">Blog</router-link>
+        <router-link :to="{ name: 'Privacy' }">Privacy</router-link>
       </div>
     </template>
   </Modal>
@@ -40,7 +40,7 @@ export default defineComponent({
     const tip = ref({
       id: 'take-a-break',
       mediaURL: '/src/assets/takeABreak.jpeg',
-      message: "✋ Hold up, you've been working for too long. Don't forget to take a break. 🥰",
+      message: "Hold up ✋, you've been working for too long. Don't forget to take a break. 🥰",
     });
     const getATip = () => {};
 
@@ -48,3 +48,9 @@ export default defineComponent({
   },
 });
 </script>
+
+<style scoped>
+a {
+  @apply opacity-70 hover:opacity-100;
+}
+</style>

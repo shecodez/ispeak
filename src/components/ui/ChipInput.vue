@@ -24,22 +24,28 @@ import { defineComponent, ref } from 'vue';
 export default defineComponent({
   name: 'ChipInput',
   props: {
+    modelValue: {
+      type: Array,
+      default: [],
+    },
     placeholder: {
       type: String,
       default: 'Enter a chip',
     },
-    // maxCharsPerChip
-    maxChars: {
+    maxCharsPerChip: {
       type: Number,
       default: 32,
     },
-    max: {
+    maxChips: {
       type: Number,
       default: 16,
     },
   },
-  setup(props) {
+  setup(props, { emit }) {
     const chips = ref<string[]>([]);
+    if (props.modelValue.length) {
+      chips.value = props.modelValue as string[];
+    }
 
     const hint = ref('');
     const addChip = (event: any) => {
@@ -51,28 +57,31 @@ export default defineComponent({
           hint.value = `Item '${val}' is already included.`;
           return;
         }
-        if (val.length > props.maxChars) {
-          hint.value = `Chip too long. Must be ${props.maxChars} or less.`;
+        if (val.length > props.maxCharsPerChip) {
+          hint.value = `Chip too long. Must be ${props.maxCharsPerChip} or less.`;
           return;
         }
-        if (chips.value.length + 1 > props.max) {
-          hint.value = `Too many Chips. Must be ${props.max} or less.`;
+        if (chips.value.length + 1 > props.maxChips) {
+          hint.value = `Too many Chips. Must be ${props.maxChips} or less.`;
           return;
         }
         chips.value.push(val);
         event.target.value = '';
         hint.value = '';
       }
+      emit('update:modelValue', chips.value);
     };
 
     const removeChip = (index: number) => {
       chips.value.splice(index, 1);
+      emit('update:modelValue', chips.value);
     };
 
     const removeLast = (event: any) => {
       if (event.target.value.length === 0) {
         removeChip(chips.value.length - 1);
       }
+      emit('update:modelValue', chips.value);
     };
 
     return { chips, addChip, hint, removeChip, removeLast };

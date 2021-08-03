@@ -25,20 +25,22 @@ body,
   font-family: Avenir, Helvetica, Arial, sans-serif;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
-  /* @apply flex flex-col h-full md:max-h-screen md:overflow-hidden; */
 }
 
 .dark {
   @apply bg-gray-900 text-white;
 }
+
 .primary-red {
-  @apply bg-red-500 hover:bg-red-400;
+  @apply bg-red-500 hover:bg-red-400 shadow;
 }
+
 .primary-green {
-  @apply bg-green-400 hover:bg-green-500;
+  @apply bg-green-500 hover:bg-green-400 shadow;
 }
+
 .primary-blue {
-  @apply bg-blue-400 hover:bg-blue-500;
+  @apply bg-blue-500 hover:bg-blue-400 shadow;
 }
 
 .btn {
@@ -56,12 +58,18 @@ body,
 .form-group {
   @apply my-2;
 }
+
 .form-group label {
   @apply block text-xs font-semibold;
 }
+
 .form-group input,
 .form-group textarea {
   @apply bg-transparent w-full border p-2;
+}
+
+.form-group input[readonly] {
+  @apply border-gray-400 text-gray-400 cursor-not-allowed;
 }
 
 .thin-scrollbar {
@@ -71,9 +79,11 @@ body,
 
 .sticky-note {
   @apply rounded-br-2xl shadow;
+
   font-family: 'Reenie Beanie', cursive;
   font-size: 1.4rem;
 }
+
 /* .note-text::before, */
 .sticky-note .note-text::after {
   content: '';
@@ -83,6 +93,6 @@ body,
   bottom: -5px;
   width: 20px;
   height: 20px;
-  box-shadow: 0px 5px 20px rgba(0, 0, 0, 0.5);
+  box-shadow: 0 5px 20px rgba(0, 0, 0, 0.5);
 }
 </style>

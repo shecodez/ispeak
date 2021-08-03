@@ -40,11 +40,11 @@ export default defineComponent({
       type: Number,
       default: 1,
     },
-    totalItems: {
+    total: {
       type: Number,
       default: 1,
     },
-    itemsPerPage: {
+    limit: {
       type: Number,
       default: 4,
     },
@@ -52,7 +52,7 @@ export default defineComponent({
   setup(props, { emit }) {
     const { t } = useI18n();
 
-    const totalPages = computed(() => Math.ceil(props.totalItems / props.itemsPerPage));
+    const totalPages = computed(() => Math.ceil(props.total / props.limit));
 
     const currentPage = ref(props.page);
     const goToPage = ref();

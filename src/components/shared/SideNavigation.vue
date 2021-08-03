@@ -60,7 +60,7 @@ import FaSolidTags from 'virtual:vite-icons/fa-solid/tags';
 import { useAuthState } from '@/firebase';
 import useApi from '@/use/api';
 import Tooltip from '@/components/ui/Tooltip.vue';
-import HelpDialog from '../ui/HelpDialog.vue';
+import HelpDialog from '@/components/HelpDialog.vue';
 
 export default defineComponent({
   name: 'Sidenav',

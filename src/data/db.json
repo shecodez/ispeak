@@ -5,6 +5,7 @@
       "title": "The first 🍱",
       "description": "",
       "uid": "1334",
+      "isPublic": true,
       "tags": ["hot", "educational", "top-7"],
       "members": [],
       "boards": [
@@ -122,22 +123,251 @@
       "id": 1626652369695,
       "title": "Untitled Kanban",
       "description": "",
+      "isPublic": false,
+      "uid": "1334",
       "boards": [],
       "members": [],
       "tags": ["new", "mystery", "hot"]
     },
     {
-      "id": 1626660014715,
-      "title": "Untitled Kanban",
-      "description": "",
-      "boards": [],
-      "members": [],
-      "tags": ["new", "romance"]
+      "id": "1626660014715",
+      "title": "Genki (second edition)",
+      "slug": "genki-second-edition",
+      "description": "Dialogues from an integrated course in elementary Japanese",
+      "isPublic": true,
+      "boards": [
+        {
+          "id": "l9QuE5ekzlA6pHE8CSZn",
+          "title": "あたらしいともだち New Friends",
+          "slug": "あたらしいともだち-new-friends",
+          "description": "Mary, an international student who just arrived in Japan, talks to a Japanese student.",
+          "isPublished": true,
+          "isEpic": false,
+          "notes": [
+            {
+              "id": "a",
+              "text": "Part I",
+              "hint": "",
+              "assignedTo": "",
+              "noteColor": "#333",
+              "textColor": "#f3f3f3",
+              "boardId": "l9QuE5ekzlA6pHE8CSZn"
+            },
+            {
+              "id": "a1",
+              "text": "すみません。 いま なんじですか。",
+              "hint": "Mary: Excuse me. What time is it now?",
+              "assignedTo": "マアリイ",
+              "noteColor": "#fdffa4",
+              "textColor": "#333",
+              "boardId": "l9QuE5ekzlA6pHE8CSZn"
+            },
+            {
+              "id": "a2",
+              "text": "じゅうにじしはんです。",
+              "hint": "Takashi: It's half past twelve.",
+              "assignedTo": "たかし",
+              "noteColor": "#a9e6ff",
+              "textColor": "#333",
+              "boardId": "l9QuE5ekzlA6pHE8CSZn"
+            },
+            {
+              "id": "a3",
+              "text": "ありがとう ございます。",
+              "hint": "Thank you.",
+              "assignedTo": "マアリイ",
+              "noteColor": "#fdffa4",
+              "textColor": "#333",
+              "boardId": "l9QuE5ekzlA6pHE8CSZn"
+            },
+            {
+              "id": "a4",
+              "text": "いいえ。",
+              "hint": "You're welcome.",
+              "assignedTo": "たかし",
+              "noteColor": "#a9e6ff",
+              "textColor": "#333",
+              "boardId": "l9QuE5ekzlA6pHE8CSZn"
+            },
+            {
+              "id": "b",
+              "text": "Part II",
+              "hint": "",
+              "assignedTo": "",
+              "noteColor": "#333",
+              "textColor": "#f3f3f3",
+              "boardId": "l9QuE5ekzlA6pHE8CSZn"
+            },
+            {
+              "id": "b1",
+              "text": "あの、りゅうがくせいですか。",
+              "hint": "Um... are you an international student?",
+              "assignedTo": "たかし",
+              "noteColor": "#a9e6ff",
+              "textColor": "#333",
+              "boardId": "s5fy8lcvylH7PE7k3QWP"
+            },
+            {
+              "id": "b2",
+              "text": "ええ、アリゾナだいがくのがくせいです。",
+              "hint": "Yes, I am a student at the University of Arizona.",
+              "assignedTo": "マアリイ",
+              "noteColor": "#fdffa4",
+              "textColor": "#333",
+              "boardId": "s5fy8lcvylH7PE7k3QWP"
+            },
+            {
+              "id": "b3",
+              "text": "そうですか。せんこうは なんですか。",
+              "hint": "I see. What is your major?",
+              "assignedTo": "たかし",
+              "noteColor": "#a9e6ff",
+              "textColor": "#333",
+              "boardId": "s5fy8lcvylH7PE7k3QWP"
+            },
+            {
+              "id": "b4",
+              "text": "にほんごです。 いま にねんせえです。",
+              "hint": "Japanese. I am a sophmore now.",
+              "assignedTo": "マアリイ",
+              "noteColor": "#fdffa4",
+              "textColor": "#333",
+              "boardId": "s5fy8lcvylH7PE7k3QWP"
+            }
+          ],
+          "kanbanId": "1626660014715"
+        },
+        {
+          "id": "s5fy8lcvylH7PE7k3QWP",
+          "title": "かいもの Shopping",
+          "slug": "かいもの-shopping",
+          "description": "",
+          "isPublished": true,
+          "isEpic": true,
+          "notes": [
+            {
+              "id": "2a",
+              "text": "Part I - Mary goes to a flea market",
+              "hint": "",
+              "assignedTo": "",
+              "noteColor": "#333",
+              "textColor": "#f3f3f3",
+              "boardId": "s5fy8lcvylH7PE7k3QWP"
+            },
+            {
+              "id": "2a1",
+              "text": "すみません。 これは いくらですか？",
+              "hint": "Excuse me. How much is this?",
+              "assignedTo": "マアリイ",
+              "noteColor": "#fdffa4",
+              "textColor": "#333",
+              "boardId": "s5fy8lcvylH7PE7k3QWP"
+            },
+            {
+              "id": "2a2",
+              "text": "それは さんぜんえんです。",
+              "hint": "vendor: It is 3,000 yen (~$30.00 USD)",
+              "assignedTo": "みせのひと",
+              "noteColor": "#eddef2",
+              "textColor": "#333",
+              "boardId": "s5fy8lcvylH7PE7k3QWP"
+            },
+            {
+              "id": "2a3",
+              "text": "たかいですね。 じゃあ、あのとけいは いくらですか？",
+              "hint": "It's expensive. Well then, how much is that watch?",
+              "assignedTo": "マアリイ",
+              "noteColor": "#fdffa4",
+              "textColor": "#333",
+              "boardId": "s5fy8lcvylH7PE7k3QWP"
+            },
+            {
+              "id": "2a4",
+              "text": "あれは さんぜんごひゃくえんです。",
+              "hint": "That is 3,500 yen (~$35.00 USD)",
+              "assignedTo": "みせのひと",
+              "noteColor": "#eddef2",
+              "textColor": "#333",
+              "boardId": "s5fy8lcvylH7PE7k3QWP"
+            },
+            {
+              "id": "2a5",
+              "text": "そうですか。あれも たかいですね。",
+              "hint": "I see. That is expensive too.",
+              "assignedTo": "マアリイ",
+              "noteColor": "#fdffa4",
+              "textColor": "#333",
+              "boardId": "s5fy8lcvylH7PE7k3QWP"
+            },
+            {
+              "id": "2a6",
+              "text": "これは せんはっぴゃくえんですよ。",
+              "hint": "This is 1,800 yen (~$18.00 USD)",
+              "assignedTo": "みせのひと",
+              "noteColor": "#eddef2",
+              "textColor": "#333",
+              "boardId": "s5fy8lcvylH7PE7k3QWP"
+            },
+            {
+              "id": "2a7",
+              "text": "じゃあ、 そのとけはいを ください。",
+              "hint": "Then, I'll take that watch",
+              "assignedTo": "マアリイ",
+              "noteColor": "#fdffa4",
+              "textColor": "#333",
+              "boardId": "s5fy8lcvylH7PE7k3QWP"
+            },
+            {
+              "id": "2aa",
+              "text": "* * * A man finds a wallet on the ground * * *",
+              "hint": "",
+              "assignedTo": "",
+              "noteColor": "#333",
+              "textColor": "#f3f3f3",
+              "boardId": "s5fy8lcvylH7PE7k3QWP"
+            },
+            {
+              "id": "2a8",
+              "text": "これは だれの さいふですか？",
+              "hint": "Stranger: Whose wallet is this?",
+              "assignedTo": "しらないひと",
+              "noteColor": "#b6ffe0",
+              "textColor": "#333",
+              "boardId": "s5fy8lcvylH7PE7k3QWP"
+            },
+            {
+              "id": "2a9",
+              "text": "わたしの さいふ です。ありがとう ごさいます。",
+              "hint": "It's my wallet. Thank you very much.",
+              "assignedTo": "マアリイ",
+              "noteColor": "#fdffa4",
+              "textColor": "#333",
+              "boardId": "s5fy8lcvylH7PE7k3QWP"
+            },
+            {
+              "id": "2b",
+              "text": "Part II - After shopping, Mary goes to a restaurant.",
+              "hint": "",
+              "assignedTo": "",
+              "noteColor": "#333",
+              "textColor": "#f3f3f3",
+              "boardId": "s5fy8lcvylH7PE7k3QWP"
+            }
+          ],
+          "kanbanId": "1626660014715"
+        }
+      ],
+      "members": ["マアリイ", "たかし", "みせのひと", "しらないひと", "ウエートレス"],
+      "tags": ["educational", "japanese", "genki"],
+      "uid": "BA6Z6fC212gSLrjTGs0h1xlR1A32",
+      "username": "niico"
     },
     {
       "id": 1626705745495,
       "title": "Untitled Kanban",
       "description": "",
+      "isPublic": false,
+      "uid": "1334",
       "boards": [],
       "members": [],
       "tags": ["new"]
@@ -146,6 +376,8 @@
       "id": 1626705935949,
       "title": "Untitled Kanban",
       "description": "",
+      "isPublic": true,
+      "uid": "1334",
       "boards": [],
       "members": [],
       "tags": []

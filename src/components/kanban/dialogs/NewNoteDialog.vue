@@ -1,6 +1,16 @@
 <template>
-  <Modal :isOpen="showDialog" :title="t('add_note')" :onClose="closeDialogFn" :onAction="addNote">
+  <Modal :isOpen="showDialog" :title="t('add_note')" :onClose="onClose" :onAction="submitNote">
     <form>
+      <div class="form-group">
+        <label>Assigned To</label>
+        <select v-model="assignedTo" class="text-black">
+          <template v-for="member in members" :key="member">
+            <option :value="member">{{ member }}</option>
+          </template>
+          <option value="">none</option>
+        </select>
+      </div>
+
       <div class="form-group">
         <label>Text</label>
         <textarea
@@ -10,6 +20,11 @@
           rows="4"
           placeholder="Enter note text..."
         />
+      </div>
+
+      <div class="form-group">
+        <label>Hint</label>
+        <input type="text" v-model="hint" />
       </div>
 
       <div class="flex flex-wrap md:flex-nowrap md:space-x-4">
@@ -60,13 +75,7 @@ import { defineComponent, reactive, toRefs } from 'vue';
 import { useI18n } from 'vue-i18n';
 
 import Modal from '@/components/ui/Modal.vue';
-import { Color } from './EditNoteDialog.vue';
-
-export type NewNote = {
-  text: string;
-  noteColor: Color;
-  textColor: Color;
-};
+import { Note, NoteColor } from '@/data/interfaces';
 
 export default defineComponent({
   name: 'NewNoteDialog',
@@ -76,7 +85,11 @@ export default defineComponent({
       type: Boolean,
       default: false,
     },
-    closeDialogFn: {
+    members: {
+      type: Array, // Array as PropType<Member>
+      default: [],
+    },
+    onClose: {
       type: Function,
     },
   },
@@ -84,52 +97,50 @@ export default defineComponent({
     const { t } = useI18n();
 
     const getNoteColors = [
-      Color.blue,
-      Color.purple,
-      Color.mint,
-      Color.yellow,
-      Color.red,
-      Color.light,
-      Color.gray,
-      Color.dark,
+      NoteColor.blue,
+      NoteColor.purple,
+      NoteColor.mint,
+      NoteColor.yellow,
+      NoteColor.red,
+      NoteColor.light,
+      NoteColor.gray,
+      NoteColor.dark,
     ];
 
-    const getTextColors = [Color.dark, Color.light];
-
-    // const getKanbanMembers = () => {}
-    // onMounted(() => getKanbanMembers())
+    const getTextColors = [NoteColor.dark, NoteColor.light];
 
     const state = reactive({
-      // assignedTo: [] // or speaker if note isDialogue
+      id: '',
       text: '',
-      //audioURL: '',
-      //imageURL: ''
+      audioURL: '',
+      hint: '', // translation, thoughts, extra line (toggle to show)
+      //mediaURL: ''
+      assignedTo: '',
       noteColor: getNoteColors[3],
       textColor: getTextColors[0],
-      //hint: '', // translation, thoughts, extra line (toggle to show)
+      boardId: '',
     });
 
-    const setNoteColor = (color: Color) => {
-      if (color === Color.dark) {
-        setTextColor(Color.light);
+    const setNoteColor = (color: NoteColor) => {
+      if (color === NoteColor.dark) {
+        setTextColor(NoteColor.light);
       } else {
-        setTextColor(Color.dark);
+        setTextColor(NoteColor.dark);
       }
       state.noteColor = color;
     };
 
-    const setTextColor = (color: Color) => {
+    const setTextColor = (color: NoteColor) => {
       state.textColor = color;
     };
 
-    const addNote = () => {
-      console.log('Submit New Note', state);
-      if (props.closeDialogFn) {
-        props.closeDialogFn();
-      }
+    const submitNote = () => {
+      console.log('Create Note', state);
+
+      if (props.onClose) props.onClose();
     };
 
-    return { ...toRefs(state), getNoteColors, setNoteColor, getTextColors, setTextColor, addNote, t };
+    return { ...toRefs(state), getNoteColors, setNoteColor, getTextColors, setTextColor, submitNote, t };
   },
 });
 </script>

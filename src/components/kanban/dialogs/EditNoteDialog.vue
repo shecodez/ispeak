@@ -1,6 +1,16 @@
 <template>
-  <Modal :isOpen="showDialog" :title="t('edit_note')" :onClose="closeDialogFn">
+  <Modal :isOpen="showDialog" :title="t('edit_note')" :onClose="onClose">
     <form>
+      <div class="form-group">
+        <label>Assigned To</label>
+        <select v-model="assignedTo" class="text-black">
+          <template v-for="member in members" :key="member">
+            <option :value="member">{{ member }}</option>
+          </template>
+          <option value="">none</option>
+        </select>
+      </div>
+
       <div class="form-group">
         <label>Text</label>
         <textarea
@@ -10,6 +20,11 @@
           rows="4"
           placeholder="Enter note text..."
         />
+      </div>
+
+      <div class="form-group">
+        <label>Hint</label>
+        <input type="text" v-model="hint" />
       </div>
 
       <div class="flex flex-wrap md:flex-nowrap md:space-x-4">
@@ -55,7 +70,7 @@
 
     <template v-slot:footer>
       <div class="w-full flex space-x-1 items-center justify-end">
-        <button class="btn bg-indigo-300" @click="updateNote">Update Note</button>
+        <button class="btn bg-indigo-300" @click="submitNote">Update Note</button>
         <ConfirmDeleteInline :onDelete="deleteNote" />
       </div>
     </template>
@@ -68,114 +83,105 @@ import { useI18n } from 'vue-i18n';
 
 import Modal from '@/components/ui/Modal.vue';
 import ConfirmDeleteInline from '@/components/ui/ConfirmDeleteInline.vue';
-
-export enum Color {
-  blue = '#a9e6ff',
-  purple = '#eddef2',
-  mint = '#b6ffe0',
-  yellow = '#fdffa4',
-  pink = '#f3ddf3',
-  red = '#de7477',
-  gray = '#999',
-  light = '#f3f3f3',
-  dark = '#333',
-}
-
-export type EditNote = {
-  //id: string;
-  text: string;
-  noteColor: Color;
-  textColor: Color;
-};
+import { Note, NoteColor } from '@/data/interfaces';
 
 export default defineComponent({
   name: 'EditNoteDialog',
   components: { Modal, ConfirmDeleteInline },
   props: {
+    edit: {
+      type: Object as PropType<Note>,
+    },
+    members: {
+      type: Array, // Array as PropType<Member>
+      default: [],
+    },
     showDialog: {
       type: Boolean,
       default: false,
     },
-    closeDialogFn: {
+    onClose: {
       type: Function,
     },
-    note: {
-      type: Object as PropType<EditNote>,
-    },
   },
-  setup(props) {
+  setup(props, { emit }) {
     const { t } = useI18n();
 
     // blue, indigo, green, yellow, red, white, light-grey, dark-gray, custom
     // ['#93c5fd', '#818cf8', '#6ee7b7', '#fcd34d', '#fca5a5', '#f4f5f8', '#92949c', '#222428'];
     const getNoteColors = [
-      Color.blue,
-      Color.purple,
-      Color.mint,
-      Color.yellow,
-      Color.red,
-      Color.light,
-      Color.gray,
-      Color.dark,
+      NoteColor.blue,
+      NoteColor.purple,
+      NoteColor.mint,
+      NoteColor.yellow,
+      NoteColor.red,
+      NoteColor.light,
+      NoteColor.gray,
+      NoteColor.dark,
     ];
 
-    const getTextColors = [Color.dark, Color.light];
+    const getTextColors = [NoteColor.dark, NoteColor.light];
 
-    // const getKanbanMembers = () => {}
-    // onMounted(() => getKanbanMembers())
-
-    const state = reactive({
-      // assignedTo: [] // or speaker if note isDialogue
+    const state = reactive<Note>({
+      id: '',
       text: '',
-      //audioURL: '',
-      //imageURL: ''
+      audioURL: '',
+      hint: '', // translation, thoughts, extra line (toggle to show)
+      //mediaURL: ''
+      assignedTo: '',
       noteColor: getNoteColors[3],
       textColor: getTextColors[0],
-      //hint: '', // translation, thoughts, extra line (toggle to show)
+      boardId: '',
     });
 
-    const setFields = (note: EditNote | undefined) => {
-      if (note) {
-        const { text, noteColor, textColor } = note;
+    const setFields = () => {
+      if (props.edit) {
+        const { text, audioURL, hint, assignedTo, noteColor, textColor } = props.edit;
         state.text = text;
+        state.audioURL = audioURL;
+        state.hint = hint;
+        state.assignedTo = assignedTo;
         state.noteColor = noteColor;
         state.textColor = textColor;
       }
     };
-
     watch(
-      () => props.note,
+      () => props.edit,
       (note) => {
-        setFields(note);
-      },
-      { immediate: true }
+        if (note) setFields();
+      }
     );
 
-    const setNoteColor = (color: Color) => {
-      if (color === Color.dark) {
-        setTextColor(Color.light);
+    const setNoteColor = (color: NoteColor) => {
+      if (color === NoteColor.dark) {
+        setTextColor(NoteColor.light);
       } else {
-        setTextColor(Color.dark);
+        setTextColor(NoteColor.dark);
       }
       state.noteColor = color;
     };
 
-    const setTextColor = (color: Color) => {
+    const setTextColor = (color: NoteColor) => {
       state.textColor = color;
     };
 
-    const updateNote = () => {
-      console.log('Submit Updated Note', state);
-      if (props.closeDialogFn) {
-        props.closeDialogFn();
+    const submitNote = () => {
+      console.log('Updated Note', state);
+      // if success
+      if (props.onClose) props.onClose();
+
+      if (props.edit) {
+        emit('update', state);
+      } else {
+        emit('create', state);
       }
     };
 
     const deleteNote = () => {
-      console.log('Delete Note', props.note);
+      console.log('Delete Note', props.edit);
     };
 
-    return { ...toRefs(state), getNoteColors, setNoteColor, getTextColors, setTextColor, updateNote, deleteNote, t };
+    return { ...toRefs(state), getNoteColors, setNoteColor, getTextColors, setTextColor, submitNote, deleteNote, t };
   },
 });
 </script>

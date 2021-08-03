@@ -19,7 +19,7 @@
         <footer class="modal-footer flex space-x-2 -mb-1 mt-3">
           <slot name="footer">
             <slot name="action">
-              <button class="btn bg-green-300 ml-auto" @click="onAction">Submit</button>
+              <button class="btn primary-green ml-auto" @click="onAction">Submit</button>
             </slot>
             <button @click="close" aria-label="close modal" class="btn border ml-auto">Cancel</button>
           </slot>
@@ -32,7 +32,7 @@
 <script lang="ts">
 import { defineComponent, ref, watch } from 'vue';
 import { useI18n } from 'vue-i18n';
-import { onClickOutside } from '@vueuse/core';
+import { onClickOutside, onKeyDown } from '@vueuse/core';
 
 export default defineComponent({
   name: 'Modal',
@@ -79,6 +79,15 @@ export default defineComponent({
         close();
       }
     });
+    onKeyDown(
+      'Escape',
+      () => {
+        if (showModal.value === true) {
+          close();
+        }
+      },
+      { target: document }
+    );
 
     return { t, showModal, close, modal };
   },

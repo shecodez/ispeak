@@ -18,7 +18,7 @@ import { defineComponent, ref } from 'vue';
 import { useI18n } from 'vue-i18n';
 
 import Board from './Board.vue';
-import NewBoardDialog from './dialogs/NewBoardDialog.vue';
+import NewBoardDialog from '../kanban/dialogs/NewBoardDialog.vue';
 import Modal from '@/components/ui/Modal.vue';
 import Tooltip from '@/components/ui/Tooltip.vue';
 

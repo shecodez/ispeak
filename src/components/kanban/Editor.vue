@@ -14,15 +14,15 @@
       <div class="board-container" :class="isHorizontal ? 'w-board max-h-11/12' : ''">
         <div
           class="board m-2 p-2 rounded border-t-4 overflow-hidden max-h-full flex flex-col"
-          :class="element.isPublished ? (element.isEpic ? 'border-indigo-400' : 'border-green-400') : 'border-gray-400'"
+          :class="element.isPublished ? (element.isEpic ? 'border-indigo-500' : 'border-green-500') : 'border-gray-500'"
         >
           <div class="board-header m-2 flex items-center justify-between">
             <div class="my-2">
-              <div class="flex space-x-1">
-                <h3 class="text-xl font-bold">{{ element.title }}</h3>
-                <TooltipButton iconBtn :tooltip="t('preview')" text="🎬" />
-              </div>
-              <p class="text-xs text-gray-400">{{ index }}-{{ element.id }}</p>
+              <h3 class="text-xl font-bold">{{ element.title }}</h3>
+              <p>
+                <span class="text-xs text-gray-400 mr-1">{{ index }}-{{ element.id }}</span>
+                <Tooltip :text="t('preview')">🎬</Tooltip>
+              </p>
             </div>
 
             <div class="handle text-2xl cursor-move">
@@ -40,14 +40,29 @@
             ghost-class="ghost"
           >
             <template #item="{ element }">
-              <div
-                @click="openEditNoteDialog(element)"
-                class="sticky-note mx-2 cursor-pointer"
-                :style="`background-color: ${element.noteColor}; color: ${element.textColor}`"
-              >
-                <div class="relative overflow-hidden">
-                  <p class="note-text p-2">{{ element.text }}</p>
+              <div class="relative">
+                <div
+                  @click="openEditNoteDialog(element)"
+                  class="sticky-note mx-2 cursor-pointer"
+                  :style="`background-color: ${element.noteColor}; color: ${element.textColor}`"
+                >
+                  <div class="relative overflow-hidden">
+                    <div class="note-text p-2 flex flex-col">
+                      <b class="text-xs">{{ element.assignedTo }}</b>
+                      <p>{{ element.text }}</p>
+                      <i class="text-xs font-sans" :class="element.id === showHintId ? '' : 'hidden'">
+                        {{ element.hint }}
+                      </i>
+                    </div>
+                  </div>
                 </div>
+                <button
+                  v-if="element.hint"
+                  class="text-xs absolute top-1 right-4 z-10 text-black"
+                  @click="setShowHintId(element.id)"
+                >
+                  {{ element.id === showHintId ? 'hide hint' : 'show hint' }}
+                </button>
               </div>
             </template>
           </draggable>
@@ -86,11 +101,16 @@
     </template>
   </draggable>
 
-  <NewBoardDialog :showDialog="showBoardDialog" :closeDialogFn="closeBoardDialog" />
-  <EditBoardDialog :board="editBoard" :showDialog="showEditBoardDialog" :closeDialogFn="closeEditBoardDialog" />
+  <NewBoardDialog :showDialog="showBoardDialog" :onClose="closeBoardDialog" />
+  <EditBoardDialog :edit="editBoard" :showDialog="showEditBoardDialog" :onClose="closeEditBoardDialog" />
 
-  <NewNoteDialog :showDialog="showNoteDialog" :closeDialogFn="closeNoteDialog" />
-  <EditNoteDialog :note="editNote" :showDialog="showEditNoteDialog" :closeDialogFn="closeEditNoteDialog" />
+  <NewNoteDialog :members="kanban.members" :showDialog="showNoteDialog" :onClose="closeNoteDialog" />
+  <EditNoteDialog
+    :edit="editNote"
+    :members="kanban.members"
+    :showDialog="showEditNoteDialog"
+    :onClose="closeEditNoteDialog"
+  />
 </template>
 
 <script lang="ts">
@@ -98,14 +118,14 @@ import { defineComponent, PropType, ref } from 'vue';
 import draggable from 'vuedraggable';
 import { useI18n } from 'vue-i18n';
 
+import { Kanban } from '@/data/interfaces';
 import NewBoardDialog from './dialogs/NewBoardDialog.vue';
 import NewNoteDialog from './dialogs/NewNoteDialog.vue';
-import EditNoteDialog, { EditNote } from './dialogs/EditNoteDialog.vue';
-import EditBoardDialog, { EditBoard } from './dialogs/EditBoardDialog.vue';
+import EditNoteDialog from './dialogs/EditNoteDialog.vue';
+import EditBoardDialog from './dialogs/EditBoardDialog.vue';
 import InlineDeleteButton from '@/components/ui/ConfirmDeleteInline.vue';
 import Tooltip from '@/components/ui/Tooltip.vue';
 import TooltipButton from '@/components/ui/TooltipButton.vue';
-import { Kanban } from '@/views/kanban/Details.vue';
 
 export default defineComponent({
   name: 'KanbanEditor',
@@ -158,6 +178,14 @@ export default defineComponent({
       editBoard.value = null;
     };
 
+    const showHintId = ref();
+    const setShowHintId = (id: number) => {
+      if (showHintId.value === id) {
+        return (showHintId.value = undefined);
+      }
+      showHintId.value = id;
+    };
+
     const showNoteDialog = ref(false);
     const openNoteDialog = () => {
       showNoteDialog.value = true;
@@ -190,6 +218,8 @@ export default defineComponent({
       openEditBoardDialog,
       closeEditBoardDialog,
       handleDeleteBoard,
+      showHintId,
+      setShowHintId,
       showNoteDialog,
       openNoteDialog,
       closeNoteDialog,

@@ -37,6 +37,7 @@ sagas: サガ
 logout: ログアウト
 notifications: 通知
 help: ヘルプ
+info: 情報
 
 my_kanbans: 私のかんばん
 kanban: かんばん
@@ -66,7 +67,9 @@ save: セーブ
 login_failed: ログインに失敗しました。
 you_must_be_logged_in: ログインする必要があります！
 
-under_construction_message: このコンテンツは現在準備中です。
+under_construction_message: '{wip}は作成中です。'
+the_blog: ブログ
+the_shop: ショップ
 
 liked_sagas: サガが好き
 favorite_kanbans: 好きなかんばん

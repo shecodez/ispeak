@@ -37,6 +37,7 @@ sagas: sagas
 logout: logout
 notifications: notifications
 help: Help
+info: Info
 
 my_kanbans: My Kanbans
 untitled: Untitled Kanban
@@ -66,7 +67,9 @@ save: save
 login_failed: Login failed.
 you_must_be_logged_in: You must be logged in!
 
-under_construction_message: This content is under construction.
+under_construction_message: '{wip} is under construction.'
+the_blog: the blog
+the_shop: the shop
 
 liked_sagas: liked Sagas
 favorite_kanbans: favorite Kanbans

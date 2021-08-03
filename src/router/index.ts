@@ -11,7 +11,7 @@ const routes: Array<RouteRecordRaw> = [
   {
     path: '/test',
     name: 'Test',
-    component: () => import('@/views/Test.vue'),
+    component: () => import('@/views/Test123.vue'),
   },
   {
     path: '/',
@@ -22,6 +22,26 @@ const routes: Array<RouteRecordRaw> = [
     path: '/about',
     name: 'About',
     component: () => import('@/views/About.vue'),
+  },
+  {
+    path: '/blog',
+    name: 'Blog',
+    component: () => import('@/views/blog/index.vue'),
+  },
+  {
+    path: '/FAQs',
+    name: 'FAQs',
+    component: () => import('@/views/FAQs.vue'),
+  },
+  {
+    path: '/privacy',
+    name: 'Privacy',
+    component: () => import('@/views/Privacy.vue'),
+  },
+  {
+    path: '/contact',
+    name: 'Contact',
+    component: () => import('@/views/Contact.vue'),
   },
   {
     path: '/login',
