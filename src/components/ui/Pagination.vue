@@ -1,31 +1,37 @@
 <template>
-  <div class="flex items-center space-x-2 overflow-hidden">
-    <button @click="setCurrentPage(currentPage - 1)" :disabled="currentPage <= 1" class="f-center">
+  <div class="flex flex-wrap f-center py-2 space-x-2 overflow-hidden">
+    <button @click="onPrevPage" :disabled="currentPage <= 1" class="f-center">
       <i-cil-arrow-left />
     </button>
 
     <ul class="flex items-center space-x-1">
-      <li v-if="currentPage - 3 > 0" class="opacity-50"><button @click="setCurrentPage(1)">1</button> ...</li>
+      <li v-if="showFirstPage" class="opacity-50"><button @click="onFirstPage">1</button> ...</li>
 
-      <li v-for="(_, i) in totalPages" :key="`pg-${i}`" v-show="i <= currentPage + 1 && i >= currentPage - 3">
-        <button :class="i + 1 === currentPage ? 'opacity-100' : 'opacity-50'" @click="setCurrentPage(i + 1)">
-          {{ i + 1 }}
+      <li v-for="page in pages" :key="page.name">
+        <button
+          type="button"
+          @click="onPage(page.name)"
+          :class="isPageActive(page.name) ? 'opacity-100' : 'opacity-50'"
+        >
+          {{ page.name }}
         </button>
       </li>
 
-      <li v-if="currentPage + 2 < totalPages" class="opacity-50">
-        ... <button @click="setCurrentPage(totalPages)">{{ totalPages }}</button>
+      <li v-if="showLastPage" class="opacity-50">
+        ... <button @click="onLastPage">{{ totalPages }}</button>
       </li>
     </ul>
 
-    <button @click="setCurrentPage(currentPage + 1)" :disabled="currentPage >= totalPages" class="f-center">
+    <button @click="onNextPage" :disabled="currentPage >= totalPages" class="f-center">
       <i-cil-arrow-right />
     </button>
 
-    <!-- <div>
-      Go to Page <input type="text" v-model="goToPage" /> of <b>{{ totalPages }}</b>
-      <button class="ml-2" @click="setCurrentPage(goToPage)">🚀<span class="sr-only">go</span></button>
-    </div> -->
+    <div class="text-sm">
+      Go to Page
+      <input class="mx-1" type="number" :min="1" :max="totalPages" v-model="pageInput" @keydown.enter="onPageInput" />
+      of <b class="mx-1">{{ totalPages }}</b>
+      <button @click="onPageInput" class="border">🚀<span class="sr-only">go</span></button>
+    </div>
   </div>
 </template>
 
@@ -40,61 +46,150 @@ export default defineComponent({
       type: Number,
       default: 1,
     },
-    total: {
+    totalItems: {
       type: Number,
       default: 1,
     },
-    limit: {
+    itemsPerPage: {
       type: Number,
       default: 4,
+    },
+    maxVisibleButtons: {
+      type: Number,
+      default: 5,
     },
   },
   setup(props, { emit }) {
     const { t } = useI18n();
 
-    const totalPages = computed(() => Math.ceil(props.total / props.limit));
+    const totalPages = computed(() => Math.ceil(props.totalItems / props.itemsPerPage));
 
     const currentPage = ref(props.page);
-    const goToPage = ref();
     watch(
       () => props.page,
       (newPage) => {
         currentPage.value = newPage;
-        goToPage.value = newPage;
       },
       { immediate: true }
     );
-    const setCurrentPage = (toPage: number) => {
-      //console.log('gotopg', goToPage.value, 'topg', toPage);
-      if (toPage < 1 || toPage > totalPages.value) return;
-      currentPage.value = toPage;
-      emit('on-goto-page', toPage);
+
+    const setCurrentPage = (page: number) => {
+      if (page < 1 || page > totalPages.value || page === currentPage.value) return;
+      //currentPage.value = page;
+      emit('pagechange', page);
     };
 
-    const onPrev = () => {
-      setCurrentPage(currentPage.value + 1);
-      emit('on-prev', currentPage);
+    const isPageActive = (page: number) => {
+      return currentPage.value === page;
     };
 
-    const onNext = () => {
+    const startPage = computed(() => {
+      // When on the first page
+      if (currentPage.value === 1) return 1;
+
+      // When on the last page
+      if (currentPage.value === totalPages.value) {
+        return Math.max(totalPages.value - (props.maxVisibleButtons - 1), 1);
+      }
+
+      // When inbetween
+      return currentPage.value < props.maxVisibleButtons
+        ? Math.max(currentPage.value - Math.floor(props.maxVisibleButtons / 2), 1)
+        : Math.min(
+            currentPage.value - Math.floor(props.maxVisibleButtons / 2),
+            totalPages.value - (props.maxVisibleButtons - 1)
+          );
+    });
+
+    const pages = computed(() => {
+      const range = [];
+
+      for (
+        let i = startPage.value;
+        i <= Math.min(startPage.value + (props.maxVisibleButtons - 1), totalPages.value);
+        i++
+      ) {
+        range.push({
+          name: i,
+          isDisabled: i === currentPage.value,
+        });
+      }
+
+      return range;
+    });
+
+    const showFirstPage = computed(
+      () => totalPages.value > props.maxVisibleButtons && currentPage.value - Math.ceil(props.maxVisibleButtons / 2) > 0
+    );
+
+    const showLastPage = computed(
+      () =>
+        totalPages.value > props.maxVisibleButtons &&
+        currentPage.value + Math.ceil(props.maxVisibleButtons / 2) <= totalPages.value
+    );
+
+    const onFirstPage = () => {
+      setCurrentPage(1);
+      //emit('on-first', currentPage);
+    };
+
+    const onPrevPage = () => {
       setCurrentPage(currentPage.value - 1);
-      emit('on-next', currentPage);
+      //emit('on-prev', currentPage);
     };
 
-    return { t, currentPage, totalPages, goToPage, setCurrentPage };
+    const onPage = (page: number) => {
+      setCurrentPage(page);
+      //emit('on-page', currentPage);
+    };
+
+    const onNextPage = () => {
+      setCurrentPage(currentPage.value + 1);
+      //emit('on-next', currentPage);
+    };
+
+    const onLastPage = () => {
+      setCurrentPage(totalPages.value);
+      //emit('on-last', currentPage);
+    };
+
+    const pageInput = ref();
+    const onPageInput = () => {
+      setCurrentPage(Number(pageInput.value));
+      pageInput.value = undefined;
+    };
+
+    return {
+      currentPage,
+      totalPages,
+      isPageActive,
+      showFirstPage,
+      pages,
+      showLastPage,
+      onFirstPage,
+      onPrevPage,
+      onPage,
+      onNextPage,
+      onLastPage,
+      pageInput,
+      onPageInput,
+      t,
+    };
   },
 });
 </script>
 
 <style scoped>
 button {
-  @apply px-3 py-1;
+  @apply px-2 py-1 mx-1 rounded hover:opacity-100;
 }
+
 button:disabled,
 button[disabled] {
   @apply opacity-50 cursor-not-allowed;
 }
+
 input {
-  @apply px-2 max-w-11 max-h-9 rounded bg-transparent text-right;
+  @apply max-w-12 px-0 max-h-8 rounded bg-transparent text-right;
 }
 </style>

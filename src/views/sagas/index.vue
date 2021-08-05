@@ -26,12 +26,12 @@
       </ul>
     </div>
 
-    <Pagination :page="filters._page" :total="total" :limit="filters._limit" />
+    <Pagination :page="filters._page" :totalItems="total" :itemsPerPage="filters._limit" @pagechange="onPageChange" />
   </FixedFrame>
 </template>
 
 <script lang="ts">
-import { computed, defineComponent, onMounted, reactive, ref, toRefs } from 'vue';
+import { computed, defineComponent, reactive, ref } from 'vue';
 import { useI18n } from 'vue-i18n';
 import { useRoute } from 'vue-router';
 import debounce from 'lodash.debounce';
@@ -57,23 +57,27 @@ export default defineComponent({
       _limit: 2,
     });
 
-    //const { data: sagas, isLoading, error, get } = useApi('/kanbans');
-    //get();
+    // const { data: sagas, isLoading, error, get } = useApi('/kanbans');
+    // get();
     console.log('PAGE', route.params.page);
 
     const url = useUrlParams('/kanbans', filters);
     const { result: sagas, reload, isLoading, error } = useUrlQuery(url, [] as Kanban[]);
-    const total = ref(5); // sagas.total should be returned
+    const total = ref(5); // sagas.totalItems should be returned from api
 
     const tagged = computed(() => {
       return sagas.value?.filter((saga: any) => saga.tags.includes(filters.tag));
     });
 
+    const onPageChange = (page: number) => {
+      filters._page = page;
+    };
+
     const setSearch = debounce((event: InputEvent) => {
       filters.search = (event.target as HTMLInputElement).value;
     }, 200); // prevent reloading after each character
 
-    return { filters, sagas, total, tagged, isLoading, error, t };
+    return { filters, sagas, total, onPageChange, tagged, isLoading, error, t };
   },
 });
 </script>
