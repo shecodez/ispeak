@@ -4,7 +4,14 @@
       v-if="showModal"
       class="modal-backdrop bg-black bg-opacity-60 absolute inset-0 flex items-center justify-center z-40"
     >
-      <div ref="modal" role="dialog" class="modal-container w-11/12" aria-labelledby="mtitle" aria-describedby="mbody">
+      <div
+        ref="modal"
+        role="dialog"
+        class="w-11/12"
+        :class="noBg ? '' : 'modal-container'"
+        aria-labelledby="mtitle"
+        aria-describedby="mbody"
+      >
         <header class="modal-header flex items-center justify-between mb-4">
           <slot name="header">
             <h4 id="mtitle" class="text-lg font-bold">{{ title }}</h4>
@@ -53,6 +60,10 @@ export default defineComponent({
     onAction: {
       type: Function,
       default: () => {},
+    },
+    noBg: {
+      type: Boolean,
+      default: false,
     },
   },
   setup(props) {

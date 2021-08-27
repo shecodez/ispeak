@@ -35,17 +35,17 @@
 import { defineComponent, ref } from 'vue';
 import { useI18n } from 'vue-i18n';
 
-import { useAuthState } from '@/firebase';
+//import { useAuthState } from '@/firebase';
 import FixedFrame from '@/components/layouts/FixedFrame.vue';
 import LogoutButton from '@/components/shared/LogoutButton.vue';
-import SagaList from '@/components/saga/SagaList.vue';
+//import SagaList from '@/components/saga/SagaList.vue';
 
 export default defineComponent({
   name: '@me',
-  components: { FixedFrame, LogoutButton, SagaList },
+  components: { FixedFrame, LogoutButton },
   setup() {
     const { t } = useI18n();
-    const { user } = useAuthState();
+    const { user } = { user: { email: 'me@shecodez.com', photoURL: null } }; //useAuthState();
 
     const likes = ref([]);
 

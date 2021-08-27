@@ -27,6 +27,10 @@ body,
   -moz-osx-font-smoothing: grayscale;
 }
 
+.n-page-header {
+  flex-wrap: wrap;
+}
+
 .dark {
   @apply bg-gray-900 text-white;
 }
@@ -47,6 +51,10 @@ body,
   @apply px-3 py-2 font-semibold rounded;
 }
 
+.scale-up-btn {
+  @apply text-2xl hover:transform hover:scale-110;
+}
+
 .f-center {
   @apply flex items-center justify-center;
 }
@@ -60,7 +68,7 @@ body,
 }
 
 .form-group label {
-  @apply block text-xs font-semibold;
+  @apply block text-xs font-semibold mb-0.5;
 }
 
 .form-group input,
@@ -94,5 +102,26 @@ body,
   width: 20px;
   height: 20px;
   box-shadow: 0 5px 20px rgba(0, 0, 0, 0.5);
+}
+
+.list-container {
+  @apply w-11/12 md:w-1/2 lg:w-1/3 xl:w-1/5 flex-shrink-0 mr-4 g;
+}
+.list-container:not(:first-child) {
+  @apply ml-4;
+}
+
+.grabbable {
+  cursor: move; /* fallback if grab cursor is unsupported */
+  cursor: grab;
+  cursor: -moz-grab;
+  cursor: -webkit-grab;
+}
+
+/* (Optional) Apply a "closed-hand" cursor during drag operation. */
+.grabbable:active {
+  cursor: grabbing;
+  cursor: -moz-grabbing;
+  cursor: -webkit-grabbing;
 }
 </style>

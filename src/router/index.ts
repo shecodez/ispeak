@@ -1,7 +1,8 @@
 import { createRouter, createWebHistory, RouteRecordRaw } from 'vue-router';
 import { useToast } from 'vue-toastification';
 
-import { getUserState } from '@/firebase';
+//import { getUserState } from '@/firebase';
+import { supabase } from '@/lib/supabase';
 
 import Home from '@/views/Home.vue';
 
@@ -12,6 +13,36 @@ const routes: Array<RouteRecordRaw> = [
     path: '/test',
     name: 'Test',
     component: () => import('@/views/Test123.vue'),
+  },
+  {
+    path: '/boards',
+    name: 'Boards',
+    component: () => import('@/views/boards/index.vue'),
+    meta: { requiresAuth: true },
+  },
+  {
+    path: '/boards/:id',
+    name: 'Board',
+    component: () => import('@/views/boards/_id.vue'),
+    meta: { requiresAuth: true },
+    // TODO: children
+    // { path: '/boards/:id/description - children: (/new||/edit) }
+    // { path: '/boards/:id/:listId/description - children (/new||/edit) }
+  },
+  {
+    path: '/v2/boards',
+    name: 'v2Boards',
+    component: () => import('@/views/v2/boards/index.vue'),
+    meta: { requiresAuth: true },
+  },
+  {
+    path: '/v2/boards/:id',
+    name: 'v2Board',
+    component: () => import('@/views/v2/boards/_id.vue'),
+    meta: { requiresAuth: true },
+    // TODO: children
+    // { path: '/boards/:id/description - children: (/new||/edit) }
+    // { path: '/boards/:id/:listId/description - children (/new||/edit) }
   },
   {
     path: '/',
@@ -44,10 +75,16 @@ const routes: Array<RouteRecordRaw> = [
     component: () => import('@/views/Contact.vue'),
   },
   {
+    path: '/enter',
+    name: 'Enter',
+    component: () => import('@/views/auth/Enter.vue'), // uses magic link
+    meta: { requiresUnauth: true },
+  },
+  {
     path: '/login',
     name: 'Login',
-    component: () => import('@/views/auth/Login.vue'),
-    //meta: { requiresUnauth:@/views/auth/Login.vue
+    component: () => import('@/views/auth/index.vue'),
+    // meta: { requiresUnauth: true }
   },
   {
     path: '/shop',
@@ -57,13 +94,13 @@ const routes: Array<RouteRecordRaw> = [
   {
     path: '/kanbans',
     name: 'Kanbans',
-    component: () => import('@/views/kanbans/index.vue'),
+    component: () => import('@/views/_tbd/kanbans/index.vue'),
     meta: { requiresAuth: true },
   },
   {
     path: '/kanbans/:id',
     name: 'Kanban',
-    component: () => import('@/views/kanbans/_id.vue'),
+    component: () => import('@/views/_tbd/kanbans/_id.vue'),
     meta: { requiresAuth: true },
     //props: route => ({ ...route.params, id: route.params.id })
     // beforeEnter(to, from) {
@@ -78,15 +115,20 @@ const routes: Array<RouteRecordRaw> = [
     //   }
     // }
   },
+  // {
+  //   path: '/story/intro',
+  //   name: 'StoryBoards',
+  //   component: () => import('@/views/storyboards/intro.vue'),
+  // },
   {
-    path: '/sagas',
-    name: 'Sagas',
-    component: () => import('@/views/sagas/index.vue'),
+    path: '/story/boards',
+    name: 'StoryBoards',
+    component: () => import('@/views/story/boards/index.vue'),
   },
   {
-    path: '/sagas/:id',
-    name: 'Saga',
-    component: () => import('@/views/sagas/_id.vue'),
+    path: '/story/boards/:id',
+    name: 'StoryBoard',
+    component: () => import('@/views/story/boards/_id.vue'),
   },
   {
     path: '/@me',
@@ -121,11 +163,11 @@ router.beforeEach(async (to, from, next) => {
   const requiresAuth = to.matched.some((route) => route.meta.requiresAuth);
   const requiresUnauth = to.matched.some((route) => route.meta.requiresUnauth);
 
-  const isAuth = await getUserState();
+  const isAuth = !!supabase.auth.user();
 
   if (requiresAuth && !isAuth) {
     toast('you must be logged in');
-    next(false);
+    next('/login');
   } else if (requiresUnauth && isAuth) next('/');
   else next();
 });

@@ -2,7 +2,7 @@ language: 言語
 japanese: 日本語
 hello: こんにちは、世界！
 
-made_with_love: ❤️愛を込めて作られ
+built_with_love: ❤️愛を込めて作られ
 
 prev: 前
 next: 次
@@ -11,7 +11,12 @@ back: 戻
 hi: こんにちは！
 or: 又
 
+home: 家
+
+enter: エンター
 login: ログイン
+register: 登録
+reset: パスワードを再設定する
 sign_up_with: サインアップ
 username: ユーザー名
 email: Eメール
@@ -27,32 +32,36 @@ send_reset_email: リセットメールを送信する
 logged_in_as: '{email}としてログイン'
 
 editor: エディタ
-add_kanban: 新しいかんばん
+my_boards: 私のボード
 hot: トレンド
 tags: タグ
 saved: セーブしました
 bookmarked: ブックマーク
 likes: 好き
-sagas: サガ
+stories: ストーリー
 logout: ログアウト
+analytics: 分析
 notifications: 通知
 help: ヘルプ
 info: 情報
 
-my_kanbans: 私のかんばん
-kanban: かんばん
+activity: アクティビティ
+untitled: 無題
+preview: プレビュー
+board: ボード
 boards: ボード
-untitled: 無題かんばん
+add_board: 新しいボード
 edit_title: タイトルを更新
-delete_kanban: かんばんを削除
-kanban_settings: かんばん設定
-add_board: ボードを追加
 delete_board: ボードを削除
+board_settings: ボード設定
 edit_board: ボードを編集
 move_board: ボードを動かす
-add_note: メモを追加
-edit_note: メモを更新する
-preview: プレビュー
+add_card: カードを追加
+edit_card: カードを更新
+delete_card: カードを削除
+add_list: リストを追加
+edit_list: リストを編集
+delete_list: リストを削除
 
 members: メンバー
 publish: 公開する
@@ -71,6 +80,6 @@ under_construction_message: '{wip}は作成中です。'
 the_blog: ブログ
 the_shop: ショップ
 
-liked_sagas: サガが好き
-favorite_kanbans: 好きなかんばん
-saved_sagas: 保存されたサガ
+liked_stories: 好きなストーリー
+favorite_boards: 好きなボード
+saved_stories: ブックマークストーリー

@@ -1,5 +1,5 @@
 <template>
-  <div class="flex flex-wrap f-center py-2 space-x-2 overflow-hidden">
+  <div v-if="totalPages" class="flex flex-wrap items-center py-2 space-x-2 overflow-hidden">
     <button @click="onPrevPage" :disabled="currentPage <= 1" class="f-center">
       <i-cil-arrow-left />
     </button>

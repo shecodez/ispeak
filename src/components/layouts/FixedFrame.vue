@@ -7,8 +7,8 @@
     <slot name="right"><div :class="`bg-yellow-${colorWeight}`" /></slot>
   </div>
 
-  <!-- :class="isHorizontal ? 'bottom-2' : ' right-2'" -->
-  <div v-if="showBottomFrame" class="bottom frame bottom-2 right-2">
+  <!-- :class="isHiddenOverflowY ? 'bottom-2' : ' right-2'" -->
+  <div v-if="showBottomFrame" class="bottom frame bottom-0 right-0">
     <slot name="bottom"><div class="bg-red-500" /></slot>
   </div>
 
@@ -47,7 +47,7 @@ export default defineComponent({
       type: Boolean,
       default: true,
     },
-    isHorizontal: {
+    isHiddenOverflowY: {
       type: Boolean,
       default: false,
     },

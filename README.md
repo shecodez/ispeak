@@ -29,4 +29,4 @@ Run `Volar: Switch TS Plugin on/off` from VSCode command palette.
 ### Json Server:
 
 $ npm i -g json-server
-$ json-server -p 3001 --watch src/data/db.json --routes src/data/routes.json
+$ json-server -p 3001 --watch src/data/mock/db.json --routes src/data/mock/routes.json

@@ -2,13 +2,14 @@
   <div class="flex items-center space-x-1">
     <button
       @click="canDelete ? deleteIt() : prepareToDelete()"
+      type="button"
       class="btn text-red-500 hover:bg-red-500 hover:text-white"
     >
       🗑️<span class="sr-only">Delete</span>
       <span v-if="canDelete">{{ t('confirm') }}</span>
     </button>
 
-    <button v-if="canDelete" class="btn opacity-70 hover:opacity-100" @click="cancelDelete()">
+    <button v-if="canDelete" type="button" class="btn opacity-70 hover:opacity-100" @click="cancelDelete()">
       {{ t('cancel') }}
     </button>
   </div>

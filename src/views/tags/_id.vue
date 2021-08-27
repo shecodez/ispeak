@@ -10,7 +10,7 @@
         </div>
 
         <div class="flex-1">
-          <SagaList query="/kanbans" />
+          <!-- <SagaList query="/kanbans" /> -->
         </div>
       </div>
     </template>
@@ -26,12 +26,12 @@ import useApi from '@/use/api';
 import FixedFrame from '@/components/layouts/FixedFrame.vue';
 import Spinner from '@/components/ui/Spinner.vue';
 import AlertMessage from '@/components/shared/AlertMessage.vue';
-import SagaList from '@/components/saga/SagaList.vue';
+//import SagaList from '@/components/saga/SagaList.vue';
 import TagLink from '@/components/shared/TagLink.vue';
 
 export default defineComponent({
   name: 'Tag',
-  components: { FixedFrame, Spinner, AlertMessage, SagaList, TagLink },
+  components: { FixedFrame, Spinner, AlertMessage, TagLink },
   setup() {
     const { t } = useI18n();
     const route = useRoute();

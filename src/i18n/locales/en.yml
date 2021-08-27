@@ -2,7 +2,7 @@ language: Language
 english: English
 hello: Hello, World!
 
-made_with_love: Made with ❤️
+built_with_love: built with ❤️
 
 prev: Prev
 next: Next
@@ -11,7 +11,12 @@ back: Back
 hi: Hi
 or: or
 
+home: Home
+
+enter: Enter
 login: Login
+register: Register
+reset: Reset Password
 sign_up_with: Sign up with
 username: Username
 email: Email
@@ -27,34 +32,38 @@ send_reset_email: Send reset email
 logged_in_as: Logged in as {email}
 
 editor: editor
-add_kanban: Add Kanban
+my_boards: My Boards
 hot: hot
 tags: tags
 saved: saved
 bookmarked: bookmarked
 likes: likes
-sagas: sagas
+stories: stories
 logout: logout
+analytics: analytics
 notifications: notifications
 help: Help
 info: Info
 
-my_kanbans: My Kanbans
-untitled: Untitled Kanban
-kanban: kanban
+activity: Activity
+untitled: Untitled
+preview: Preview
+board: board
 boards: boards
-edit_title: Edit Title
-delete_kanban: Delete Kanban
-kanban_settings: Kanban Settings
 add_board: Add Board
+edit_title: Edit Title
 delete_board: Delete Board
+board_settings: Board Settings
 edit_board: Edit Board
 move_board: Move Board
-add_note: Add Note
-edit_note: Update Note
-preview: Preview
+add_card: Add Card
+edit_card: Update Card
+delete_card: Delete Card
+add_list: Add List
+edit_list: Edit List
+delete_list: Delete List
 
-members: mbrs
+members: members
 publish: publish
 settings: settings
 
@@ -71,6 +80,6 @@ under_construction_message: '{wip} is under construction.'
 the_blog: the blog
 the_shop: the shop
 
-liked_sagas: liked Sagas
-favorite_kanbans: favorite Kanbans
-saved_sagas: saved Sagas
+liked_stories: liked stories
+favorite_boards: favorite Boards
+saved_stories: saved stories

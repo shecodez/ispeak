@@ -1,28 +1,30 @@
 <template>
-  <FixedFrame showBottomFrame :isHorizontal="isRow">
+  <!-- <FixedFrame showBottomFrame :isHorizontal="isRow">
     <aside class="toolbar flex items-center justify-between py-2 px-4">
       <button @click="isRow = !isRow" class="bg-yellow-400 rounded-full px-3 py-2">Toggle Layout</button>
       <div>{{ isRow ? 'horizontal' : 'vertical' }}</div>
     </aside>
 
     <Editor :kanban="kanban" :isHorizontal="isRow" />
-    <!-- <Pagination /> -->
+    <Pagination />
     <template v-slot:bottom>
       <button class="bg-red-500 rounded-tl-3xl h-full w-16">🧪</button>
     </template>
-  </FixedFrame>
+  </FixedFrame> -->
+  <Header :board="{ title: 'Niico\'s Board', is_published: false }" />
 </template>
 
 <script lang="ts">
 import { defineComponent, ref } from 'vue';
 
-import FixedFrame from '@/components/layouts/FixedFrame.vue';
-import Editor from '@/components/kanban/Editor.vue';
-import Pagination from '@/components/ui/Pagination.vue';
+// import FixedFrame from '@/components/layouts/FixedFrame.vue';
+// import Editor from '@/components/_tbd/kanban/Editor.vue';
+// import Pagination from '@/components/ui/Pagination.vue';
+import Header from '@/components/boards/Header.vue';
 
 export default defineComponent({
   name: 'Test',
-  components: { FixedFrame, Editor, Pagination },
+  components: { Header },
   setup() {
     const isRow = ref(true);
 

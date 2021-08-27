@@ -1,0 +1,445 @@
+<script lang="ts">
+import { computed, defineComponent, onMounted, reactive, toRefs } from 'vue';
+import { useI18n } from 'vue-i18n';
+import { useTitle } from '@vueuse/core';
+import { useRoute } from 'vue-router';
+import draggable from 'vuedraggable';
+import { useToast } from 'vue-toastification';
+
+//import db from '@/supabase/db';
+import { useBoards } from '@/use/db';
+import { List as iList, Board as iBoard } from '@/data/interfaces';
+import AddList from '@/components/example/AddList.vue';
+import List from '@/components/example/List.vue';
+import InPlaceEdit from '@/components/example/InPlaceEdit.vue';
+import AlertMessage from '@/components/shared/AlertMessage.vue';
+
+export default defineComponent({
+  name: 'Board',
+  components: { draggable, AddList, List, InPlaceEdit, AlertMessage },
+  setup() {
+    const { t } = useI18n();
+    const route = useRoute();
+    const toast = useToast();
+    
+    const { state, getById, add, del } = useBoards;
+    // const state = reactive({
+    //   board: {} as iBoard,
+    //   isLoading: true,
+    //   error: null,
+    // });
+
+    onMounted(async () => await getById(Number(route.params.id)));
+
+    const title = computed(() => `${state.currentBoard?.title} · 🎬 ${import.meta.env.VITE_APP_NAME}`);
+    useTitle(title);
+
+    //const isLoadingTitle = ref(false);
+    async function updateTitle(title: string) {
+      const board = state.board;
+      board.title = title;
+      try {
+        //isLoadingTitle.value = true;
+        const { error } = await db.boards.update(board);
+        if (error) throw error;
+      } catch (e) {
+        const message = e.error_description || e.message;
+        toast.error(message, { timeout: 5000 });
+      } finally {
+        //isLoadingTitle.value = false;
+      }
+      state.board = board;
+    }
+
+    const addList = async (list: iList) => {
+      const board = state.board;
+      try {
+        state.isLoading = true;
+        const { data, error } = await db.lists.create(board, {
+          ...list,
+          position: board?.lists?.length || 0,
+        });
+        if (error) throw error;
+        board.lists?.push(data);
+      } catch (e) {
+        state.error = e.error_description || e.message;
+      } finally {
+        state.isLoading = false;
+      }
+      state.board = board;
+    };
+
+    async function updatePositions() {
+      try {
+        const { error } = await db.boards.sort(state.board);
+        if (error) throw error;
+      } catch (e) {
+        const message = e.error_description || e.message;
+        toast.error(message, { timeout: 5000 });
+      }
+    }
+
+    async function log(e: any) {
+      //const { element, oldIndex, newIndex } = e.moved;
+      await updatePositions();
+    }
+
+    return {
+      t,
+      ...toRefs(state),
+      addList,
+      updateTitle,
+      log,
+    };
+  },
+});
+
+//--------------------------------------------------------------------
+<script lang="ts">
+import { defineComponent, PropType, reactive, toRefs } from 'vue';
+import { useI18n } from 'vue-i18n';
+import { useToast } from 'vue-toastification';
+import draggable from 'vuedraggable';
+
+import db from '@/libs/supabase/db';
+import ConfirmDeleteInPlace from '@/components/ui/ConfirmDeleteInline.vue';
+import AlertMessage from '@/components/shared/AlertMessage.vue';
+import InPlaceEdit from './InPlaceEdit.vue';
+import Card from './Card.vue';
+import CardFormDialog from './CardFormDialog.vue';
+import ListFormDialog from './ListFormDialog.vue';
+import { List, Card as iCard } from '@/data/interfaces';
+
+export default defineComponent({
+  name: 'List',
+  components: {
+    draggable,
+    ConfirmDeleteInPlace,
+    AlertMessage,
+    InPlaceEdit,
+    Card,
+    ListFormDialog,
+    CardFormDialog,
+  },
+  props: {
+    list: {
+      type: Object as PropType<List>,
+      required: true,
+    },
+    position: {
+      type: Number,
+    },
+  },
+  setup(props) {
+    const { t } = useI18n();
+    const toast = useToast();
+
+    const state = reactive({
+      isAddingCard: false,
+      isEditingList: false,
+      isLoading: true,
+      error: null,
+    });
+
+    async function updatePositions() {
+      try {
+        const { error } = await db.lists.sort(props.list);
+        if (error) throw error;
+      } catch (e) {
+        const message = e.error_description || e.message;
+        toast.error(message, { timeout: 5000 });
+      }
+    }
+
+    async function updateList(list: List) {
+      try {
+        state.isLoading = true;
+        const { data, error } = await db.lists.update({ ...props.list, ...list });
+        if (error) throw error;
+        close();
+      } catch (e) {
+        state.error = e.error_description || e.message;
+      } finally {
+        state.isLoading = false;
+      }
+    }
+
+    function updateTitle(title: string) {
+      let list = props.list;
+      list.title = title;
+      updateList(list);
+    }
+
+    async function deleteList() {
+      try {
+        state.isLoading = true;
+        await db.lists.delete(props.list);
+        // re-position cards
+        await updatePositions();
+      } catch (e) {
+        state.error = e.error_description || e.message;
+      } finally {
+        state.isLoading = false;
+      }
+    }
+
+    async function addCard(card: iCard) {
+      const list = props.list;
+      try {
+        state.isLoading = true;
+        const { data, error } = await db.cards.create(list, {
+          ...card,
+          position: list?.cards?.length || 0,
+        });
+        if (error) throw error;
+        list.cards?.push(data);
+        close();
+      } catch (e) {
+        state.error = e.error_description || e.message;
+      } finally {
+        state.isLoading = false;
+      }
+    }
+
+    function close() {
+      state.isEditingList = false;
+      state.isAddingCard = false;
+    }
+
+    async function log(e: any) {
+      //const { element, oldIndex, newIndex } = e.moved;
+      await updatePositions();
+    }
+
+    return { t, ...toRefs(state), updateList, updateTitle, deleteList, updatePositions, addCard, close, log };
+  },
+});
+</script>
+//----------------------------------------------------------------------------------------
+<template>
+  <!-- <h1 class="text-4xl">Saga {{ $route.params.id }}</h1> -->
+  <FixedFrame>
+    <aside class="toolbar p-4">
+      <div class="flex items-center space-x-1">
+        <button class="text-2xl hover:transform hover:scale-110">💗</button>
+        <h2 class="text-2xl">{{ saga?.title }}</h2>
+      </div>
+
+      <div class="flex flex-wrap items-center space-x-2">
+        <label class="text-sm font-semibold mr-2">view as:</label>
+        <select @change="setMe($event)" class="text-black">
+          <template v-for="member in saga.members" :key="member">
+            <option :value="member">{{ member }}</option>
+          </template>
+          <option value="">none</option>
+        </select>
+
+        <select v-if="!isLoading" @change="setSagaBoardId($event)" class="text-black" :value="board.id">
+          <template v-for="board in sagaBoards" :key="board.id">
+            <option :value="board.id">{{ board.title }}</option>
+          </template>
+        </select>
+      </div>
+    </aside>
+
+    <Spinner v-if="isLoading" />
+    <AlertMessage v-else-if="error" type="error" :message="error" />
+    <template v-else>
+      <div class="px-4 flex-1 thin-scrollbar">
+        <div class="flex gap-5 mb-2">
+          <h1 class="text-3xl">{{ board.title }}</h1>
+          <IconGroupInline :items="boardMembers" />
+        </div>
+
+        <p class="pb-4">{{ saga?.description }}</p>
+
+        <div class="flex-1 flex flex-col gap-4 overflow-y-auto thin-scrollbar">
+          <template v-for="note in board.notes" :key="note.id">
+            <div
+              class="note-container relative"
+              :class="!me || !note.assignedTo ? 'mx-auto' : me === note.assignedTo ? 'ml-auto' : 'mr-auto'"
+            >
+              <StickyNote :note="note" />
+            </div>
+          </template>
+        </div>
+      </div>
+      <Pagination :page="filters._page" :itemsPerPage="filters._limit" :totalItems="total" @pagechange="onPageChange" />
+    </template>
+  </FixedFrame>
+</template>
+
+<script lang="ts">
+import { computed, defineComponent, reactive, ref, watch } from 'vue';
+import { useI18n } from 'vue-i18n';
+import { useRoute } from 'vue-router';
+
+import useApi from '@/use/api';
+import { useUrlQuery, useUrlParams } from '@/use/fetch';
+import { Kanban, Note } from '@/data/interfaces';
+import FixedFrame from '@/components/layouts/FixedFrame.vue';
+import Spinner from '@/components/ui/Spinner.vue';
+import AlertMessage from '@/components/shared/AlertMessage.vue';
+import Pagination from '@/components/ui/Pagination.vue';
+import Menu from '@/components/ui/Menu.vue';
+import StickyNote from '@/components/notes/Note.vue';
+import IconGroupInline from '@/components/ui/IconGroupInline.vue';
+
+export default defineComponent({
+  name: 'Saga',
+  components: { FixedFrame, Spinner, AlertMessage, Pagination, Menu, StickyNote, IconGroupInline },
+  setup() {
+    const { t } = useI18n();
+    const route = useRoute();
+
+    const filters = reactive({
+      search: '',
+      _page: 1, // board index
+      _limit: 1,
+    });
+
+    // const { data: saga, isLoading, error, get } = useApi(`/kanbans/${route.params.id}`);
+    // get();
+
+    const url = useUrlParams(`/kanbans/${route.params.id}`, filters);
+    const { result: saga, reload, isLoading, error } = useUrlQuery(url, {} as Kanban);
+    const total = computed(() => saga.value.boards.length);
+
+    const board = computed(() => saga.value.boards[filters._page - 1]);
+    const boardMembers = computed(
+      () => new Set(board.value.notes?.filter((i: Note) => Boolean(i.assignedTo)).map((x: Note) => x.assignedTo))
+    );
+
+    const me = ref('');
+    const setMe = (evt: any) => {
+      me.value = evt.target.value;
+    };
+
+    const sagaBoards = computed(() => saga.value?.boards?.map((board) => ({ id: board.id, title: board.title })));
+    const setSagaBoardId = (evt: any) => {
+      const boardId = evt.target.value;
+      var idx = sagaBoards.value.findIndex((b) => b.id === boardId);
+      filters._page = idx + 1;
+    };
+
+    const onPageChange = (page: number) => {
+      filters._page = page;
+    };
+
+    return {
+      filters,
+      saga,
+      isLoading,
+      error,
+      total,
+      sagaBoards,
+      setSagaBoardId,
+      me,
+      setMe,
+      board,
+      boardMembers,
+      onPageChange,
+      t,
+    };
+  },
+});
+</script>
+
+<style scoped>
+.note-container {
+  max-width: 80%;
+}
+</style>
+
+///-----------------------------------------------------------------
+<template>
+  <FixedFrame>
+    <aside class="toolbar flex items-center justify-between py-3 px-4">
+      <h1 class="text-2xl capitalize">🎬 {{ t('sagas') }}</h1>
+    </aside>
+
+    <AlertMessage v-if="error" type="error" :message="error" />
+    <template v-else>
+      <ul class="mx-4 grid grid-cols-4 gap-4">
+        <li>
+          <h2 v-if="tagged.length" class="title text-3xl capitalize">
+            🔥 {{ filters.tag.replace('-', ' ') }} {{ `(${tagged?.length})` }}
+          </h2>
+        </li>
+        <template v-for="saga in tagged" :key="saga.id">
+          <li class="p-4 border inline-block">
+            <router-link :to="`/sagas/${saga.id}`">{{ saga.title }}</router-link>
+          </li>
+        </template>
+
+        <li><h2 class="title text-3xl capitalize">All</h2></li>
+        <template v-for="saga in sagas" :key="saga.id">
+          <li class="p-4 border inline-block">
+            <router-link :to="`/sagas/${saga.id}`">{{ saga.title }}</router-link>
+          </li>
+        </template>
+      </ul>
+      
+      <Pagination :page="filters._page" :totalItems="total" :itemsPerPage="filters._limit" @pagechange="onPageChange" />
+    </template>
+
+  </FixedFrame>
+</template>
+
+<script lang="ts">
+import { computed, defineComponent, reactive, ref } from 'vue';
+import { useI18n } from 'vue-i18n';
+import { useRoute } from 'vue-router';
+import debounce from 'lodash.debounce';
+
+import useApi from '@/use/api';
+import { useUrlQuery, useUrlParams } from '@/use/fetch';
+import { Kanban } from '@/data/interfaces';
+import FixedFrame from '@/components/layouts/FixedFrame.vue';
+import SagaList from '@/components/sagas/ListRO.vue';
+import Pagination from '@/components/ui/Pagination.vue';
+
+export default defineComponent({
+  name: 'Sagas',
+  components: { FixedFrame, SagaList, Pagination },
+  setup() {
+    const { t } = useI18n();
+    const route = useRoute();
+    // values will be filtered out if null or empty
+    const filters = reactive({
+      search: '',
+      tag: 'top-7',
+      _page: 1, //route.params.page.toString(),
+      _limit: 2,
+    });
+
+    // const { data: sagas, isLoading, error, get } = useApi('/kanbans');
+    // get();
+    console.log('PAGE', route.params.page);
+
+    const url = useUrlParams('/kanbans', filters);
+    const { result: sagas, reload, isLoading, error } = useUrlQuery(url, [] as Kanban[]);
+    const total = ref(5); // sagas.totalItems should be returned from api
+
+    const tagged = computed(() => {
+      return sagas.value?.filter((saga: any) => saga.tags.includes(filters.tag));
+    });
+
+    const onPageChange = (page: number) => {
+      filters._page = page;
+    };
+
+    const setSearch = debounce((event: InputEvent) => {
+      filters.search = (event.target as HTMLInputElement).value;
+    }, 200); // prevent reloading after each character
+
+    return { filters, sagas, total, onPageChange, tagged, isLoading, error, t };
+  },
+});
+</script>
+
+<style scoped>
+.title {
+  @apply p-4 border bg-blue-300;
+}
+</style>
