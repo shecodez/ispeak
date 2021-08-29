@@ -12,9 +12,23 @@ hi: Hi
 or: or
 
 home: Home
+search: Search
+about: About
+blog: Blog
+shop: Shop
+contact: Contact
+sign_up: Sign Up
+
+manage_your_lists: Manage your Lists of
+easy: easier!
+dialogues: dialogues
+tasks: tasks
+todos: to-dos
+email_placeholder: 'your email.com'
+start_now: Start Now!
 
 enter: Enter
-login: Login
+login: Log In
 register: Register
 reset: Reset Password
 sign_up_with: Sign up with

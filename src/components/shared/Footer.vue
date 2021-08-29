@@ -1,5 +1,5 @@
 <template>
-  <footer class="flex items-center justify-between py-2 px-4">
+  <footer class="flex items-center justify-between py-2 px-4 shadow-lg">
     <div>&copy; &nbsp;{{ new Date().getFullYear() }}</div>
     <h5 class="uppercase text-xs tracking-widest">
       {{ t('built_with_love') }} <a href="http://www.shecodez.com" target="_blank">@shecodez</a>
@@ -23,6 +23,6 @@ export default defineComponent({
 
 <style scoped>
 a {
-  @apply font-semibold hover:underline;
+  @apply font-bold hover:underline;
 }
 </style>

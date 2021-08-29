@@ -47,6 +47,10 @@ body,
   @apply bg-blue-500 hover:bg-blue-400 shadow;
 }
 
+.primary-yellow {
+  @apply bg-yellow-500 hover:bg-yellow-400 shadow;
+}
+
 .btn {
   @apply px-3 py-2 font-semibold rounded;
 }

@@ -1,9 +1,9 @@
 <template>
   <div>
-    <img v-if="src" :src="src" alt="Avatar" class="avatar image" :style="{ height: size, width: size }" />
-    <div v-else class="avatar no-image" :style="{ height: size, width: size }" />
+    <img v-if="src" :src="src" alt="Avatar" class="avatar image" :class="css" />
+    <div v-else class="avatar no-image f-center" :class="css">U</div>
 
-    <div :style="{ width: size }">
+    <div class="hidden" :style="{ width: size }">
       <label class="button primary block" for="single">
         {{ uploading ? 'Uploading ...' : 'Upload' }}
       </label>
@@ -21,10 +21,14 @@
 
 <script lang="ts">
 import { defineComponent, ref, toRefs, watch } from 'vue';
-import { supabase } from '@/supabase';
+import { supabase } from '@/lib/supabase';
 
 export default defineComponent({
   props: {
+    css: {
+      type: String,
+      default: 'w-11 h-11',
+    },
     path: String,
   },
   emits: ['upload', 'update:path'],
@@ -85,3 +89,12 @@ export default defineComponent({
   },
 });
 </script>
+
+<style scoped>
+.avatar {
+  @apply rounded-full;
+}
+.avatar.no-image {
+  @apply bg-gray-400 text-white text-xl font-bold;
+}
+</style>
