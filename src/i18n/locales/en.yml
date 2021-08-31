@@ -27,6 +27,9 @@ todos: to-dos
 email_placeholder: 'your email.com'
 start_now: Start Now!
 
+page_not_found_message: Hmm, this page was not found.
+go_home: go home
+
 enter: Enter
 login: Log In
 register: Register

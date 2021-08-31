@@ -1,7 +1,9 @@
 <template>
   <div class="relative">
     <n-card size="small" hoverable @click="isEditing = true">
-      <b>{{ card.text }}</b>
+      <slot>
+        <b>{{ card.text }}</b>
+      </slot>
       <template #footer>
         <n-space align="center" justify="space-between">
           <n-tag v-if="card.label" size="small" round :color="labelColor">

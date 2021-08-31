@@ -27,6 +27,9 @@ todos: する
 email_placeholder: 'あなた E-メール.com'
 start_now: 今始めましょう！
 
+page_not_found_message: うーん、このページは見つかりませんでした。
+go_home: 家に帰れ
+
 enter: エンター
 login: ログイン
 register: 登録
