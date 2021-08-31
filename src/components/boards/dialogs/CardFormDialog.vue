@@ -81,7 +81,7 @@ import Modal from '@/components/ui/Modal.vue';
 import InPlaceConfirmDelete from '@/components/ui/ConfirmDeleteInline.vue';
 
 export default defineComponent({
-  name: 'CardFormDialog',
+  name: 'CardForm',
   components: { Modal, InPlaceConfirmDelete },
   props: {
     showDialog: {

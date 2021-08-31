@@ -47,7 +47,7 @@ import Modal from '@/components/ui/Modal.vue';
 import InPlaceConfirmDelete from '@/components/ui/ConfirmDeleteInline.vue';
 
 export default defineComponent({
-  name: 'ListFormDialog',
+  name: 'ListForm',
   components: { Modal, InPlaceConfirmDelete },
   props: {
     showDialog: {

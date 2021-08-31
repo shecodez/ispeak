@@ -80,7 +80,7 @@ import InPlaceConfirmDelete from '@/components/ui/ConfirmDeleteInline.vue';
 import Badge from '@/components/ui/Badge.vue';
 
 export default defineComponent({
-  name: 'BoardFormDialog',
+  name: 'BoardForm',
   components: { Modal, ChipInput, Toggle, InPlaceConfirmDelete, Badge },
   props: {
     showDialog: {

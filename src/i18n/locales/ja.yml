@@ -30,6 +30,16 @@ start_now: 今始めましょう！
 page_not_found_message: うーん、このページは見つかりませんでした。
 go_home: 家に帰れ
 
+get_in_touch: 連絡する
+send_a_message: メッセージを送る
+follow_us: フォローする
+
+name: 名前
+message: メッセージ
+send: 送信
+directions_from: からの道順
+message_sent_thanks: メッセージが送信されました。 ありがとう！
+
 enter: エンター
 login: ログイン
 register: 登録

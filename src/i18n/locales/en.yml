@@ -30,6 +30,16 @@ start_now: Start Now!
 page_not_found_message: Hmm, this page was not found.
 go_home: go home
 
+get_in_touch: Get in touch
+send_a_message: Send a message
+follow_us: Follow us
+
+name: Name
+message: Message
+send: Send
+directions_from: Directions from
+message_sent_thanks: Message sent. Thanks!
+
 enter: Enter
 login: Log In
 register: Register
