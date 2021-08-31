@@ -1,6 +1,6 @@
 <template>
-  <FixedFrame>
-    <div class="flex items-center justify-center h-full -ml-16">
+  <Layout>
+    <main class="flex items-center justify-center h-full -ml-16">
       <div v-if="user" class="text-center">
         <p class="mb-2">
           {{ t('logged_in_as', { email: user?.email }) }}
@@ -20,16 +20,16 @@
           <div class="my-4 text-sm uppercase">{{ t('or') }}</div>
         </div>
 
-        <div class="p-6 bg-gray-600 bg-opacity-30 shadow-lg rounded">
+        <div class="p-6 border shadow-lg rounded">
           <div class="text-center">
-            <template v-if="formAct === 'register'">
+            <template v-if="formAct === 'signup'">
               <h3>{{ t('create_an_account') }}</h3>
               <button type="button" @click="setFormAct('login')">{{ t('returning_user') }}</button>
             </template>
 
             <template v-if="formAct === 'login'">
               <h3>{{ t('hey_welcome_back') }}</h3>
-              <button type="button" @click="setFormAct('register')">{{ t('new_user') }}</button>
+              <button type="button" @click="setFormAct('signup')">{{ t('new_user') }}</button>
             </template>
 
             <template v-if="formAct === 'reset'">
@@ -41,7 +41,7 @@
           <AlertMessage v-if="error" type="error" :message="error" />
 
           <form ref="form" @submit.prevent="submitForm" @keydown.enter.prevent>
-            <!-- <div v-if="form === 'register'" class="form-group">
+            <!-- <div v-if="form === 'signup'" class="form-group">
               <label>{{ t('username') }}</label>
               <input type="text" v-model="username" />
               <span class="err" v-if="v$.username.$error">
@@ -86,39 +86,48 @@
           </form>
         </div>
       </div>
-    </div>
-  </FixedFrame>
+    </main>
+  </Layout>
 </template>
 
 <script lang="ts">
 import { computed, defineComponent, reactive, toRefs } from 'vue';
 import { useI18n } from 'vue-i18n';
+import { useRoute, useRouter } from 'vue-router';
 import { useTitle } from '@vueuse/core';
 import useValidate from '@vuelidate/core';
 import { required, email, requiredIf } from '@vuelidate/validators';
 
 import { useAuth } from '@/use/auth';
 import { Credentials } from '@/data/types/mock';
-import FixedFrame from '@/components/layouts/FixedFrame.vue';
+import Layout from '@/layouts/AuthLayout.vue';
 import AlertMessage from '@/components/shared/AlertMessage.vue';
+
+export enum AuthType {
+  login = 'login',
+  register = 'register',
+  reset = 'reset',
+}
 
 export default defineComponent({
   name: 'Auth',
-  components: { FixedFrame, AlertMessage },
+  components: { Layout, AlertMessage },
   setup() {
     const { t } = useI18n();
-
+    const route = useRoute();
+    const router = useRouter();
     const { auth, login, register, sendPasswordReset, signInWithGoogle, logout } = useAuth;
 
     const user = computed(() => auth.userSession?.user);
 
     const state = reactive({
-      formAct: 'register', // 'login' | 'register' | 'reset'
+      formAct: route.fullPath.split('/')[2] || 'login',
       isValid: true,
     });
 
-    const setFormAct = (type: 'login' | 'register' | 'reset') => {
+    const setFormAct = (type: 'login' | 'signup' | 'reset') => {
       state.formAct = type;
+      router.push({ path: `/auth/${type}` });
     };
 
     const title = computed(() => `${t(state.formAct)} · 🎬 ${import.meta.env.VITE_APP_NAME}`);
@@ -133,7 +142,7 @@ export default defineComponent({
     const rules = computed(() => {
       return {
         email: { required, email },
-        password: { required: requiredIf(() => state.formAct === 'register') },
+        password: { required: requiredIf(() => state.formAct === 'signup') },
       };
     });
 
@@ -145,7 +154,7 @@ export default defineComponent({
 
       const { email, password } = credentials;
       switch (state.formAct) {
-        case 'register':
+        case 'signup':
           await register({ email, password });
           break;
         case 'reset':

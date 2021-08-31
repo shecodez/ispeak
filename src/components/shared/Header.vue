@@ -23,11 +23,11 @@
       <div class="text-3xl">&middot;</div>
       <Avatar v-if="user" :src="user.avatar_url" />
       <div v-else class="flex gap-2">
-        <router-link to="/login" class="btn capitalize flex items-center gap-2">
+        <router-link to="/auth/login" class="btn capitalize flex items-center gap-2">
           <i-mdi-key class="p-0.5 rounded bg-gray-300" />
           {{ t('login') }}
         </router-link>
-        <router-link to="/login" class="btn bg-gray-300 capitalize">{{ t('sign_up') }}</router-link>
+        <router-link to="/auth/signup" class="btn bg-gray-300 capitalize">{{ t('sign_up') }}</router-link>
       </div>
       <SwitchLocale />
     </div>
@@ -55,3 +55,9 @@ export default defineComponent({
   },
 });
 </script>
+
+<style scoped>
+a.router-link-active {
+  @apply text-black dark:text-white;
+}
+</style>

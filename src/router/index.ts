@@ -87,6 +87,36 @@ const routes: Array<RouteRecordRaw> = [
     // meta: { requiresUnauth: true }
   },
   {
+    path: '/auth/login',
+    name: 'AuthLogin',
+    component: () => import('@/views/auth/index.vue'),
+    // meta: { requiresUnauth: true }
+  },
+  {
+    path: '/auth/signup',
+    name: 'AuthSignup',
+    component: () => import('@/views/auth/index.vue'),
+    // meta: { requiresUnauth: true }
+  },
+  {
+    path: '/auth/reset',
+    name: 'AuthReset',
+    component: () => import('@/views/auth/index.vue'),
+    // meta: { requiresUnauth: true }
+  },
+  // {
+  //   path: '/auth/:type',
+  //   name: 'Auth',
+  //   component: () => import('@/views/auth/index.vue'),
+  //   beforeEnter: (to, from, next) => {
+  //     const types = ['login', 'signup', 'reset'];
+  //     types.includes(to.params.type?.toString())
+  //       ? next() // :type can only be login, signup, reset
+  //       : next({ name: 'NotFound', replace: false });
+  //   },
+  //   // meta: { requiresUnauth: true }
+  // },
+  {
     path: '/shop',
     name: 'Shop',
     component: () => import('@/views/shop/index.vue'),
@@ -129,6 +159,7 @@ const routes: Array<RouteRecordRaw> = [
     path: '/story/boards/:id',
     name: 'StoryBoard',
     component: () => import('@/views/story/boards/_id.vue'),
+    // https://next.router.vuejs.org/guide/essentials/nested-routes.html
   },
   {
     path: '/@me',
@@ -168,6 +199,8 @@ router.beforeEach(async (to, from, next) => {
   if (requiresAuth && !isAuth) {
     toast('you must be logged in');
     next('/login');
+    //TODO: save the location we were at to come back later
+    // query: { redirect: to.fullPath },
   } else if (requiresUnauth && isAuth) next('/');
   else next();
 });

@@ -11,6 +11,8 @@ back: 戻
 hi: こんにちは！
 or: 又
 
+loading: 読み込み中
+
 home: 家
 search: 探す
 about: だいたい
@@ -41,8 +43,13 @@ directions_from: からの道順
 message_sent_thanks: メッセージが送信されました。 ありがとう！
 
 enter: エンター
+email_address: Eメールアドレス
+send_me_a_magic_link: マジックのリンクを送ってください
+sent_link_check_email_message: リンクを送信し、メールを確認してください。
+
 login: ログイン
 register: 登録
+signup: サインアップ
 reset: パスワードを再設定する
 sign_up_with: サインアップ
 username: ユーザー名

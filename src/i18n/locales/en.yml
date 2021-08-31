@@ -11,6 +11,8 @@ back: Back
 hi: Hi
 or: or
 
+loading: Loading
+
 home: Home
 search: Search
 about: About
@@ -20,7 +22,7 @@ contact: Contact
 sign_up: Sign Up
 
 manage_your_lists: Manage your Lists of
-easy: easier!
+easier: easier!
 dialogues: dialogues
 tasks: tasks
 todos: to-dos
@@ -41,8 +43,13 @@ directions_from: Directions from
 message_sent_thanks: Message sent. Thanks!
 
 enter: Enter
+email_address: Email Address
+send_me_a_magic_link: Send me a magic link
+sent_link_check_email_message: Sent you a link, check your email.
+
 login: Log In
 register: Register
+signup: Sign Up
 reset: Reset Password
 sign_up_with: Sign up with
 username: Username

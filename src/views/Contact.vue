@@ -95,6 +95,7 @@ export default defineComponent({
       valid: true,
       isLoading: false,
       error: null,
+      directionsFrom: null, // https://developers.google.com/maps/documentation/javascript/directions
     });
 
     const form = reactive<ContactForm>({

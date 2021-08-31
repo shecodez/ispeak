@@ -20,7 +20,7 @@ import { defineComponent, ref } from 'vue';
 // import FixedFrame from '@/components/layouts/FixedFrame.vue';
 // import Editor from '@/components/_tbd/kanban/Editor.vue';
 // import Pagination from '@/components/ui/Pagination.vue';
-import Header from '@/components/boards/Header.vue';
+import Header from '@/components/boards/BoardHeader.vue';
 
 export default defineComponent({
   name: 'Test',

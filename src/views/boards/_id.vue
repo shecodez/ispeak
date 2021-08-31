@@ -67,7 +67,7 @@ import AddList from '@/components/boards/AddList.vue';
 import List from '@/components/boards/List.vue';
 import InPlaceEdit from '@/components/boards/InPlaceEdit.vue';
 import BoardFormDialog from '@/components/boards/dialogs/BoardFormDialog.vue';
-import BoardHeader from '@/components/boards/Header.vue';
+import BoardHeader from '@/components/boards/BoardHeader.vue';
 
 export default defineComponent({
   name: 'Board',

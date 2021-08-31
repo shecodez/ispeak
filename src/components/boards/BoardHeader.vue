@@ -39,7 +39,7 @@ import { Search as ISearch, EllipsisV as IEllipsisV, Lock as ILock, GlobeAmerica
 import AvatarGroup from '@/components/ui/AvatarGroup.vue';
 
 export default defineComponent({
-  name: 'Header',
+  name: 'BoardHeader',
   components: { AvatarGroup, ISearch, IEllipsisV, ILock, IGlobe },
   props: ['board'],
   setup(props) {

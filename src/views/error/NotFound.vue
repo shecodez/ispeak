@@ -12,7 +12,7 @@
       <div>
         <div class="w-full flex md:flex-row-reverse ml-20">
           <div class="w-11/12 md:w-2/3 lg:w-1/2">
-            <div class="gif w-md h-md rounded-full border" />
+            <div class="not-found-gif w-md h-md rounded-full" />
           </div>
         </div>
 
@@ -61,6 +61,12 @@ export default defineComponent({
 </script>
 
 <style scoped>
+.not-found-gif {
+  background-image: url('/src/assets/JohnTravoltaLost.gif');
+  background-repeat: no-repeat;
+  background-size: cover;
+  background-position: center center;
+}
 .wrapper {
   background-color: #f9f9f9;
   /* background-image: url('./src/assets/404_frame2.png');
@@ -68,11 +74,5 @@ export default defineComponent({
   background-attachment: fixed;
   background-size: contain;
   background-position: center center; */
-}
-.gif {
-  background-image: url('./src/assets/JohnTravoltaLost.gif');
-  background-repeat: no-repeat;
-  background-size: cover;
-  background-position: center center;
 }
 </style>
