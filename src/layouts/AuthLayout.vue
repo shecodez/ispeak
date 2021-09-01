@@ -26,7 +26,7 @@ export default defineComponent({
 <style scoped>
 .wrapper {
   /* background-color: #f4f6f8; */
-  background-image: url('https://images.unsplash.com/photo-1618005198919-d3d4b5a92ead?ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&ixlib=rb-1.2.1&auto=format&fit=crop&w=967&q=80');
+  background-image: url('/src/assets/fakurian-design-PGdW_bHDbpI-unsplash.jpg');
   background-repeat: no-repeat;
   background-attachment: fixed;
   background-size: cover;

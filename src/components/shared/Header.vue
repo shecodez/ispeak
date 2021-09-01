@@ -5,17 +5,20 @@
       <router-link to="/">iKanban!</router-link>
     </div>
     <div class="flex gap-4 items-center text-gray-500">
-      <button class="btn">🔍</button>
+      <Search css="btn" />
       <ul class="flex items-center gap-8 font-semibold">
         <li>
           <router-link to="/about">{{ t('about') }}</router-link>
         </li>
         <li>
-          <router-link to="/blog">{{ t('blog') }}</router-link>
+          <router-link to="/story/boards">{{ t('stories') }}</router-link>
         </li>
         <li>
-          <router-link to="/shop">{{ t('shop') }}</router-link>
+          <router-link to="/blog">{{ t('blog') }}</router-link>
         </li>
+        <!-- <li>
+          <router-link to="/shop">{{ t('shop') }}</router-link>
+        </li> -->
         <li>
           <router-link to="/contact">{{ t('contact') }}</router-link>
         </li>
@@ -41,10 +44,11 @@ import { useI18n } from 'vue-i18n';
 import { useAuth } from '@/use/auth';
 import SwitchLocale from '@/components/shared/SwitchLocale.vue';
 import Avatar from '@/components/shared/Avatar.vue';
+import Search from '@/components/search/SearchDialog.vue';
 
 export default defineComponent({
   name: 'Header',
-  components: { SwitchLocale, Avatar },
+  components: { SwitchLocale, Avatar, Search },
   setup() {
     const { t } = useI18n();
     const { auth } = useAuth;

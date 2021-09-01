@@ -17,10 +17,10 @@
               v-if="sent"
               :type="error ? 'error' : 'success'"
               css="text-xl inline-flex"
-              message="Sent you a link, check your email"
+              :message="error ? error : 'Sent you a link, check your email'"
             />
-            <div class="input-group">
-              <input type="email" :placeholder="t('email_placeholder').replace(' ', '@')" />
+            <div v-else class="input-group">
+              <input type="email" v-model="email" :placeholder="t('email_address')" @keydown.enter="submitEmail" />
               <button class="py-4 px-6 primary-yellow" @click="submitEmail">
                 <span>{{ isLoading ? 'Loading...' : t('start_now') }}</span>
               </button>

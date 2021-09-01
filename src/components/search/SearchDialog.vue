@@ -1,77 +1,120 @@
 <template>
-  <button @click="searching = true" :class="css">🔍</button>
+  <button @click="toggleSearch" class="relative z-40" :class="css">
+    <span v-if="isSearching">❌</span>
+    <span v-else>🔍</span>
+  </button>
 
-  <Modal :isOpen="searching" :onClose="close" noBg>
-    <input type="search" v-model="q" placeholder="Search..." @keydown.enter="search" />
-    <div class="p-4 rounded flex flex-col bg-gray-300 dark:bg-gray-700">
-      <div v-if="isLoading">Loading...</div>
-      <div v-else>
+  <div v-if="isSearching" class="overlay fixed inset-0 z-30">
+    <div class="search flex flex-col w-11/12 md:w-2/3 lg:w-3/5">
+      <div class="input-group flex items-center gap-2">
+        <!-- <div class="clearable-input relative flex items-center">
+        <input type="search" v-model="q" placeholder="Search..." @keydown.enter="search" />
+        <button v-if="q" @click="clearQ" class="f-center"><i-mdi-close /></button>
+      </div> -->
+        <input type="search" v-model="q" placeholder="Search..." @keydown.enter="search" />
+        <button @click="search" class="f-center">
+          <i-gg-spinner v-if="isLoading" class="text-2xl animate-spin" />
+          <i-mdi-search v-else />
+        </button>
+      </div>
+
+      <div v-if="showResults" class="results p-4 my-4 rounded flex flex-col bg-gray-200 text-black">
+        <AlertMessage v-if="error" type="error" :message="error" />
         <div v-if="!results.length">No results found.</div>
-        <pre v-else>{{ results }}</pre>
+        <ul v-else class="flex flex-col gap-2">
+          <template v-for="r in results" :key="r.id">
+            <li class="p-4 bg-gray-800 bg-opacity-30">
+              <router-link :to="`/story/boards/${r.id}`" class="text-lg font-bold">
+                {{ r.title }}
+              </router-link>
+              <p>{{ r.description }}</p>
+            </li>
+          </template>
+        </ul>
+        <!-- <b class="ml-auto mt-2 text-xs">Result(s): {{ results.length }}</b> -->
       </div>
     </div>
-  </Modal>
+  </div>
 </template>
 
 <script lang="ts">
 import { defineComponent, reactive, toRefs } from 'vue';
 import { useI18n } from 'vue-i18n';
+import { onKeyDown } from '@vueuse/core';
 
-import { supabase } from '@/supabase/db';
+import { useSearch } from '@/use/db';
 import Modal from '@/components/ui/Modal.vue';
+import AlertMessage from '../shared/AlertMessage.vue';
 
 export default defineComponent({
   name: 'SearchDialog',
-  components: { Modal },
+  components: { Modal, AlertMessage },
   props: {
     css: {
       type: String,
-      default: 'f-center w-16 h-16 text-2xl',
+      default: '',
     },
   },
   setup() {
-    // https://supabase.io/docs/guides/database/full-text-search
-
     const { t } = useI18n();
+    const { data, searchBoards } = useSearch;
+
     const state = reactive({
-      searching: false,
       q: '',
-      isLoading: false,
-      results: [],
-      error: null,
+      isSearching: false,
+      showResults: false,
     });
 
-    // TODO: Search multiple columns doent have javascript example
-    /*
-    SQL EXAMPLE:
-    select 
-      * 
-    from 
-      books
-    where 
-      to_tsvector(description || ' ' || title) -- concat columns, but be sure to include a space to separate them!
-      @@ to_tsquery('little');
-    */
-    function search() {
+    async function search() {
       if (!state.q) return;
+      await searchBoards(state.q);
+      state.showResults = true;
+    }
 
-      try {
-        state.isLoading = true;
-        const { data, error } = supabase.from('kanbans').select().textSearch('title', state.q);
-        if (error) throw error;
-        state.results = data;
-      } catch (err) {
-        state.error = err.error_description || err.message;
-      } finally {
-        state.isLoading = false;
-      }
+    function toggleSearch() {
+      state.isSearching = !state.isSearching;
+      state.showResults = false;
     }
 
     function close() {
-      state.searching = false;
+      state.showResults = false;
+      state.isSearching = false;
     }
 
-    return { t, ...toRefs(state), search, close };
+    onKeyDown(
+      'Escape',
+      () => {
+        if (state.isSearching === true) {
+          close();
+        }
+      },
+      { target: document }
+    );
+
+    return { t, ...toRefs(data), ...toRefs(state), search, toggleSearch, close };
   },
 });
 </script>
+
+<style scoped>
+.overlay {
+  @apply flex flex-col items-center justify-center bg-black bg-opacity-80 overflow-hidden;
+}
+
+.clearable-input > input {
+  @apply pr-20;
+}
+.clearable-input > button {
+  @apply absolute right-0;
+}
+
+.input-group {
+  @apply text-6xl text-white;
+}
+.input-group input {
+  @apply flex-1 bg-transparent outline-none border-0 border-b-1 border-white text-3xl md:text-4xl lg:text-5xl xl:text-7xl;
+}
+.input-group button {
+  @apply flex-shrink-0;
+}
+</style>

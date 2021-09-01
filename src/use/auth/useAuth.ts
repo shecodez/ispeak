@@ -22,16 +22,18 @@ const state = reactive<State>({
 });
 
 /**
- * create profile record.
+ * update profile username.
  * @param id auth user.id (supabase private.users table)
  * @param username optional - defaults to `user${md5.len(8)}`
  */
-async function createUserProfile(id: string, username?: string): Promise<void> {
+async function updateProfileUsername(id: string, username?: string): Promise<void> {
+  if (!username) return;
+
   try {
-    const { error } = await supabase.from('profiles').insert({ id, username });
+    const { error } = await supabase.from('profiles').update({ username }).match({ id });
     if (error) throw error;
   } catch (e) {
-    toast.error('Error creating user profile');
+    toast.error('Error creating updating profile');
     state.error = e.error_description || e.message;
   }
 }
@@ -72,7 +74,7 @@ async function register(credentials: Credentials): Promise<void> {
     if (error) throw error;
 
     if (user) {
-      await createUserProfile(user.id, credentials.username);
+      await updateProfileUsername(user.id, credentials.username);
     }
     toast.success('Registration successful, confirmation e-mail should be sent soon!');
   } catch (e) {
@@ -89,10 +91,10 @@ async function register(credentials: Credentials): Promise<void> {
 async function signUpWithOAuth(provider: Provider): Promise<void> {
   try {
     state.isLoading = true;
-    const { user, error } = await supabase.auth.signIn({ provider });
+    const { error } = await supabase.auth.signIn({ provider });
     if (error) throw error;
 
-    if (user) await createUserProfile(user.id);
+    // if (user) await createUserProfile(user.id); profile now created with trigger
     // toast.success(`Sign In with ${provider} successful.`);
   } catch (e) {
     state.error = e.error_description || e.message;
