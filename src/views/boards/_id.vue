@@ -58,7 +58,7 @@ import { List as IActivity } from '@vicons/fa';
 
 import { useBoards, useLists } from '@/use/db';
 import { Board, List as iList } from '@/data/types/mock';
-import Layout from '@/layouts/Default.vue';
+import Layout from '@/layouts/Minimalist.vue';
 import AlertMessage from '@/components/shared/AlertMessage.vue';
 import Badge from '@/components/ui/Badge.vue';
 import ConfirmDeleteDialog from '@/components/ui/ConfirmDeleteDialog.vue';

@@ -33,7 +33,7 @@ import { useTitle } from '@vueuse/core';
 import debounce from 'lodash.debounce';
 
 import { useBoards } from '@/use/db';
-import FixedFrame from '@/components/layouts/FixedFrame.vue';
+import FixedFrame from '@/layouts/FixedFrame.vue';
 import Pagination from '@/components/ui/Pagination.vue';
 
 export default defineComponent({

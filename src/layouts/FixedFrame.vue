@@ -24,8 +24,8 @@
 <script lang="ts">
 import { computed, defineComponent, ref } from 'vue';
 
-import SideNavigation from '../shared/SideNavigation.vue';
-import TopNavigation from '../shared/TopNavigation.vue';
+import SideNavigation from '@/components/shared/SideNavigation.vue';
+import TopNavigation from '@/components/shared/TopNavigation.vue';
 
 export default defineComponent({
   name: 'FixedFrame',

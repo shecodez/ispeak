@@ -59,7 +59,7 @@ import Menu from '@/components/ui/Menu.vue';
 import Editor from '@/components/_tbd/kanban/Editor.vue';
 import Spinner from '@/components/ui/Spinner.vue';
 import AlertMessage from '@/components/shared/AlertMessage.vue';
-import FixedFrame from '@/components/layouts/FixedFrame.vue';
+import FixedFrame from '@/layouts/FixedFrame.vue';
 import IconGroupInline from '@/components/ui/IconGroup.vue';
 
 export default defineComponent({

@@ -1,5 +1,5 @@
 <template>
-  <header class="py-5 px-10 flex justify-between">
+  <header class="py-4 px-6 flex justify-between">
     <div class="brand flex text-2xl font-bold gap-3">
       <i-fa-solid-sticky-note class="text-yellow-500" />
       <router-link to="/">iKanban!</router-link>

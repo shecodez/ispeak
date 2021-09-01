@@ -10,19 +10,19 @@
 
         <LogoutButton />
         <div class="liked mt-8 mb-2">
-          <h2 class="text-4xl capitalize mb-2">💗 {{ t('liked_sagas') }} {{ `(${likes.length})` }}</h2>
+          <h2 class="text-4xl capitalize mb-2">💗 {{ t('liked_stories') }} {{ `(${likes.length})` }}</h2>
           <hr />
           <!-- <SagaList :list="likes" /> -->
         </div>
 
         <div class="favorites my-2">
-          <h2 class="text-4xl capitalize mb-2">⭐ {{ t('favorite_kanbans') }} {{ `(${likes.length})` }}</h2>
+          <h2 class="text-4xl capitalize mb-2">⭐ {{ t('favorite_stories') }} {{ `(${likes.length})` }}</h2>
           <hr />
           <!-- <SagaList :list="likes" /> -->
         </div>
 
         <div class="saved mb-2">
-          <h2 class="text-4xl capitalize mb-2">💾 {{ t('saved_sagas') }} {{ `(${saved.length})` }}</h2>
+          <h2 class="text-4xl capitalize mb-2">💾 {{ t('saved_stories') }} {{ `(${saved.length})` }}</h2>
           <hr />
           <!-- <SagaList :list="saved" /> -->
         </div>
@@ -36,7 +36,7 @@ import { defineComponent, ref } from 'vue';
 import { useI18n } from 'vue-i18n';
 
 //import { useAuthState } from '@/firebase';
-import FixedFrame from '@/components/layouts/FixedFrame.vue';
+import FixedFrame from '@/layouts/FixedFrame.vue';
 import LogoutButton from '@/components/shared/LogoutButton.vue';
 //import SagaList from '@/components/saga/SagaList.vue';
 

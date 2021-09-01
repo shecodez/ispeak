@@ -40,7 +40,7 @@ import { useRouter } from 'vue-router';
 //import { useToast } from 'vue-toastification';
 
 import useApi from '@/use/api';
-import FixedFrame from '@/components/layouts/FixedFrame.vue';
+import FixedFrame from '@/layouts/FixedFrame.vue';
 import Tooltip from '@/components/ui/Tooltip.vue';
 import Spinner from '@/components/ui/Spinner.vue';
 import AlertMessage from '@/components/shared/AlertMessage.vue';

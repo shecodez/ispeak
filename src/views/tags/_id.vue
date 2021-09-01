@@ -23,7 +23,7 @@ import { useI18n } from 'vue-i18n';
 import { useRoute } from 'vue-router';
 
 import useApi from '@/use/api';
-import FixedFrame from '@/components/layouts/FixedFrame.vue';
+import FixedFrame from '@/layouts/FixedFrame.vue';
 import Spinner from '@/components/ui/Spinner.vue';
 import AlertMessage from '@/components/shared/AlertMessage.vue';
 //import SagaList from '@/components/saga/SagaList.vue';

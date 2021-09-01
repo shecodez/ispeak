@@ -19,7 +19,7 @@ import { defineComponent } from 'vue';
 import { useI18n } from 'vue-i18n';
 
 import useApi from '@/use/api';
-import FixedFrame from '@/components/layouts/FixedFrame.vue';
+import FixedFrame from '@/layouts/FixedFrame.vue';
 import TagCloud from '@/components/shared/TagCloud.vue';
 
 export default defineComponent({

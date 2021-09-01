@@ -62,7 +62,7 @@ import { useBoards } from '@/use/db';
 //import { useAuthState } from '@/libs/firebase';
 //import useApi from '@/use/api';
 import Tooltip from '@/components/ui/Tooltip.vue';
-import HelpDialog from '@/components/HelpDialog.vue';
+import HelpDialog from '@/components/help/HelpDialog.vue';
 
 export default defineComponent({
   name: 'Sidenav',

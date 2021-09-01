@@ -1,7 +1,7 @@
 <template>
   <n-layout position="absolute" content-style="display: flex; flex-direction: column;">
     <n-layout-header>
-      <div class="px-6 py-4 flex items-center justify-between">
+      <div class="py-4 px-6 flex items-center justify-between">
         <div class="brand flex text-2xl font-bold gap-3">
           <i-fa-solid-sticky-note class="text-yellow-500" />
           <router-link to="/">{{ appName }}</router-link>

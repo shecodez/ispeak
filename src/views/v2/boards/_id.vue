@@ -77,7 +77,7 @@ import draggable from 'vuedraggable';
 import { useBoards, useLists } from '@/use/db';
 import { Board, List as iList } from '@/data/types/mock';
 import AlertMessage from '@/components/shared/AlertMessage.vue';
-import FixedFrame from '@/components/layouts/FixedFrame.vue';
+import FixedFrame from '@/layouts/FixedFrame.vue';
 import Badge from '@/components/ui/Badge.vue';
 import ConfirmDeleteDialog from '@/components/ui/ConfirmDeleteDialog.vue';
 import IconGroup from '@/components/ui/IconGroup.vue';

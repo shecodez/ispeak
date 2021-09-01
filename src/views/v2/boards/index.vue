@@ -42,7 +42,7 @@ import { useRouter } from 'vue-router';
 
 import { useBoards } from '@/use/db';
 import AlertMessage from '@/components/shared/AlertMessage.vue';
-import FixedFrame from '@/components/layouts/FixedFrame.vue';
+import FixedFrame from '@/layouts/FixedFrame.vue';
 import Tooltip from '@/components/ui/Tooltip.vue';
 import Spinner from '@/components/ui/Spinner.vue';
 import Pagination from '@/components/ui/Pagination.vue';

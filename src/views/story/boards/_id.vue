@@ -59,7 +59,7 @@ import { useRoute, useRouter } from 'vue-router';
 import { useTitle } from '@vueuse/core';
 
 import { useBoards } from '@/use/db';
-import FixedFrame from '@/components/layouts/FixedFrame.vue';
+import FixedFrame from '@/layouts/FixedFrame.vue';
 import Spinner from '@/components/ui/Spinner.vue';
 import AlertMessage from '@/components/shared/AlertMessage.vue';
 import Pagination from '@/components/ui/Pagination.vue';
