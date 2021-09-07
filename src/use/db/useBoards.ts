@@ -75,7 +75,7 @@ async function getById(id: number) {
     const { data: board, error } = await supabase
       .from('boards')
       .select(
-        'id, title, lists ( id, position, title, slug, description, publish_date, gems, cards ( id, position, text, details, label, color, text_color ))'
+        'id, title, slug, image_url, description, is_public, lists ( id, position, title, slug, description, publish_date, gems, board_id, cards ( id, position, text, details, label, color, text_color, list_id ))'
       )
       .eq('id', id)
       .order('position')

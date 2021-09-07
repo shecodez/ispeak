@@ -13,13 +13,14 @@ or: or
 
 loading: Loading
 
-home: Home
+home: home
 search: Search
-about: About
-blog: Blog
-shop: Shop
-contact: Contact
-sign_up: Sign Up
+about: about
+story: story
+blog: blog
+shop: shop
+contact: contact
+sign_up: sign up
 
 manage_your_lists: Manage your Lists of
 easier: easier!
@@ -73,23 +74,29 @@ saved: saved
 bookmarked: bookmarked
 likes: likes
 stories: Stories
+story_boards: Story Boards
 logout: logout
 analytics: analytics
+archived: archived
 notifications: notifications
 help: Help
 info: Info
 
+public: public
+private: private
 activity: Activity
 untitled: Untitled
 preview: Preview
 board: board
-boards: boards
+boards: Boards
+create_new_board: Create New Board
 add_board: Add Board
 edit_title: Edit Title
 delete_board: Delete Board
 board_settings: Board Settings
 edit_board: Edit Board
 move_board: Move Board
+card: Card
 add_card: Add Card
 edit_card: Update Card
 delete_card: Delete Card

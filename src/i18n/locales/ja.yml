@@ -16,6 +16,7 @@ loading: 読み込み中
 home: 家
 search: 探す
 about: だいたい
+story: ストーリー
 blog: ブログ
 shop: ショップ
 contact: コンタクト
@@ -73,23 +74,29 @@ saved: セーブしました
 bookmarked: ブックマーク
 likes: 好き
 stories: ストーリー
+story_boards: ストーリーボード
 logout: ログアウト
 analytics: 分析
+archived: アーカイブ
 notifications: 通知
 help: ヘルプ
 info: 情報
 
+public: 公衆
+private: プライベート
 activity: アクティビティ
 untitled: 無題
 preview: プレビュー
 board: ボード
 boards: ボード
+create_new_board: ボードを追加します
 add_board: 新しいボード
 edit_title: タイトルを更新
 delete_board: ボードを削除
 board_settings: ボード設定
 edit_board: ボードを編集
 move_board: ボードを動かす
+card: カード
 add_card: カードを追加
 edit_card: カードを更新
 delete_card: カードを削除

@@ -5,15 +5,23 @@
       :class="list.publish_date ? (list.gems ? 'border-indigo-500' : 'border-green-500') : 'border-gray-500'"
     >
       <n-space align="center" justify="space-between">
-        <small>
-          <b style="margin-right: 0.25rem">{{ list.title }}</b>
+        <small class="flex items-center gap-2">
+          <InPlaceEdit :value="list?.title" @submit="updateTitle" css="text-xs font-bold" />
           <!-- <n-tag size="small" style="border-radius: 50%">{{ list.cards.length }}</n-tag> -->
           <n-badge :value="list.cards?.length" :max="999" color="#ccc" />
+          <n-tooltip v-if="!!list.publish_date">
+            <template #trigger>
+              <span>✔️</span>
+            </template>
+            📅&nbsp;{{ list.publish_date }}
+          </n-tooltip>
         </small>
 
-        <div>
-          <div class="handle grabbable hidden md:block">📌</div>
-          <n-dropdown :options="options">
+        <div class="flex items-center gap-2">
+          <div class="handle grabbable f-center hidden md:block">
+            <i-mdi-arrow-all />
+          </div>
+          <n-dropdown @select="handleSelect" :options="options">
             <n-button text size="tiny" color="#9d9ea2">
               <template #icon><i-ellipsis-h /></template>
             </n-button>
@@ -37,15 +45,16 @@
         </template>
       </draggable>
 
-      <n-button dashed style="width: 100%">
-        <template #icon>
-          <n-icon>+</n-icon>
-        </template>
-        Card
-      </n-button>
+      <router-link :to="{ name: 'Board.List.NewCard', params: { listId: list.id } }">
+        <div class="f-center border rounded bg-white bg-opacity-40 hover:bg-opacity-100 p-2 gap-1">
+          <i-mdi-plus />
+          <b class="text-xs">{{ t('card') }}</b>
+        </div>
+      </router-link>
     </div>
 
-    <ListFormDialog
+    <ConfirmDeleteDialog :showDialog="isDeleting" :onClose="close" :onDelete="deleteList" />
+    <!-- <ListFormDialog
       action="Update List"
       :showDialog="isEditingList"
       :edit="list"
@@ -54,24 +63,23 @@
       :onDelete="deleteList"
     />
 
-    <CardFormDialog action="Add Card" :showDialog="isAddingCard" :onSubmit="addCard" :onClose="close" />
+    <CardFormDialog action="Add Card" :showDialog="isAddingCard" :onSubmit="addCard" :onClose="close" /> -->
   </div>
 </template>
 
 <script lang="ts">
-import { computed, defineComponent, PropType, reactive, toRefs } from 'vue';
+import { defineComponent, PropType, reactive, toRefs } from 'vue';
 import { useI18n } from 'vue-i18n';
+import { useRouter } from 'vue-router';
 import draggable from 'vuedraggable';
 import { EllipsisH as IEllipsisH } from '@vicons/fa';
 
-import { List, Card as iCard } from '@/data/types/mock';
-import { useLists, useCards } from '@/use/db';
+import { List } from '@/data/types/mock';
+import { useLists } from '@/use/db';
 import AlertMessage from '@/components/shared/AlertMessage.vue';
-import ConfirmDeleteInPlace from '@/components/ui/ConfirmDeleteInline.vue';
+import ConfirmDeleteDialog from '@/components/ui/ConfirmDeleteDialog.vue';
 import InPlaceEdit from '@/components/boards/InPlaceEdit.vue';
 import Card from '@/components/boards/Card.vue';
-import CardFormDialog from '@/components/boards/dialogs/CardFormDialog.vue';
-import ListFormDialog from '@/components/boards/dialogs/ListFormDialog.vue';
 
 export default defineComponent({
   name: 'List',
@@ -79,11 +87,9 @@ export default defineComponent({
     draggable,
     IEllipsisH,
     AlertMessage,
-    ConfirmDeleteInPlace,
+    ConfirmDeleteDialog,
     InPlaceEdit,
     Card,
-    ListFormDialog,
-    CardFormDialog,
   },
   props: {
     list: {
@@ -100,13 +106,14 @@ export default defineComponent({
   },
   setup(props) {
     const { t } = useI18n();
+    const router = useRouter();
+    const { data, update, sort, del } = useLists;
 
     const state = reactive({
-      isAddingCard: false,
-      isEditingList: false,
+      isDeleting: false,
       options: [
         {
-          label: t('add_card'),
+          label: !!props.list.publish_date ? 'Unpublish List' : 'Publish List',
           key: '1',
         },
         {
@@ -117,18 +124,19 @@ export default defineComponent({
           label: t('delete_list'),
           key: '3',
         },
+        {
+          label: t('add_card'),
+          key: '4',
+        },
       ],
     });
 
-    const { data, update, del, sort } = useLists;
-    const { add } = useCards;
-
-    async function updateList(list: List) {
-      await update({ ...props.list, ...list });
-    }
-
     async function updateTitle(title: string) {
       await update({ ...props.list, title });
+    }
+
+    async function togglePublishDate() {
+      await update({ ...props.list, publish_date: !!props.list.publish_date ? null : new Date().toISOString() });
     }
 
     async function deleteList() {
@@ -136,17 +144,29 @@ export default defineComponent({
       // TODO: re-position lists?
     }
 
-    async function addCard(card: iCard) {
-      const list = props.list;
-      await add(list, {
-        ...card,
-        position: list?.cards?.length || 0,
-      });
+    function handleSelect(key: string) {
+      const listId = Number(props.list.id);
+
+      switch (key) {
+        case '1':
+          togglePublishDate();
+          break;
+        case '2':
+          router.push({ name: 'Board.EditList', params: { listId } });
+          break;
+        case '3':
+          state.isDeleting = true;
+          break;
+        case '4':
+          router.push({ name: 'Board.List.NewCard', params: { listId } });
+          break;
+        default:
+          break;
+      }
     }
 
     function close() {
-      state.isEditingList = false;
-      state.isAddingCard = false;
+      state.isDeleting = false;
     }
 
     async function log(e: any) {
@@ -158,10 +178,9 @@ export default defineComponent({
       t,
       ...toRefs(data),
       ...toRefs(state),
-      updateList,
       updateTitle,
       deleteList,
-      addCard,
+      handleSelect,
       sort,
       close,
       log,

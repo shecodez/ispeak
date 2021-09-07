@@ -75,6 +75,12 @@ export enum Color {
   dark = '#333',
 }
 
+export type NTagColor = {
+  color?: string;
+  borderColor?: string;
+  textColor?: string;
+};
+
 export interface Card {
   id?: number;
 

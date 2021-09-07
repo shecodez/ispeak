@@ -1,6 +1,6 @@
 <template>
   <div class="relative">
-    <n-card size="small" hoverable @click="isEditing = true">
+    <n-card size="small" hoverable @click="goToEdit">
       <slot>
         <b>{{ card.text }}</b>
       </slot>
@@ -13,39 +13,20 @@
         </n-space>
       </template>
     </n-card>
-
-    <AlertMessage v-if="error" type="error" :message="error" css="m-2" />
-
-    <CardFormDialog
-      action="Update Card"
-      :showDialog="isEditing"
-      :edit="card"
-      :onSubmit="updateCard"
-      :onClose="close"
-      :onDelete="deleteCard"
-    />
   </div>
 </template>
 
 <script lang="ts">
 import { computed, defineComponent, PropType, ref, toRefs } from 'vue';
 import { useI18n } from 'vue-i18n';
+import { useRouter } from 'vue-router';
 import tinycolor from 'tinycolor2';
 
-import { Card } from '@/data/types/mock';
+import { Card, NTagColor } from '@/data/types/mock';
 import { useCards } from '@/use/db';
-import AlertMessage from '@/components/shared/AlertMessage.vue';
-import CardFormDialog from '@/components/boards/dialogs/CardFormDialog.vue';
-
-type NTagColor = {
-  color?: string;
-  borderColor?: string;
-  textColor?: string;
-};
 
 export default defineComponent({
   name: 'Card',
-  components: { AlertMessage, CardFormDialog },
   props: {
     card: {
       type: Object as PropType<Card>,
@@ -55,11 +36,10 @@ export default defineComponent({
       type: Number,
     },
   },
-  setup(props, { emit }) {
+  setup(props) {
     const { t } = useI18n();
-
-    const { data, update, del } = useCards;
-    const isEditing = ref(false);
+    const router = useRouter();
+    const { data } = useCards;
 
     const labelColor = computed(() => {
       const c = {} as NTagColor;
@@ -70,20 +50,11 @@ export default defineComponent({
       return c;
     });
 
-    async function updateCard(card: Card) {
-      await update({ ...props.card, ...card });
+    function goToEdit() {
+      router.push({ name: 'Board.List.EditCard', params: { listId: props.card.list_id!, cardId: props.card.id! } });
     }
 
-    async function deleteCard() {
-      await del(props.card);
-      emit('delete'); // TODO: re-position cards?
-    }
-
-    function close() {
-      isEditing.value = false;
-    }
-
-    return { t, ...toRefs(data), labelColor, isEditing, updateCard, deleteCard, close };
+    return { t, ...toRefs(data), labelColor, goToEdit };
   },
 });
 </script>

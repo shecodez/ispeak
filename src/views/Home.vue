@@ -6,7 +6,7 @@
 
         <main class="cta flex-1 flex flex-col justify-around">
           <div class="w-4/5 mx-auto">
-            <h1 class="text-3xl md:text-5xl lg:text-7xl leading-tight font-bold mb-12">
+            <h1 class="text-2xl md:text-5xl lg:text-7xl leading-tight font-bold mb-12">
               {{ t('manage_your_lists') }} <br />
               <span class="typed-text capitalize">{{ typeText }}</span>
               <span class="cursor" :class="{ typing: isTyping }">&nbsp;</span>
@@ -27,7 +27,7 @@
             </div>
           </div>
 
-          <div class="grid grid-cols-1 md:grid-cols-3 lg:grid-cols-5 gap-8 md:transform md:scale-120 mb-12">
+          <div class="grid grid-cols-1 md:grid-cols-3 lg:grid-cols-5 gap-8 transform scale-90 md:scale-120 mb-12">
             <template v-for="(row, i) in cards" :key="row">
               <div :class="cardCss(i)">
                 <div class="flex flex-col gap-2">

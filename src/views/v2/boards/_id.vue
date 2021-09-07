@@ -41,7 +41,9 @@
         </template>
         <template #footer>
           <div class="add-list f-center list-container">
-            <V2AddList :addList="addList" />
+            <button @click="isAddingList = true" class="btn primary-green">
+              {{ t('add_list') }}
+            </button>
           </div>
         </template>
       </draggable>
@@ -64,6 +66,8 @@
     :onDelete="deleteBoard"
   />
 
+  <V2ListFormDialog action="Add List" :showDialog="isAddingList" :onSubmit="addList" :onClose="close" />
+
   <ConfirmDeleteDialog :showDialog="isDeleting" :onClose="close" :onDelete="deleteBoard" />
 </template>
 
@@ -82,9 +86,9 @@ import Badge from '@/components/ui/Badge.vue';
 import ConfirmDeleteDialog from '@/components/ui/ConfirmDeleteDialog.vue';
 import IconGroup from '@/components/ui/IconGroup.vue';
 import V2InPlaceEdit from '@/components/v2/boards/InPlaceEdit.vue';
-import V2AddList from '@/components/v2/boards/AddList.vue';
 import V2List from '@/components/v2/boards/List.vue';
 import V2BoardFormDialog from '@/components/v2/boards/dialogs/BoardFormDialog.vue';
+import V2ListFormDialog from '@/components/v2/boards/dialogs/ListFormDialog.vue';
 
 export default defineComponent({
   name: 'v2Board',
@@ -95,10 +99,10 @@ export default defineComponent({
     IconGroup,
     Badge,
     ConfirmDeleteDialog,
-    V2AddList,
     V2List,
     V2InPlaceEdit,
     V2BoardFormDialog,
+    V2ListFormDialog,
   },
   setup() {
     const { t } = useI18n();
@@ -115,6 +119,7 @@ export default defineComponent({
       isDeleting: false,
       isEditing: false,
       isHiddenOverflowY: true,
+      isAddingList: false,
     });
 
     const title = computed(() => `${data.currentBoard?.title} · 🎬 ${import.meta.env.VITE_APP_NAME}`);
@@ -122,7 +127,7 @@ export default defineComponent({
 
     async function updateBoard(board: Board) {
       await update({ ...data.currentBoard, ...board });
-      console.log('Board', board);
+      // console.log('Board', board);
       // board.lists?.map(async (list) => {
       //   const listInState = data.currentBoard?.lists?.find((l) => l.id === list.id);
       //   if (list !== listInState) {
@@ -154,6 +159,7 @@ export default defineComponent({
     function close() {
       state.isDeleting = false;
       state.isEditing = false;
+      state.isAddingList = false;
     }
 
     async function log(e: any) {

@@ -78,4 +78,7 @@ export default defineComponent({
 input {
   @apply bg-transparent;
 }
+button {
+  @apply text-sm;
+}
 </style>

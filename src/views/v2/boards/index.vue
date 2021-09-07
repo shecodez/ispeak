@@ -20,7 +20,6 @@
           </template>
         </div>
       </section>
-
       <Pagination />
     </template>
 

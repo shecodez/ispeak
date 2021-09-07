@@ -1,6 +1,6 @@
 <template>
   <Layout>
-    <main class="flex items-center justify-center h-full -ml-16">
+    <main class="flex items-center justify-center h-full">
       <div v-if="user" class="text-center">
         <p class="mb-2">
           {{ t('logged_in_as', { email: user?.email }) }}

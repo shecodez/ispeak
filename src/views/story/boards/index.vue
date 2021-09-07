@@ -4,6 +4,8 @@
       <h1 class="text-xl font-bold capitalize">🎬 {{ t('stories') }}</h1>
     </aside>
 
+    TODO: This will change to masonry
+
     <AlertMessage v-if="error" type="error" :message="error" />
     <template v-else>
       <section class="m-3 flex-1 thin-scrollbar">

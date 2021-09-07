@@ -9,13 +9,29 @@ const toast = useToast();
 
 type State = {
   isLoading: boolean;
+  currentList: List | null;
   error: null | Error;
 };
 
 const state = reactive<State>({
   isLoading: false,
+  currentList: null,
   error: null,
 });
+
+async function getById(id: number) {
+  try {
+    state.isLoading = true;
+    const { data, error } = await supabase.from('lists').select('*').eq('id', id).single();
+    if (error) throw error;
+
+    state.currentList = data;
+  } catch (e) {
+    state.error = e.error_description || e.message;
+  } finally {
+    state.isLoading = false;
+  }
+}
 
 async function add(board: Board, list: List): Promise<null | List> {
   try {
@@ -108,4 +124,4 @@ async function del(list: List) {
   }
 }
 
-export { state as data, add, update, sort, del };
+export { state as data, getById, add, update, sort, del };

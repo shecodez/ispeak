@@ -25,9 +25,50 @@ const routes: Array<RouteRecordRaw> = [
     name: 'Board',
     component: () => import('@/views/boards/_id.vue'),
     meta: { requiresAuth: true },
-    // TODO: children
-    // { path: '/boards/:id/description - children: (/new||/edit) }
-    // { path: '/boards/:id/:listId/description - children (/new||/edit) }
+    children: [
+      {
+        path: '',
+        name: 'ViewBoard',
+        component: () => import('@/components/boards/Board.vue'),
+      },
+      {
+        path: 'edit',
+        name: 'EditBoard',
+        component: () => import('@/components/boards/forms/BoardForm.vue'),
+      },
+      {
+        path: 'lists/new',
+        name: 'Board.NewList',
+        component: () => import('@/components/boards/forms/ListForm.vue'),
+      },
+      {
+        path: 'lists/:listId/edit',
+        name: 'Board.EditList',
+        component: () => import('@/components/boards/forms/ListForm.vue'),
+      },
+      {
+        path: 'lists/:listId/cards/new',
+        name: 'Board.List.NewCard',
+        component: () => import('@/components/boards/forms/CardForm.vue'),
+      },
+      {
+        path: 'lists/:listId/cards/:cardId/edit',
+        name: 'Board.List.EditCard',
+        component: () => import('@/components/boards/forms/CardForm.vue'),
+      },
+    ],
+    //props: route => ({ ...route.params, id: route.params.id })
+    // beforeEnter(to, from) {
+    //   const exists = /* call supabase */ .find(board => board.id === to.params.id)
+    //   if (!exists) return {
+    //     name: 'NotFound',
+
+    //     // allows us to keep the URL while rendering a different page
+    //     params: { pathMatch: to.path.split('/').slice(1) },
+    //     query: to.query,
+    //     hash: to.hash,
+    //   }
+    // }
   },
   {
     path: '/v2/boards',
@@ -40,9 +81,7 @@ const routes: Array<RouteRecordRaw> = [
     name: 'v2Board',
     component: () => import('@/views/v2/boards/_id.vue'),
     meta: { requiresAuth: true },
-    // TODO: children
-    // { path: '/boards/:id/description - children: (/new||/edit) }
-    // { path: '/boards/:id/:listId/description - children (/new||/edit) }
+    // NOTE: uses modals for board: edit, list: new/edit and card: new/edit
   },
   {
     path: '/',
@@ -120,30 +159,6 @@ const routes: Array<RouteRecordRaw> = [
     path: '/shop',
     name: 'Shop',
     component: () => import('@/views/shop/index.vue'),
-  },
-  {
-    path: '/kanbans',
-    name: 'Kanbans',
-    component: () => import('@/views/_tbd/kanbans/index.vue'),
-    meta: { requiresAuth: true },
-  },
-  {
-    path: '/kanbans/:id',
-    name: 'Kanban',
-    component: () => import('@/views/_tbd/kanbans/_id.vue'),
-    meta: { requiresAuth: true },
-    //props: route => ({ ...route.params, id: route.params.id })
-    // beforeEnter(to, from) {
-    //   const exists = /* call firebase */ .find(kanban => kanban.id === to.params.id)
-    //   if (!exists) return {
-    //     name: 'NotFound',
-
-    //     // allows us to keep the URL while rendering a different page
-    //     params: { pathMatch: to.path.split('/').slice(1) },
-    //     query: to.query,
-    //     hash: to.hash,
-    //   }
-    // }
   },
   // {
   //   path: '/story/intro',
