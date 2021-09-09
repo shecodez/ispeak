@@ -13,10 +13,12 @@ or: 又
 
 loading: 読み込み中
 
+menu: メニュー
 home: 家
 search: 探す
 about: だいたい
 story: ストーリー
+explore: 見る
 blog: ブログ
 shop: ショップ
 contact: コンタクト
@@ -69,10 +71,8 @@ logged_in_as: '{email}としてログイン'
 editor: エディタ
 my_boards: 私のボード
 hot: トレンド
-tags: タグ
 saved: セーブしました
 bookmarked: ブックマーク
-likes: 好き
 stories: ストーリー
 story_boards: ストーリーボード
 logout: ログアウト
@@ -124,3 +124,12 @@ the_shop: ショップ
 liked_stories: 好きなストーリー
 favorite_boards: 好きなボード
 saved_stories: ブックマークストーリー
+
+follow: フォローする​
+unfollow: フォロー解除する
+like: '{count} 好き'
+min: '{count} 分'
+download: ダウンロード
+share: 共有
+comment: コメント
+tag: '{count} タグ'

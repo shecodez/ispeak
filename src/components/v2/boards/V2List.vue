@@ -47,7 +47,7 @@
       </div>
     </div>
 
-    <V2ListFormDialog
+    <ListFormDialog
       action="Update List"
       :showDialog="isEditingList"
       :edit="list"
@@ -56,7 +56,7 @@
       :onDelete="deleteList"
     />
 
-    <V2CardFormDialog action="Add Card" :showDialog="isAddingCard" :onSubmit="addCard" :onClose="close" />
+    <CardFormDialog action="Add Card" :showDialog="isAddingCard" :onSubmit="addCard" :onClose="close" />
   </div>
 </template>
 
@@ -69,10 +69,10 @@ import { List, Card as iCard } from '@/data/types/mock';
 import { useLists, useCards } from '@/use/db';
 import AlertMessage from '@/components/shared/AlertMessage.vue';
 import ConfirmDeleteInPlace from '@/components/ui/ConfirmDeleteInline.vue';
-import V2InPlaceEdit from '@/components/v2/boards/InPlaceEdit.vue';
-import V2Card from '@/components/v2/boards/Card.vue';
-import V2CardFormDialog from '@/components/v2/boards/dialogs/CardFormDialog.vue';
-import V2ListFormDialog from '@/components/v2/boards/dialogs/ListFormDialog.vue';
+import V2InPlaceEdit from '@/components/v2/boards/V2InPlaceEdit.vue';
+import V2Card from '@/components/v2/boards/V2Card.vue';
+import CardFormDialog from '@/components/v2/boards/dialogs/CardFormDialog.vue';
+import ListFormDialog from '@/components/v2/boards/dialogs/ListFormDialog.vue';
 
 export default defineComponent({
   name: 'v2List',
@@ -82,8 +82,8 @@ export default defineComponent({
     ConfirmDeleteInPlace,
     V2InPlaceEdit,
     V2Card,
-    V2ListFormDialog,
-    V2CardFormDialog,
+    ListFormDialog,
+    CardFormDialog,
   },
   props: {
     list: {

@@ -29,12 +29,24 @@
       </div>
     </div>
 
-    <button class="md:hidden">Menu</button>
+    <button @click="drawer = true" class="md:hidden font-bold uppercase">{{ t('menu') }}</button>
   </header>
+
+  <n-drawer v-model:show="drawer" :width="320" placement="right">
+    <n-drawer-content :title="t('menu')" closable>
+      <ul class="flex flex-col gap-6 font-semibold capitalize">
+        <template v-for="item in navItems" :key="item.id">
+          <li v-if="!item.reqAuth || (user && item.reqAuth)" class="hover:bg-gray-700 hover:bg-opacity-30">
+            <router-link :to="item.route">{{ item.label }}</router-link>
+          </li>
+        </template>
+      </ul>
+    </n-drawer-content>
+  </n-drawer>
 </template>
 
 <script lang="ts">
-import { computed, defineComponent } from 'vue';
+import { computed, defineComponent, reactive, toRefs } from 'vue';
 import { useI18n } from 'vue-i18n';
 
 import { useAuth } from '@/use/auth';
@@ -50,16 +62,19 @@ export default defineComponent({
     const { auth } = useAuth;
     const user = computed(() => auth.userSession?.user);
 
-    const navItems = [
-      { id: 'about', label: t('about'), route: '/about' },
-      { id: 'storyboards', label: t('story_boards'), route: '/story/boards' },
-      { id: 'boards', label: t('boards'), route: '/boards', reqAuth: true },
-      { id: 'blog', label: t('blog'), route: '/blog' },
-      //{ id: 'shop', label: t('shop'), route: "/shop" },
-      { id: 'contact', label: t('contact'), route: '/contact' },
-    ];
+    const state = reactive({
+      drawer: false,
+      navItems: [
+        { id: 'about', label: t('about'), route: '/about' },
+        { id: 'storyboards', label: t('explore'), route: '/story/boards' },
+        { id: 'boards', label: t('boards'), route: '/boards', reqAuth: true },
+        { id: 'blog', label: t('blog'), route: '/blog' },
+        //{ id: 'shop', label: t('shop'), route: "/shop" },
+        { id: 'contact', label: t('contact'), route: '/contact' },
+      ],
+    });
 
-    return { t, user, navItems };
+    return { t, user, ...toRefs(state) };
   },
 });
 </script>

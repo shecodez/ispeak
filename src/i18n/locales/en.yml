@@ -13,10 +13,12 @@ or: or
 
 loading: Loading
 
+menu: menu
 home: home
 search: Search
 about: about
 story: story
+explore: Explore
 blog: blog
 shop: shop
 contact: contact
@@ -69,10 +71,8 @@ logged_in_as: Logged in as {email}
 editor: editor
 my_boards: My Boards
 hot: hot
-tags: tags
 saved: saved
 bookmarked: bookmarked
-likes: likes
 stories: Stories
 story_boards: Story Boards
 logout: logout
@@ -124,3 +124,12 @@ the_shop: the shop
 liked_stories: liked stories
 favorite_boards: favorite Boards
 saved_stories: saved stories
+
+follow: follow
+unfollow: unfollow
+like: '{count} like | {count} likes'
+min: '{count} min | {count} mins'
+download: download
+share: share
+comment: comment
+tag: '{count} tag | {count} tags'

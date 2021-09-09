@@ -4,7 +4,7 @@
     "dev": "vite",
     "build": "vue-tsc --noEmit && vite build",
     "serve": "vite preview",
-    "types": "node ./src/libs/supabase/generateTypes.js"
+    "types": "node ./src/lib/supabase/scripts/generateTypes.js"
   },
   "dependencies": {
     "@googlemaps/js-api-loader": "^1.12.2",
@@ -13,12 +13,13 @@
     "@vuelidate/core": "^2.0.0-alpha.21",
     "@vuelidate/validators": "^2.0.0-alpha.18",
     "@vueuse/core": "^5.0.3",
+    "@yeger/vue-masonry-wall": "^2.2.7",
     "axios": "^0.21.1",
     "date-fns": "^2.22.1",
     "firebase": "^9.0.0-beta.6",
     "lodash.debounce": "^4.0.8",
     "tinycolor2": "^1.4.2",
-    "vue": "^3.0.5",
+    "vue": "3.2.7",
     "vue-i18n": "^9.1.6",
     "vue-router": "^4.0.10",
     "vue-toastification": "^2.0.0-rc.1",
@@ -31,7 +32,7 @@
     "@types/node": "^15.12.4",
     "@vicons/fa": "^0.11.0",
     "@vitejs/plugin-vue": "^1.2.3",
-    "@vue/compiler-sfc": "^3.0.5",
+    "@vue/compiler-sfc": "3.2.7",
     "@windicss/plugin-scrollbar": "^1.2.3",
     "naive-ui": "^2.16.6",
     "openapi-typescript": "^4.0.2",

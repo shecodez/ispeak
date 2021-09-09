@@ -1,8 +1,10 @@
 <template>
-  <div class="flex flex-col h-full">
+  <div class="flex flex-col min-h-screen max-h-screen">
     <Header />
-    <slot />
-    <Footer />
+    <div class="flex-1 flex flex-col" style="overflow-y: auto">
+      <main><slot /></main>
+      <Footer />
+    </div>
   </div>
 </template>
 

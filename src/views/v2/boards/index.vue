@@ -47,7 +47,7 @@ import Spinner from '@/components/ui/Spinner.vue';
 import Pagination from '@/components/ui/Pagination.vue';
 
 export default defineComponent({
-  name: 'v2Boards',
+  name: 'V2Boards',
   components: { AlertMessage, FixedFrame, Tooltip, Spinner, Pagination },
   setup() {
     const { t } = useI18n();

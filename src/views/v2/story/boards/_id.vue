@@ -41,7 +41,7 @@
               class="card-container relative"
               :class="!pov || !card.assigned_to ? 'mx-auto' : pov === card.assigned_to ? 'ml-auto' : 'mr-auto'"
             >
-              <CardRO :card="card" />
+              <V2CardRO :card="card" />
             </div>
           </template>
         </div>
@@ -65,11 +65,11 @@ import AlertMessage from '@/components/shared/AlertMessage.vue';
 import Pagination from '@/components/ui/Pagination.vue';
 import Menu from '@/components/ui/Menu.vue';
 import IconGroup from '@/components/ui/IconGroup.vue';
-import CardRO from '@/components/story/boards/CardRO.vue';
+import V2CardRO from '@/components/v2/story/boards/V2CardRO.vue';
 
 export default defineComponent({
-  name: 'StoryBoard',
-  components: { FixedFrame, Spinner, AlertMessage, Pagination, Menu, IconGroup, CardRO },
+  name: 'V2StoryBoard',
+  components: { FixedFrame, Spinner, AlertMessage, Pagination, Menu, IconGroup, V2CardRO },
   setup() {
     const { t } = useI18n();
     const route = useRoute();

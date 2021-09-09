@@ -57,7 +57,7 @@
     </template>
   </FixedFrame>
 
-  <V2BoardFormDialog
+  <BoardFormDialog
     action="Update Board"
     :showDialog="isEditing"
     :edit="board"
@@ -66,7 +66,7 @@
     :onDelete="deleteBoard"
   />
 
-  <V2ListFormDialog action="Add List" :showDialog="isAddingList" :onSubmit="addList" :onClose="close" />
+  <ListFormDialog action="Add List" :showDialog="isAddingList" :onSubmit="addList" :onClose="close" />
 
   <ConfirmDeleteDialog :showDialog="isDeleting" :onClose="close" :onDelete="deleteBoard" />
 </template>
@@ -85,13 +85,13 @@ import FixedFrame from '@/layouts/FixedFrame.vue';
 import Badge from '@/components/ui/Badge.vue';
 import ConfirmDeleteDialog from '@/components/ui/ConfirmDeleteDialog.vue';
 import IconGroup from '@/components/ui/IconGroup.vue';
-import V2InPlaceEdit from '@/components/v2/boards/InPlaceEdit.vue';
-import V2List from '@/components/v2/boards/List.vue';
-import V2BoardFormDialog from '@/components/v2/boards/dialogs/BoardFormDialog.vue';
-import V2ListFormDialog from '@/components/v2/boards/dialogs/ListFormDialog.vue';
+import V2InPlaceEdit from '@/components/v2/boards/V2InPlaceEdit.vue';
+import V2List from '@/components/v2/boards/V2List.vue';
+import BoardFormDialog from '@/components/v2/boards/dialogs/BoardFormDialog.vue';
+import ListFormDialog from '@/components/v2/boards/dialogs/ListFormDialog.vue';
 
 export default defineComponent({
-  name: 'v2Board',
+  name: 'V2Board',
   components: {
     draggable,
     FixedFrame,
@@ -101,8 +101,8 @@ export default defineComponent({
     ConfirmDeleteDialog,
     V2List,
     V2InPlaceEdit,
-    V2BoardFormDialog,
-    V2ListFormDialog,
+    BoardFormDialog,
+    ListFormDialog,
   },
   setup() {
     const { t } = useI18n();

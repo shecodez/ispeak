@@ -1,11 +1,10 @@
 import { createApp } from 'vue';
 import Toast, { PluginOptions, POSITION } from 'vue-toastification';
-//import supabase from 'vue-3-supabase';
 import naive from 'naive-ui';
+import MasonryWall from '@yeger/vue-masonry-wall';
 
 import { i18n } from './i18n';
 import { router } from './router';
-//import './firebase'; //TODO: remove
 import { supabase } from './lib/supabase';
 import { auth } from './use/auth/useAuth';
 
@@ -37,11 +36,7 @@ const options: PluginOptions = {
   timeout: 4200,
 };
 app.use(Toast, options);
-// app.use(supabase, {
-//   supabaseUrl: import.meta.env.VITE_SUPABASE_URL,
-//   supabaseKey: import.meta.env.VITE_SUPABASE_ANON_KEY,
-//   options: {},
-// });
+app.use(MasonryWall);
 
 if (!import.meta.env.PROD) {
   app.config.performance = true;
