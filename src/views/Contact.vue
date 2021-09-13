@@ -1,60 +1,53 @@
 <template>
-  <n-layout position="absolute" content-style="display: flex; flex-direction: column;">
-    <n-layout-header>
-      <div class="py-4 px-6 flex items-center justify-between">
-        <div class="brand flex text-2xl font-bold gap-3">
-          <i-fa-solid-sticky-note class="text-yellow-500" />
-          <router-link to="/">{{ appName }}</router-link>
-        </div>
-        <SwitchLocale />
+  <Layout :title="t('contact')">
+    <section class="text-gray-600 body-font relative flex-1 flex items-center">
+      <div class="absolute inset-0 bg-gray-300">
+        <iframe
+          width="100%"
+          height="100%"
+          frameborder="0"
+          marginheight="0"
+          marginwidth="0"
+          title="map"
+          scrolling="no"
+          src="https://maps.google.com/maps?width=100%&amp;height=600&amp;hl=en&amp;q=Hachi%C5%8Dji+(iKanban)&amp;ie=UTF8&amp;t=&amp;z=15&amp;iwloc=B&amp;output=embed"
+          style="filter: grayscale(1) contrast(1.2) opacity(0.4)"
+        />
       </div>
-    </n-layout-header>
-    <n-layout has-sider content-style="display: flex;">
-      <n-layout-sider
-        collapse-mode="width"
-        :collapsed-width="0"
-        :width="320"
-        show-trigger="bar"
-        bordered
-        content-style="padding: 24px;"
-        inverted
-      >
-        <div class="flex flex-col gap-4 h-full">
-          <div class="intro">
-            <h2>{{ t('get_in_touch') }}</h2>
-            <p class="text-lg">
-              Have a question 🤔? Want to give some feedback? Report a bug 🐞? et cetera. Feel free to drop us a line,
-              we can't wait to hear from you 🥰.
-            </p>
-          </div>
-          <div class="flex-1">
-            <AlertMessage
-              v-if="sent"
-              :type="error ? 'error' : 'success'"
-              css="text-lg"
-              :message="t('message_sent_thanks')"
-            />
-            <form v-else>
-              <h2>{{ t('send_a_message') }}</h2>
-              <n-space vertical>
-                <n-input size="large" v-model:value="name" type="text" :placeholder="t('name')" required />
-                <n-input size="large" v-model:value="email" type="email" :placeholder="t('email')" required />
-                <n-input size="large" v-model:value="message" type="textarea" :placeholder="t('message')" required />
+      <div class="container px-5 py-24 mx-auto flex">
+        <div class="form-card">
+          <h2 class="title-font">{{ t('get_in_touch') }}</h2>
+          <p class="leading-relaxed mb-5 text-gray-600">
+            Have a question 🤔? Want to give some feedback? Report a bug 🐞? et cetera. Feel free to drop us a line, we
+            can't wait to hear from you 🥰.
+          </p>
 
-                <n-button type="info" @click="submitForm">
-                  <template #icon>
-                    <n-icon>
-                      <i-mail />
-                    </n-icon>
-                  </template>
-                  {{ t('send') }}
-                </n-button>
-              </n-space>
-            </form>
-          </div>
-          <div class="social">
-            <h2>{{ t('follow_us') }}</h2>
-            <div class="flex gap-4 text-2xl">
+          <AlertMessage
+            v-if="sent"
+            :type="error ? 'error' : 'success'"
+            css="text-lg"
+            :message="t('message_sent_thanks')"
+          />
+          <form v-else @submit.prevent="submitForm">
+            <!-- <h2 class="title-font">{{ t('send_a_message') }}</h2> -->
+            <div class="relative mb-4">
+              <label for="email" class="leading-7 text-sm text-gray-600">Email</label>
+              <input v-model="email" type="email" name="email" class="leading-8" />
+            </div>
+            <div class="relative mb-4">
+              <label for="message" class="leading-7 text-sm text-gray-600">Message</label>
+              <textarea v-model="message" name="message" class="h-32 resize-none leading-6"></textarea>
+            </div>
+
+            <button class="f-center btn primary-yellow text-white gap-2 uppercase text-lg">
+              <i-mdi-email-send-outline />
+              {{ t('send') }}
+            </button>
+          </form>
+
+          <div class="social mt-4">
+            <h2 class="title-font">{{ t('follow_us') }}</h2>
+            <div class="flex gap-4 text-xs">
               <i-logos-twitter />
               <i-logos-linkedin-icon />
               <!--TODO: replace Discord with HoloSpace >.> -->
@@ -63,45 +56,36 @@
             </div>
           </div>
         </div>
-      </n-layout-sider>
-      <n-layout-content content-style="flex: 1;"><GoogleMap /></n-layout-content>
-      <!-- <n-layout-footer><Footer /></n-layout-footer> -->
-    </n-layout>
-  </n-layout>
+      </div>
+    </section>
+  </Layout>
 </template>
 
 <script lang="ts">
 import { defineComponent, reactive, toRefs } from 'vue';
-import { useTitle } from '@vueuse/core';
 import { useI18n } from 'vue-i18n';
-import { Envelope as iMail } from '@vicons/fa';
 
 import { ContactForm } from '@/data/types/mock';
-import Footer from '@/components/shared/Footer.vue';
-import GoogleMap from '@/components/ui/GoogleMap.vue';
-import SwitchLocale from '@/components/shared/SwitchLocale.vue';
+import Layout from '@/layouts/Default.vue';
 import AlertMessage from '@/components/shared/AlertMessage.vue';
 
 export default defineComponent({
+  components: { Layout },
   name: 'Contact',
-  components: { Footer, GoogleMap, SwitchLocale, iMail, AlertMessage },
   setup() {
     const { t } = useI18n();
-    const appName = import.meta.env.VITE_APP_NAME;
-    useTitle(`${t('contact')} · 🎬 ${appName}`);
 
     const state = reactive({
       sent: false,
       valid: true,
       isLoading: false,
       error: null,
-      directionsFrom: null, // https://developers.google.com/maps/documentation/javascript/directions
     });
 
     const form = reactive<ContactForm>({
-      name: '',
+      //name: '',
       email: '',
-      subject: '',
+      //subject: '',
       message: '',
     });
 
@@ -110,13 +94,26 @@ export default defineComponent({
       state.sent = true;
     }
 
-    return { t, appName, ...toRefs(state), ...toRefs(form), submitForm };
+    return { t, ...toRefs(state), ...toRefs(form), submitForm };
   },
 });
 </script>
 
 <style scoped>
-h2 {
-  @apply text-xl uppercase mb-2;
+.form-card {
+  @apply lg:w-1/3  md:w-1/2  bg-white rounded-lg p-8 flex flex-col md:ml-auto  w-full  mt-10  md:mt-0  relative  z-10  shadow-md;
 }
+
+h2 {
+  @apply text-gray-900 text-lg mb-1 font-medium;
+}
+
+input,
+textarea {
+  @apply w-full bg-white rounded border border-gray-300 focus:border-indigo-500 focus:ring-2 focus:ring-indigo-200 text-base outline-none  text-gray-700 py-1 px-3 transition-colors  duration-200  ease-in-out;
+}
+
+/*
+.title-font {}
+*/
 </style>

@@ -1,42 +1,44 @@
 <template>
-  <n-page-header @back="handleBack">
-    <template #title>
-      <!-- <a href="#" class="title">{{ board.title }}</a> -->
-      <InPlaceEdit :value="board.title" @submit="updateTitle" css="font-bold" showButtons />
-    </template>
-    <template #avatar>
-      <n-avatar>{{ abbrTitle }}</n-avatar>
-    </template>
+  <div>
+    <n-page-header @back="handleBack">
+      <template #title>
+        <!-- <a href="#" class="title">{{ board.title }}</a> -->
+        <InPlaceEdit :value="board.title" @submit="updateTitle" css="font-bold" showButtons />
+      </template>
+      <template #avatar>
+        <n-avatar>{{ abbrTitle }}</n-avatar>
+      </template>
 
-    <template #extra>
-      <n-space align="center" justify="end">
-        <n-tooltip trigger="hover" :show-arrow="false">
-          <template #trigger>
-            <n-button ghost style="padding: 0 0.715em">
-              <n-icon>
-                <i-globe v-if="board.is_public" />
-                <i-lock v-else />
-              </n-icon>
+      <template #extra>
+        <n-space align="center" justify="end">
+          <n-tooltip trigger="hover" :show-arrow="false">
+            <template #trigger>
+              <n-button ghost style="padding: 0 0.715em">
+                <n-icon>
+                  <i-globe v-if="board.is_public" />
+                  <i-lock v-else />
+                </n-icon>
+              </n-button>
+            </template>
+            {{ board.is_public ? t('public') : t('private') }}
+          </n-tooltip>
+          <n-input placeholder="Search...">
+            <template #prefix>
+              <n-icon><i-search /></n-icon>
+            </template>
+          </n-input>
+          <AvatarGroup :items="['AAA', 'BEE', 'CDC', 'DD']" :showAddBtn="true" />
+          <n-dropdown @select="handleSelect" :options="options" placement="bottom-start">
+            <n-button text size="tiny" color="#9d9ea2">
+              <template #icon><i-ellipsis-v /></template>
             </n-button>
-          </template>
-          {{ board.is_public ? t('public') : t('private') }}
-        </n-tooltip>
-        <n-input placeholder="Search...">
-          <template #prefix>
-            <n-icon><i-search /></n-icon>
-          </template>
-        </n-input>
-        <AvatarGroup :items="['AAA', 'BEE', 'CDC', 'DD']" :showAddBtn="true" />
-        <n-dropdown @select="handleSelect" :options="options" placement="bottom-start">
-          <n-button text size="tiny" color="#9d9ea2">
-            <template #icon><i-ellipsis-v /></template>
-          </n-button>
-        </n-dropdown>
-      </n-space>
-    </template>
-  </n-page-header>
+          </n-dropdown>
+        </n-space>
+      </template>
+    </n-page-header>
 
-  <ConfirmDeleteDialog :showDialog="isDeleting" :onClose="close" :onDelete="deleteBoard" />
+    <ConfirmDeleteDialog :showDialog="isDeleting" :onClose="close" :onDelete="deleteBoard" />
+  </div>
 </template>
 
 <script lang="ts">

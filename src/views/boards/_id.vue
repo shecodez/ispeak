@@ -1,8 +1,10 @@
 <template>
-  <Layout>
+  <Spinner v-if="isLoading" />
+  <Layout v-if="currentBoard" :title="currentBoard.title">
     <template v-slot:header>
       <BoardHeader v-if="currentBoard" :board="currentBoard" />
     </template>
+    <!-- <AlertMessage v-if="error" type="error" :message="error" /> -->
 
     <router-view />
 
@@ -32,6 +34,7 @@ import { useRoute } from 'vue-router';
 import draggable from 'vuedraggable';
 
 import { useBoards } from '@/use/db';
+import Spinner from '@/components/ui/Spinner.vue';
 import Layout from '@/layouts/Minimalist.vue';
 //import AlertMessage from '@/components/shared/AlertMessage.vue';
 import BoardHeader from '@/components/boards/BoardIdHeader.vue';
@@ -41,6 +44,7 @@ export default defineComponent({
   name: 'Board',
   components: {
     draggable,
+    Spinner,
     Layout,
     BoardHeader,
     ActivityList,

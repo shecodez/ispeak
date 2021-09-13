@@ -6,9 +6,6 @@ import { useRouter } from 'vue-router';
 import { Credentials } from '@/data/types/mock';
 import { supabase } from '@/lib/supabase';
 
-const toast = useToast();
-const router = useRouter();
-
 type State = {
   isLoading: boolean;
   userSession: Session | null;
@@ -33,7 +30,7 @@ async function updateProfileUsername(id: string, username?: string): Promise<voi
     const { error } = await supabase.from('profiles').update({ username }).match({ id });
     if (error) throw error;
   } catch (e) {
-    toast.error('Error creating updating profile');
+    useToast().error('Error creating updating profile');
     state.error = e.error_description || e.message;
   }
 }
@@ -54,7 +51,7 @@ async function login(credentials: Credentials): Promise<void> {
 
     // No error throw, but no user detected so send magic link
     if (!error && !user) {
-      toast('Sent you a link, check your email');
+      useToast()('Sent you a link, check your email');
     }
   } catch (e) {
     state.error = e.error_description || e.message;
@@ -76,7 +73,7 @@ async function register(credentials: Credentials): Promise<void> {
     if (user) {
       await updateProfileUsername(user.id, credentials.username);
     }
-    toast.success('Registration successful, confirmation e-mail should be sent soon!');
+    useToast().success('Registration successful, confirmation e-mail should be sent soon!');
   } catch (e) {
     state.error = e.error_description || e.message;
   } finally {
@@ -95,7 +92,7 @@ async function signUpWithOAuth(provider: Provider): Promise<void> {
     if (error) throw error;
 
     // if (user) await createUserProfile(user.id); profile now created with trigger
-    // toast.success(`Sign In with ${provider} successful.`);
+    // useToast()success(`Sign In with ${provider} successful.`);
   } catch (e) {
     state.error = e.error_description || e.message;
   } finally {
@@ -120,7 +117,7 @@ async function sendPasswordReset(email: string): Promise<void> {
     const { error } = await supabase.auth.api.resetPasswordForEmail(email);
     if (error) throw error;
 
-    toast(`Password recovery email has been sent to '${email}'`);
+    useToast()(`Password recovery email has been sent to '${email}'`);
   } catch (e) {
     state.error = e.error_description || e.message;
   } finally {
@@ -140,10 +137,10 @@ async function updateUser(credentials: Credentials): Promise<void> {
     if (error) throw error;
 
     // TODO: if username update profiles too
-    toast.success('User info successfully updated!');
-    router.push('/');
+    useToast().success('User info successfully updated!');
+    useRouter().push('/');
   } catch (e) {
-    toast.error('Error updating user info');
+    useToast().error('Error updating user info');
     state.error = e.error_description || e.message;
   } finally {
     state.isLoading = false;
@@ -159,10 +156,10 @@ async function logout(): Promise<void> {
     const { error } = await supabase.auth.signOut();
     if (error) throw error;
 
-    toast('You are logged out.');
-    router.push('/');
+    useToast()('You are logged out.');
+    useRouter().push('/');
   } catch (e) {
-    toast.error('Oops, unknown error signing out.');
+    useToast().error('Oops, unknown error signing out.');
     console.error('SignOut Error:', e.error_description || e.message);
   } finally {
     state.isLoading = false;

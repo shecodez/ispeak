@@ -22,7 +22,9 @@
           <i-mdi-key class="p-0.5 rounded bg-gray-300" />
           {{ t('login') }}
         </router-link>
-        <router-link to="/auth/signup" class="btn bg-gray-300 capitalize">{{ t('sign_up') }}</router-link>
+        <router-link to="/auth/signup" class="btn hidden md:block bg-gray-300 capitalize">
+          {{ t('sign_up') }}
+        </router-link>
       </div>
       <div class="p-3 md:p-0">
         <SwitchLocale />
@@ -41,6 +43,9 @@
           </li>
         </template>
       </ul>
+      <router-link to="/auth/signup" class="btn my-6 inline-block bg-gray-300 capitalize">
+        {{ t('sign_up') }}
+      </router-link>
     </n-drawer-content>
   </n-drawer>
 </template>
@@ -64,14 +69,14 @@ export default defineComponent({
 
     const state = reactive({
       drawer: false,
-      navItems: [
+      navItems: computed(() => [
         { id: 'about', label: t('about'), route: '/about' },
         { id: 'storyboards', label: t('explore'), route: '/story/boards' },
         { id: 'boards', label: t('boards'), route: '/boards', reqAuth: true },
         { id: 'blog', label: t('blog'), route: '/blog' },
         //{ id: 'shop', label: t('shop'), route: "/shop" },
         { id: 'contact', label: t('contact'), route: '/contact' },
-      ],
+      ]),
     });
 
     return { t, user, ...toRefs(state) };

@@ -1,6 +1,6 @@
 <template>
-  <div class="absolute inset-0 f-center bg-black opacity-50">
-    <i-gg-spinner class="text-7xl animate-spin" />
+  <div class="absolute inset-0 f-center bg-black opacity-40 dark:opacity-80 z-50">
+    <i-gg-spinner class="text-7xl animate-spin text-white" />
     <slot>
       <p v-if="message" class="m-2">{{ message }}</p>
     </slot>

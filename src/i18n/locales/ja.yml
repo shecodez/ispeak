@@ -5,6 +5,7 @@ hello: こんにちは、世界！
 built_with_love: ❤️愛を込めて作られ
 
 prev: 前
+previous: 前
 next: 次
 back: 戻
 
@@ -72,6 +73,7 @@ editor: エディタ
 my_boards: 私のボード
 hot: トレンド
 saved: セーブしました
+bookmark: ブックマーク
 bookmarked: ブックマーク
 stories: ストーリー
 story_boards: ストーリーボード
@@ -131,5 +133,11 @@ like: '{count} 好き'
 min: '{count} 分'
 download: ダウンロード
 share: 共有
-comment: コメント
+comment: '{count} コメント'
 tag: '{count} タグ'
+tag_cloud: タグクラウド
+recommended: おすすめされた
+
+bookmark_list: ブックマークリスト
+
+list: '{count} リスト'

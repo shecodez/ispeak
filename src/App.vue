@@ -109,11 +109,11 @@ body,
 }
 
 .list-container {
-  @apply w-11/12 md:w-1/2 lg:w-1/3 xl:w-1/5 flex-shrink-0 mr-4 g;
+  @apply w-full md:w-1/2 lg:w-1/3 xl:w-1/5 flex-shrink-0 mr-4 g;
 }
-.list-container:not(:first-child) {
+/* .list-container:not(:first-child) {
   @apply ml-4;
-}
+} */
 
 .grabbable {
   cursor: move; /* fallback if grab cursor is unsupported */

@@ -18,7 +18,7 @@
         </small>
 
         <div class="flex items-center gap-2">
-          <div class="handle grabbable f-center hidden md:block">
+          <div class="handle grabbable hidden md:flex items-center">
             <i-mdi-arrow-all />
           </div>
           <n-dropdown @select="handleSelect" :options="options">

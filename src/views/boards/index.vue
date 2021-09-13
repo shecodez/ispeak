@@ -1,5 +1,5 @@
 <template>
-  <Layout>
+  <Layout :title="t('boards')">
     <template v-slot:header>
       <n-page-header @back="handleBack">
         <template #title>
@@ -47,7 +47,6 @@
 <script lang="ts">
 import { defineComponent, onMounted, ref, toRefs } from 'vue';
 import { useI18n } from 'vue-i18n';
-import { useTitle } from '@vueuse/core';
 import { useRouter } from 'vue-router';
 import { Search as ISearch, EllipsisV as IEllipsisV, PlusCircle as IPlus } from '@vicons/fa';
 
@@ -74,8 +73,6 @@ export default defineComponent({
     const router = useRouter();
     const { data: state, all, add, del } = useBoards;
     onMounted(async () => await all());
-
-    useTitle(`Boards · 🎬 ${import.meta.env.VITE_APP_NAME}`);
 
     async function addBoard() {
       const data = await add({ title: t('untitled'), position: state.boards.length });

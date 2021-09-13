@@ -30,8 +30,11 @@ export interface Board {
 
   position: number;
   title: string;
+  subtitle?: string;
   slug?: string;
   image_url?: string;
+  image_by?: string;
+  excerpt?: string;
   description?: string;
   is_public?: boolean;
   lists?: List[];
@@ -49,8 +52,10 @@ export interface List {
 
   position: number;
   title: string;
+  subtitle?: string;
   slug?: string;
-  //image_url?: string;
+  image_url?: string;
+  image_by?: string;
   description?: string;
   publish_date?: string | null;
   gems?: number;
@@ -114,7 +119,7 @@ export interface Tip {
 }
 
 export interface ContactForm {
-  name: string;
+  name?: string;
   email: string;
   subject?: string;
   message: string;

@@ -5,6 +5,7 @@ hello: Hello, World!
 built_with_love: built with ❤️
 
 prev: Prev
+previous: previous
 next: Next
 back: Back
 
@@ -72,6 +73,7 @@ editor: editor
 my_boards: My Boards
 hot: hot
 saved: saved
+bookmark: bookmark
 bookmarked: bookmarked
 stories: Stories
 story_boards: Story Boards
@@ -131,5 +133,11 @@ like: '{count} like | {count} likes'
 min: '{count} min | {count} mins'
 download: download
 share: share
-comment: comment
+comment: '{count} comment | {count} comments'
 tag: '{count} tag | {count} tags'
+tag_cloud: Tag cloud
+recommended: recommended
+
+bookmark_list: bookmark list
+
+list: '{count} list | {count} lists'

@@ -177,6 +177,11 @@ const routes: Array<RouteRecordRaw> = [
     // https://next.router.vuejs.org/guide/essentials/nested-routes.html
   },
   {
+    path: '/story/boards/:id/intro',
+    name: 'StoryBoardIntro',
+    component: () => import('@/views/story/boards/intro.vue'),
+  },
+  {
     path: '/@me',
     name: '@me',
     component: () => import('@/views/Me.vue'),
