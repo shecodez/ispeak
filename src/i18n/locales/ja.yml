@@ -83,10 +83,12 @@ archived: アーカイブ
 notifications: 通知
 help: ヘルプ
 info: 情報
+calendar: カレンダー
+profile: プロフィール
 
 public: 公衆
 private: プライベート
-activity: アクティビティ
+activity: '{count} アクティビティ'
 untitled: 無題
 preview: プレビュー
 board: ボード
@@ -127,8 +129,8 @@ liked_stories: 好きなストーリー
 favorite_boards: 好きなボード
 saved_stories: ブックマークストーリー
 
-follow: フォローする​
-unfollow: フォロー解除する
+follow: '{user}フォローする​'
+unfollow: '{user}フォロー解除する'
 like: '{count} 好き'
 min: '{count} 分'
 download: ダウンロード
@@ -141,3 +143,8 @@ recommended: おすすめされた
 bookmark_list: ブックマークリスト
 
 list: '{count} リスト'
+
+edit: 編集
+upload: アップロード
+followers: フォロワー
+following: 続く

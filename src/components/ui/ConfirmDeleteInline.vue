@@ -1,12 +1,10 @@
 <template>
-  <div class="flex items-center space-x-1">
-    <button
-      @click="canDelete ? deleteIt() : prepareToDelete()"
-      type="button"
-      class="btn text-red-500 hover:bg-red-500 hover:text-white"
-    >
-      🗑️<span class="sr-only">Delete</span>
+  <div class="flex items-center gap-2" :class="css">
+    <button @click="canDelete ? deleteIt() : prepareToDelete()" type="button" class="btn" :class="btnCss">
+      🗑️
       <span v-if="canDelete">{{ t('confirm') }}</span>
+      <span v-else>&nbsp;{{ label }}</span>
+      <span class="sr-only">Delete</span>
     </button>
 
     <button v-if="canDelete" type="button" class="btn opacity-70 hover:opacity-100" @click="cancelDelete()">
@@ -24,6 +22,18 @@ export default defineComponent({
   props: {
     onDelete: {
       type: Function,
+    },
+    label: {
+      type: String,
+      default: '',
+    },
+    css: {
+      type: String,
+      default: 'w-full',
+    },
+    btnCss: {
+      type: String,
+      default: 'text-red-500 hover:bg-red-500 hover:text-white',
     },
   },
   setup(props) {

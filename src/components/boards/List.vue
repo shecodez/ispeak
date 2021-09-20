@@ -1,19 +1,16 @@
 <template>
-  <div :class="isHiddenOverflowY ? 'list-container max-h-11/12' : ''">
-    <div
-      class="flex flex-col gap-2 relative overflow-hidden max-h-full"
-      :class="list.publish_date ? (list.gems ? 'border-indigo-500' : 'border-green-500') : 'border-gray-500'"
-    >
+  <div :class="isHideOverflowY ? 'list-container max-h-11/12' : ''">
+    <div class="relative flex flex-col gap-2 overflow-hidden max-h-full">
       <n-space align="center" justify="space-between">
         <small class="flex items-center gap-2">
           <InPlaceEdit :value="list?.title" @submit="updateTitle" css="text-xs font-bold" />
-          <!-- <n-tag size="small" style="border-radius: 50%">{{ list.cards.length }}</n-tag> -->
-          <n-badge :value="list.cards?.length" :max="999" color="#ccc" />
-          <n-tooltip v-if="!!list.publish_date">
+          <n-badge v-if="list.cards?.length" :value="list.cards?.length" :max="99" color="#ccc" />
+          <n-tooltip v-if="!!publishDate">
             <template #trigger>
-              <span>✔️</span>
+              <span v-if="isPast(new Date(publishDate))">✔️<span class="sr-only">published</span></span>
+              <span v-else>⏳<span class="sr-only">publish scheduled</span></span>
             </template>
-            📅&nbsp;{{ list.publish_date }}
+            📅&nbsp;{{ publishDate }}
           </n-tooltip>
         </small>
 
@@ -23,7 +20,7 @@
           </div>
           <n-dropdown @select="handleSelect" :options="options">
             <n-button text size="tiny" color="#9d9ea2">
-              <template #icon><i-ellipsis-h /></template>
+              <template #icon><i-entypo-dots-three-horizontal /></template>
             </n-button>
           </n-dropdown>
         </div>
@@ -32,13 +29,17 @@
       <AlertMessage v-if="error" type="error" :message="error" />
 
       <draggable
+        :id="`list-${list.id}`"
+        :data-title="list.title"
         class="flex flex-col mt-0.5 overflow-x-hidden overflow-y-auto"
         :list="list.cards"
         group="cards"
         @change="log"
+        @move="checkMove"
         itemKey="id"
         :animation="200"
         ghost-class="ghost"
+        drag-class="drag"
       >
         <template #item="{ element, index }">
           <Card :card="element" :position="index" @delete="sort(list)" />
@@ -54,30 +55,20 @@
     </div>
 
     <ConfirmDeleteDialog :showDialog="isDeleting" :onClose="close" :onDelete="deleteList" />
-    <!-- <ListFormDialog
-      action="Update List"
-      :showDialog="isEditingList"
-      :edit="list"
-      :onSubmit="updateList"
-      :onClose="close"
-      :onDelete="deleteList"
-    />
-
-    <CardFormDialog action="Add Card" :showDialog="isAddingCard" :onSubmit="addCard" :onClose="close" /> -->
   </div>
 </template>
 
 <script lang="ts">
-import { defineComponent, PropType, reactive, toRefs } from 'vue';
+import { computed, defineComponent, PropType, reactive, toRefs } from 'vue';
 import { useI18n } from 'vue-i18n';
-import { useRouter } from 'vue-router';
+import { useRoute, useRouter } from 'vue-router';
+import { isPast } from 'date-fns';
 import draggable from 'vuedraggable';
-import { EllipsisH as IEllipsisH } from '@vicons/fa';
 
 import { List } from '@/data/types/mock';
-import { useLists } from '@/use/db';
-import AlertMessage from '@/components/shared/AlertMessage.vue';
+import { db } from '@/use/db';
 import ConfirmDeleteDialog from '@/components/ui/ConfirmDeleteDialog.vue';
+import AlertMessage from '@/components/shared/AlertMessage.vue';
 import InPlaceEdit from '@/components/boards/InPlaceEdit.vue';
 import Card from '@/components/boards/Card.vue';
 
@@ -85,9 +76,8 @@ export default defineComponent({
   name: 'List',
   components: {
     draggable,
-    IEllipsisH,
-    AlertMessage,
     ConfirmDeleteDialog,
+    AlertMessage,
     InPlaceEdit,
     Card,
   },
@@ -96,9 +86,9 @@ export default defineComponent({
       type: Object as PropType<List>,
       required: true,
     },
-    isHiddenOverflowY: {
+    isHideOverflowY: {
       type: Boolean,
-      required: true,
+      default: true,
     },
     position: {
       type: Number,
@@ -107,42 +97,48 @@ export default defineComponent({
   setup(props) {
     const { t } = useI18n();
     const router = useRouter();
-    const { data, update, sort, del } = useLists;
+    const route = useRoute();
+    const { data, updateTitle: updateListTitle, updatePublishDate, sort, del } = db.lists;
+    const { add } = db.activity;
 
     const state = reactive({
       isDeleting: false,
-      options: [
-        {
-          label: !!props.list.publish_date ? 'Unpublish List' : 'Publish List',
-          key: '1',
-        },
-        {
-          label: t('edit_list'),
-          key: '2',
-        },
-        {
-          label: t('delete_list'),
-          key: '3',
-        },
-        {
-          label: t('add_card'),
-          key: '4',
-        },
-      ],
+      publishDate: props.list.publish_date,
     });
 
     async function updateTitle(title: string) {
-      await update({ ...props.list, title });
+      await updateListTitle(props.list, title);
     }
 
     async function togglePublishDate() {
-      await update({ ...props.list, publish_date: !!props.list.publish_date ? null : new Date().toISOString() });
+      const publish_date = !!state.publishDate ? null : new Date().toISOString();
+      await updatePublishDate(props.list, publish_date);
+      //state.publishDate = publish_date;
     }
 
     async function deleteList() {
       await del(props.list);
       // TODO: re-position lists?
     }
+
+    const options = computed(() => [
+      {
+        label: !!state.publishDate ? 'Unpublish List' : 'Publish List',
+        key: '1',
+      },
+      {
+        label: t('edit_list'),
+        key: '2',
+      },
+      {
+        label: t('delete_list'),
+        key: '3',
+      },
+      {
+        label: t('add_card'),
+        key: '4',
+      },
+    ]);
 
     function handleSelect(key: string) {
       const listId = Number(props.list.id);
@@ -170,26 +166,45 @@ export default defineComponent({
     }
 
     async function log(e: any) {
-      // const { element, oldIndex, newIndex } = e.moved;
-      await sort(props.list);
+      // const { element, oldIndex, newIndex } = e.added; // e.removed
+      await sort(props.list); // sort from list and to list
+    }
+
+    // NOTE: not sure how to handle this...?
+    async function checkMove(e: any) {
+      const { from, dragged, to } = e;
+
+      const fromList = document.getElementById(from.id)?.getAttribute('data-title');
+      const toList = document.getElementById(to.id)?.getAttribute('data-title');
+      const cardText = document.getElementById(dragged.id)?.getAttribute('data-text');
+
+      //console.log(`moved **${cardText}** from ${fromList} to ${toList}`);
+      await add({ text: `moved **${cardText}** from ${fromList} to ${toList}`, board_id: Number(route.params.id) });
     }
 
     return {
       t,
+      isPast,
       ...toRefs(data),
       ...toRefs(state),
+      options,
       updateTitle,
       deleteList,
       handleSelect,
       sort,
       close,
       log,
+      checkMove,
     };
   },
 });
 </script>
 
 <style scoped>
+.drag {
+  opacity: 100 !important;
+}
+
 .ghost {
   @apply opacity-50 border-dashed border border-cyan-300;
 }

@@ -83,10 +83,12 @@ archived: archived
 notifications: notifications
 help: Help
 info: Info
+calendar: calendar
+profile: profile
 
 public: public
 private: private
-activity: Activity
+activity: '{count} activity | {count} activities'
 untitled: Untitled
 preview: Preview
 board: board
@@ -127,8 +129,8 @@ liked_stories: liked stories
 favorite_boards: favorite Boards
 saved_stories: saved stories
 
-follow: follow
-unfollow: unfollow
+follow: follow {user}
+unfollow: unfollow {user}
 like: '{count} like | {count} likes'
 min: '{count} min | {count} mins'
 download: download
@@ -141,3 +143,8 @@ recommended: recommended
 bookmark_list: bookmark list
 
 list: '{count} list | {count} lists'
+
+edit: edit
+upload: upload
+followers: followers
+following: following

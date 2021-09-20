@@ -22,8 +22,9 @@ const routes: Array<RouteRecordRaw> = [
   },
   {
     path: '/boards/:id',
-    name: 'Board',
+    //name: 'Board',
     component: () => import('@/views/boards/_id.vue'),
+    props: true,
     meta: { requiresAuth: true },
     children: [
       {

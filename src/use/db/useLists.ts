@@ -1,33 +1,33 @@
 import { reactive } from 'vue';
-import { useToast } from 'vue-toastification';
 
 import { Board, List } from '@/data/types/mock';
 import { supabase } from '@/lib/supabase';
-import { data as boardState } from './useBoards';
-
-const toast = useToast();
+import { data as boardStore } from './useBoards';
+import { add as addAct } from '@/use/db/useActivity';
 
 type State = {
   isLoading: boolean;
-  currentList: List | null;
+  //list: List | null;
   error: null | Error;
 };
 
 const state = reactive<State>({
   isLoading: false,
-  currentList: null,
+  //list: null,
   error: null,
 });
 
-async function getById(id: number) {
+async function getById(id: number, query = '*'): Promise<null | List> {
   try {
     state.isLoading = true;
-    const { data, error } = await supabase.from('lists').select('*').eq('id', id).single();
+    const { data, error } = await supabase.from('lists').select(query).eq('id', id).single();
     if (error) throw error;
 
-    state.currentList = data;
-  } catch (e) {
+    //state.list = data;
+    return data;
+  } catch (e: any) {
     state.error = e.error_description || e.message;
+    return null;
   } finally {
     state.isLoading = false;
   }
@@ -40,11 +40,13 @@ async function add(board: Board, list: List): Promise<null | List> {
     if (error) throw error;
 
     const data: List = body ? { ...body[0], cards: [] } : null;
-    boardState.currentBoard?.lists?.push(data);
-    return data; // TODO: is return needed?
-  } catch (e) {
+    boardStore.board?.lists?.push(data);
+    await addAct({ text: `added **${list.title}** to board`, board_id: list.board_id });
+
+    return data;
+  } catch (e: any) {
     state.error = e.error_description || e.message;
-    return null; // TODO: is return needed?
+    return null;
   } finally {
     state.isLoading = false;
   }
@@ -58,30 +60,49 @@ async function update(list: List): Promise<null | List> {
       .update({
         title: list.title,
         slug: list.slug,
+        //subtitle: list.subtitle,
+        //image_url: list.image_url,
+        //image_by: list.image_by,
         description: list.description,
         publish_date: list.publish_date,
-        gems: list.gems,
       })
       .match({ id: list.id });
     //.eq('id', list.id).single();
     if (error) throw error;
 
     const data: List = body ? { ...body[0] } : null;
-    const idx = Number(boardState.currentBoard?.lists?.findIndex((l) => l.id === data.id));
+    const idx = Number(boardStore.board?.lists?.findIndex((l) => l.id === data.id));
     if (idx >= 0) {
-      boardState.currentBoard?.lists?.splice(idx, 1, { ...boardState.currentBoard?.lists[idx], ...data });
+      boardStore.board?.lists?.splice(idx, 1, { ...boardStore.board?.lists[idx], ...data });
     }
-    return data; // TODO: is return needed?
-  } catch (e) {
+    await addAct({ text: `updated list ${list.title}`, board_id: list.board_id });
+    return data;
+  } catch (e: any) {
     state.error = e.error_description || e.message;
-    return null; // TODO: is return needed?
+    return null;
   } finally {
     state.isLoading = false;
   }
 }
 
+async function updateTitle(list: List, title: string) {
+  await update({ ...list, title });
+  await addAct({ text: `renamed list to **${title}** (from ${list.title})`, board_id: list.board_id });
+}
+
+async function updatePublishDate(list: List, publish_date: string | null) {
+  await update({ ...list, publish_date });
+  const message = !!publish_date ? 'published' : 'draft';
+  await addAct({ text: `changed status of ${list.title} to **${message}**`, board_id: list.board_id });
+}
+
+async function updateBackground(list: List, image_url: string) {
+  await update({ ...list, image_url });
+  await addAct({ text: `updated ${list.title} background image`, board_id: list.board_id });
+}
+
 /**
- * Update the List's Cards positions (rpc = stored procedure)
+ * Update the List's Cards positions (rpc = boardStored procedure)
  * @param list
  * @returns boolean or error
  */
@@ -97,7 +118,7 @@ async function sort(list: List) {
     if (error) throw error;
 
     return data;
-  } catch (e) {
+  } catch (e: any) {
     state.error = e.error_description || e.message;
     return false; // TODO: is return needed?
   } finally {
@@ -105,23 +126,31 @@ async function sort(list: List) {
   }
 }
 
-async function del(list: List) {
+async function deleteById(id: number) {
   try {
     state.isLoading = true;
-    await supabase.from('lists').delete().eq('id', list.id);
+    const { error } = await supabase.from('lists').delete().eq('id', id);
+    if (error) throw error;
 
-    const idx = Number(boardState.currentBoard?.lists?.findIndex((l) => l.id === list.id));
+    const idx = Number(boardStore.board?.lists?.findIndex((l) => l.id === id));
     if (idx >= 0) {
-      boardState.currentBoard?.lists?.splice(idx, 1);
+      boardStore.board?.lists?.splice(idx, 1);
     }
-    toast.success('List deleted.');
-    if (boardState.currentBoard?.id === list.id) boardState.currentBoard = null;
-  } catch (e) {
-    toast.error('Error deleting list');
+    return true; //toast.success('List deleted.');
+  } catch (e: any) {
     state.error = e.error_description || e.message;
+    return false; //toast.error('Error deleting list');
   } finally {
     state.isLoading = false;
   }
 }
 
-export { state as data, getById, add, update, sort, del };
+async function del(list: List): Promise<boolean> {
+  const success = await deleteById(Number(list.id));
+  if (success) await addAct({ text: `archived ${list.title}`, board_id: list.board_id });
+  return success;
+}
+
+export { state as data, getById, add, update, updateTitle, updatePublishDate, updateBackground, sort, deleteById, del };
+
+// TODO: await addAct({ text:`moved **${card.text}** from ${list.title} to ${list.title}`, board_id: route.params.id })`

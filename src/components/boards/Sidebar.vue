@@ -3,7 +3,7 @@
     <template #header>
       <n-button text style="font-size: 2rem; color: gold">
         <n-icon>
-          <router-link to="/"> <i-note /></router-link>
+          <router-link to="/"> <i-fa-sticky-note /></router-link>
         </n-icon>
       </n-button>
     </template>
@@ -11,7 +11,7 @@
       <n-tooltip trigger="hover" :show-arrow="false" placement="right">
         <template #trigger>
           <n-button @click="openDrawer('settings')" text color="#bebdc2">
-            <n-icon><i-settings /></n-icon>
+            <n-icon><i-fa-cog /></n-icon>
           </n-button>
         </template>
         {{ t('settings') }}
@@ -34,7 +34,7 @@
           </n-badge>
         </n-list-item>
       </template>
-      <div v-if="isLoggedIn" class="f-center py-2">
+      <div v-if="isLoggedIn" @click="openDrawer('profile')" class="f-center py-2">
         <n-avatar round src="https://avatars.githubusercontent.com/u/14142384?v=4" />
       </div>
       <n-list-item v-if="isLoggedIn">
@@ -52,60 +52,107 @@
 
   <n-drawer v-model:show="drawer" :width="320" placement="left" :on-update:show="handleClose">
     <n-drawer-content :title="title.toUpperCase()" closable body-style="background-color: #eee">
-      <div v-if="showArchived">Archived</div>
+      <div v-if="showCalendar">Calendar</div>
       <BoardList v-if="showBoards" :boards="boards" />
-      <div v-if="showAnalytics">Analytics</div>
+      <div v-if="showAnalytics">Calendar</div>
       <div v-if="showNotifications">Notifications</div>
+      <Profile v-if="showProfile" :profile="profile" />
       <div v-if="showSettings">Settings</div>
     </n-drawer-content>
   </n-drawer>
 </template>
 
 <script lang="ts">
-import { computed, defineComponent, onMounted, reactive, toRefs } from 'vue';
-import { StickyNote as INote, Archive, FolderOpen, ChartPie, Bell, Cog as ISettings } from '@vicons/fa';
+import { computed, defineComponent, onMounted, PropType, reactive, toRefs } from 'vue';
+import FaStickyNote from 'virtual:vite-icons/fa/sticky-note';
+import BiCalendar2EventFill from 'virtual:vite-icons/bi/calendar2-event-fill';
+import FaSolidFolderOpen from 'virtual:vite-icons/fa-solid/folder-open';
+import FaSolidChartPie from 'virtual:vite-icons/fa-solid/chartPie';
+import FaSolidBell from 'virtual:vite-icons/fa-solid/bell';
+import FaCog from 'virtual:vite-icons/fa/cog';
+
 import { useI18n } from 'vue-i18n';
 import { useRoute } from 'vue-router';
 
+import { Board, Profile as iProfile } from '@/data/types/mock';
 import { useAuth } from '@/use/auth';
-import { useBoards } from '@/use/db';
+import { supabase } from '@/lib/supabase';
 import BoardList from '@/components/boards/drawers/BoardList.vue';
+import Profile from '@/components/users/Profile.vue';
 
 export default defineComponent({
   name: 'Sidebar',
-  components: { INote, Archive, FolderOpen, ChartPie, Bell, ISettings, BoardList },
+  components: { FaStickyNote, FaSolidFolderOpen, FaSolidChartPie, FaSolidBell, FaCog, BoardList, Profile },
   setup() {
     const { t } = useI18n();
-    const { data, all } = useBoards;
     const { auth, logout } = useAuth;
-    const isLoggedIn = computed(() => !!auth.userSession?.user);
-
-    onMounted(async () => await all());
-
-    const currentRouteName = computed(() => useRoute().name);
-
-    const nav = [
-      { id: 'archived', component: Archive, label: t('archived') },
-      { id: 'boards', component: FolderOpen, label: t('boards') },
-      { id: 'analytics', component: ChartPie, label: t('analytics') },
-      { id: 'notifications', component: Bell, label: t('notifications'), notifications: 3 },
-    ];
 
     const state = reactive({
       drawer: false,
       title: '',
-      showArchived: false,
+      showCalendar: false,
       showBoards: false,
       showAnalytics: false,
       showNotifications: false,
       showSettings: false,
+      showProfile: false,
+      isLoading: false,
+      error: null,
+      boards: [] as Board[],
+      profile: {} as iProfile,
+      count: 0,
+      isLoggedIn: computed(() => !!auth.userSession?.user),
     });
+    async function fetchUserBoards() {
+      try {
+        state.isLoading = true;
+        const { data, error, count } = await supabase
+          .from('boards')
+          .select('id, title, user_id')
+          .order('updated_at', { ascending: false })
+          .eq('user_id', supabase.auth.user()?.id);
+        if (error) throw error;
+        if (data === null) return (state.boards = []);
+
+        state.boards = data;
+        state.count = Number(count);
+      } catch (e) {
+        state.error = e.error_description || e.message;
+      } finally {
+        state.isLoading = false;
+      }
+    }
+    onMounted(async () => await fetchUserBoards());
+
+    async function fetchProfile() {
+      try {
+        state.isLoading = true;
+        const { data, error } = await supabase.from('profiles').select('*').eq('id', supabase.auth.user()?.id).single();
+        if (error) throw error;
+
+        state.profile = data;
+      } catch (e) {
+        state.error = e.error_description || e.message;
+      } finally {
+        state.isLoading = false;
+      }
+    }
+    onMounted(async () => await fetchProfile());
+
+    const currentRouteName = computed(() => useRoute().name);
+
+    const nav = [
+      { id: 'calendar', component: BiCalendar2EventFill, label: t('calendar') },
+      { id: 'boards', component: FaSolidFolderOpen, label: t('boards') },
+      { id: 'analytics', component: FaSolidChartPie, label: t('analytics') },
+      { id: 'notifications', component: FaSolidBell, label: t('notifications'), notifications: 3 },
+    ];
 
     function openDrawer(type: string) {
       state.title = type;
       switch (type) {
-        case 'archived':
-          state.showArchived = true;
+        case 'calendar':
+          state.showCalendar = true;
           break;
         case 'boards':
           state.showBoards = true;
@@ -119,6 +166,9 @@ export default defineComponent({
         case 'settings':
           state.showSettings = true;
           break;
+        case 'profile':
+          state.showProfile = true;
+          break;
         default:
           break;
       }
@@ -129,7 +179,7 @@ export default defineComponent({
       if (!show) {
         state.drawer = false;
 
-        state.showArchived = false;
+        state.showCalendar = false;
         state.showBoards = false;
         state.showAnalytics = false;
         state.showNotifications = false;
@@ -139,18 +189,16 @@ export default defineComponent({
     }
 
     function isActive(id: string) {
-      const routeName = currentRouteName.value?.toString().toUpperCase();
-      return id.toUpperCase().includes(routeName!);
+      const routeUrl = useRoute().fullPath;
+      return routeUrl.toUpperCase().includes(id.toUpperCase());
     }
 
     return {
       t,
-      nav,
-      isLoggedIn,
-      logout,
-      ...toRefs(data),
-      currentRouteName,
       ...toRefs(state),
+      nav,
+      logout,
+      currentRouteName,
       openDrawer,
       isActive,
       handleClose,

@@ -1,60 +1,58 @@
 <template>
-  <Layout :title="t('boards')">
+  <Spinner v-if="isLoading" />
+  <Layout v-else :title="t('boards')">
     <template v-slot:header>
       <n-page-header @back="handleBack">
         <template #title>
-          <a href="#" class="title">{{ t('boards') }}</a>
+          <h1 class="title">{{ t('boards') }}</h1>
         </template>
 
         <template #extra>
           <n-space align="center" justify="end">
             <n-input placeholder="Search...">
               <template #prefix>
-                <n-icon><i-search /></n-icon>
+                <n-icon><i-uil-search /></n-icon>
               </template>
             </n-input>
             <n-button @click="addBoard">
               <n-icon>
-                <i-plus />
+                <i-mdi-plus-circle-outline />
               </n-icon>
               <span class="ml-2">{{ t('add_board') }}</span>
             </n-button>
             <n-dropdown @select="handleSelect" :options="options" placement="bottom-end">
               <n-button text size="tiny" color="#9d9ea2">
-                <template #icon><i-ellipsis-v /></template>
+                <template #icon><i-entypo-dots-three-vertical /></template>
               </n-button>
             </n-dropdown>
           </n-space>
         </template>
       </n-page-header>
     </template>
-
-    <Spinner v-if="isLoading" />
     <AlertMessage v-if="error" type="error" :message="error" />
     <section v-else>
       <div v-if="!boards?.length">No Results.</div>
       <div v-else class="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-5 gap-4">
         <template v-for="board in boards" :key="board.id">
-          <BoardIndexCard :board="board" :del="del" />
+          <BoardCard :board="board" :del="del" />
         </template>
       </div>
     </section>
-
     <!-- <Pagination /> -->
   </Layout>
 </template>
 
 <script lang="ts">
-import { defineComponent, onMounted, ref, toRefs } from 'vue';
+import { defineComponent, onMounted, toRefs } from 'vue';
 import { useI18n } from 'vue-i18n';
 import { useRouter } from 'vue-router';
-import { Search as ISearch, EllipsisV as IEllipsisV, PlusCircle as IPlus } from '@vicons/fa';
 
-import { useBoards } from '@/use/db';
+import { supabase } from '@/lib/supabase';
+import { db } from '@/use/db';
 import AlertMessage from '@/components/shared/AlertMessage.vue';
 import Layout from '@/layouts/Minimalist.vue';
 import Spinner from '@/components/ui/Spinner.vue';
-import BoardIndexCard from '@/components/boards/BoardIndexCard.vue';
+import BoardCard from '@/components/boards/BoardIndexCard.vue';
 //import Pagination from '@/components/ui/Pagination.vue';
 
 export default defineComponent({
@@ -63,25 +61,14 @@ export default defineComponent({
     AlertMessage,
     Layout,
     Spinner,
-    ISearch,
-    IEllipsisV,
-    IPlus,
-    BoardIndexCard,
+    BoardCard,
   },
   setup() {
     const { t } = useI18n();
     const router = useRouter();
-    const { data: state, all, add, del } = useBoards;
-    onMounted(async () => await all());
+    const { data: store, allByUserId, add, del } = db.boards;
 
-    async function addBoard() {
-      const data = await add({ title: t('untitled'), position: state.boards.length });
-      router.push(`/boards/${data?.id}`);
-    }
-
-    function handleBack() {
-      console.log('Go Back');
-    }
+    onMounted(async () => await allByUserId(supabase.auth.user()?.id));
 
     const options = [
       {
@@ -89,6 +76,15 @@ export default defineComponent({
         key: '1',
       },
     ];
+
+    async function addBoard() {
+      const data = await add({ title: t('untitled'), position: store.boards.length });
+      if (data) router.push(`/boards/${data?.id}`);
+    }
+
+    function handleBack() {
+      console.log('Go Back');
+    }
 
     function handleSelect(key: string) {
       switch (key) {
@@ -102,11 +98,11 @@ export default defineComponent({
 
     return {
       t,
-      ...toRefs(state),
+      ...toRefs(store),
+      options,
       del,
       addBoard,
       handleBack,
-      options,
       handleSelect,
     };
   },

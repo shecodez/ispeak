@@ -1,3 +1,8 @@
+export interface ApiError {
+  message?: string;
+  error_description?: string;
+}
+
 export interface Credentials {
   username?: string | undefined;
   email: string | undefined;
@@ -10,25 +15,30 @@ export interface Profile {
 
   avatar_url?: string;
   bio?: string;
-  userame: string;
-  email?: string;
+  username: string;
 
-  //favorites?: [];
-  //liked?: [];
-  //saved?: [];
+  // liked?: []; //id: boardId
+  // saved?: []; //id: boardId & listId
+  // count following, count followers, count storyboards
 
-  gems?: number;
-  stripe_customer_id?: string;
-  subscription_plans?: string[];
-
-  inserted_at?: string; // timestamp
-  updated_at?: string; // timestamp
+  created_at?: string;
+  updated_at?: string;
 }
+
+// export interface User {
+//   id: string;
+
+//   email: string;
+
+//   gems?: number;
+//   stripe_customer_id?: string;
+//   subscription_plans?: string[];
+// }
 
 export interface Board {
   id?: number;
 
-  position: number;
+  position?: number;
   title: string;
   subtitle?: string;
   slug?: string;
@@ -42,15 +52,16 @@ export interface Board {
   //tags?: []; // Tag[]
 
   user_id?: string;
+  profiles?: Profile;
 
-  inserted_at?: string; // timestamp
-  updated_at?: string; // timestamp
+  inserted_at?: string;
+  updated_at?: string;
 }
 
 export interface List {
   id?: number;
 
-  position: number;
+  position?: number;
   title: string;
   subtitle?: string;
   slug?: string;
@@ -64,8 +75,8 @@ export interface List {
   user_id?: string;
   board_id?: number;
 
-  inserted_at?: string; // timestamp
-  updated_at?: string; // timestamp
+  inserted_at?: string;
+  updated_at?: string;
 }
 
 export enum Color {
@@ -89,7 +100,7 @@ export type NTagColor = {
 export interface Card {
   id?: number;
 
-  position: number;
+  position?: number;
   text: string;
   audio_url?: string;
   details?: string;
@@ -101,21 +112,44 @@ export interface Card {
   user_id?: string;
   list_id?: number;
 
-  inserted_at?: string; // timestamp
-  updated_at?: string; // timestamp
+  inserted_at?: string;
+  updated_at?: string;
+}
+
+export interface Activity {
+  id?: number;
+
+  text: string;
+
+  user_id?: string;
+  profiles?: Profile;
+  board_id?: number;
+  boards?: Board;
+  //list_id?: string;
+  //card_id?: string;
+
+  created_at?: string;
 }
 
 export interface Tag {
-  id: string;
+  id?: number;
+
   name: string;
   description?: string;
-  count: number;
+  count?: number;
+
+  created_at?: string;
+  updated_at?: string;
 }
 
 export interface Tip {
   id: string;
-  mediaURL?: string;
+
+  media_url?: string;
   message: string;
+
+  created_at?: string;
+  updated_at?: string;
 }
 
 export interface ContactForm {

@@ -1,12 +1,12 @@
 <template>
+  <ProgressBar label="for decoration only" :value="100" />
   <Spinner v-if="isLoading" />
-  <Layout v-if="currentBoard" :title="currentBoard.title">
+  <Layout v-if="title" :title="title">
     <template v-slot:header>
-      <BoardHeader v-if="currentBoard" :board="currentBoard" />
+      <BoardHeader v-if="board" :board="board" />
     </template>
-    <!-- <AlertMessage v-if="error" type="error" :message="error" /> -->
 
-    <router-view />
+    <router-view :data="board"></router-view>
 
     <n-tooltip trigger="hover" :show-arrow="false">
       <template #trigger>
@@ -28,15 +28,16 @@
 </template>
 
 <script lang="ts">
-import { computed, defineComponent, onMounted, reactive, toRefs, watch } from 'vue';
+import { computed, defineComponent, onMounted, PropType, reactive, toRefs, watch } from 'vue';
 import { useI18n } from 'vue-i18n';
 import { useRoute } from 'vue-router';
 import draggable from 'vuedraggable';
 
-import { useBoards } from '@/use/db';
+import { Board } from '@/data/types/mock';
+import { db } from '@/use/db';
 import Spinner from '@/components/ui/Spinner.vue';
 import Layout from '@/layouts/Minimalist.vue';
-//import AlertMessage from '@/components/shared/AlertMessage.vue';
+import AlertMessage from '@/components/shared/AlertMessage.vue';
 import BoardHeader from '@/components/boards/BoardIdHeader.vue';
 import ActivityList from '@/components/boards/drawers/ActivityList.vue';
 
@@ -46,13 +47,53 @@ export default defineComponent({
     draggable,
     Spinner,
     Layout,
+    AlertMessage,
     BoardHeader,
     ActivityList,
+  },
+  props: {
+    data: {
+      type: Object as PropType<Board>,
+    },
+    id: {
+      type: [String, Number], // router.params.id = boardId
+    },
+    listId: {
+      type: [String, Number],
+    },
+    cardId: {
+      type: [String, Number],
+    },
   },
   setup() {
     const { t } = useI18n();
     const route = useRoute();
-    const { data, getById } = useBoards;
+    const { data: store, getById } = db.boards;
+
+    const state = reactive({
+      drawer: false,
+      // activity: [
+      //   {
+      //     id: 1,
+      //     text: 'moved card.text from list.title to list.title.',
+      //     created_at: new Date(),
+      //     profiles: { username: 'shecodez' },
+      //   },
+      //   {
+      //     id: 2,
+      //     text: 'created card.text on list.title.',
+      //     created_at: new Date(),
+      //     profiles: { username: 'shecodez' },
+      //   },
+      //   {
+      //     id: 3,
+      //     text: 'deleted card.text from list.title.',
+      //     created_at: new Date(),
+      //     profiles: { username: 'user4995802' },
+      //   },
+      // ],
+    });
+
     onMounted(async () => await getById(Number(route.params.id)));
     watch(
       () => route.params.id,
@@ -61,11 +102,7 @@ export default defineComponent({
       }
       //{ immediate: true }
     );
-    //const board = computed(() => data.currentBoard)
-
-    const state = reactive({
-      drawer: false,
-    });
+    const title = computed(() => store.board?.title);
 
     function handleClose(show: boolean) {
       if (!show) {
@@ -73,7 +110,7 @@ export default defineComponent({
       }
     }
 
-    return { t, ...toRefs(data), ...toRefs(state), handleClose };
+    return { t, ...toRefs(store), ...toRefs(state), title, handleClose };
   },
 });
 </script>

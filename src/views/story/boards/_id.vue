@@ -1,22 +1,26 @@
 <template>
   <ProgressBar label="article reading progress" :value="scrollProgress" />
   <Spinner v-if="isLoading" />
-  <Layout v-if="title" :title="`${title} | ${storyboard.title}`">
+  <Layout v-if="board && title" :title="`${title} | ${board.title}`">
     <AlertMessage v-if="error" type="error" :message="error" />
-
     <div class="sticky top-0 z-30 bg-white backdrop-filter backdrop-blur-lg bg-opacity-30">
       <div class="mx-auto w-11/12 xl:w-8/12 py-6 border-b border-gray-200">
         <n-page-header @back="handleBack" :subtitle="title">
           <template #title>
-            <h2>{{ storyboard.title }}</h2>
+            <h2>{{ board.title }}</h2>
           </template>
           <template #avatar>
-            <n-avatar>{{ abbrTitle }}</n-avatar>
+            <n-avatar>{{ abbr(title) }}</n-avatar>
           </template>
 
           <template #extra>
             <n-space align="center" justify="end">
-              <n-select v-model:value="list.id" @update:value="handleUpdateValue" :options="storyboardLists" />
+              <n-select
+                v-if="list"
+                v-model:value="selectedListId"
+                @update:value="handleSelectListId"
+                :options="board.lists?.map(({ id, title }) => ({ value: id, label: title }))"
+              />
               <n-dropdown @select="handleSelect" :options="options" placement="bottom-start">
                 <n-button text size="tiny" color="#9d9ea2">
                   <template #icon><i-entypo-dots-three-vertical /></template>
@@ -39,7 +43,10 @@
       <div class="flex flex-col gap-8">
         <div class="flex flex-wrap gap-4">
           <aside class="sb-aside flex flex-col gap-3">
-            <div class="flex items-center gap-4"><i-mdi-at class="text-yellow-500" />user/group</div>
+            <div class="flex items-center gap-4">
+              <i-mdi-at class="text-yellow-500" />
+              {{ owner }}
+            </div>
             <div v-if="list.publish_date" class="flex items-center gap-4">
               <i-clarity-date-line class="text-yellow-500" />
               {{ formatDate(list.publish_date) }}
@@ -77,11 +84,11 @@
 
           <aside class="sb-aside flex">
             <div class="flex flex-col gap-4 overflow-hidden mt-4 self-center">
-              <template v-for="board in recommended" :key="board.id">
+              <template v-for="sb in recommended" :key="sb.id">
                 <div class="border-t-2 border-yellow-500" />
-                <img :src="board.image_url" alt="recommended image" />
+                <img :src="sb.image_url" alt="recommended image" />
                 <span class="text-xs uppercase text-yellow-500">{{ t('recommended') }}</span>
-                <h2 class="text-lg mb-6">{{ board.title }}</h2>
+                <h2 class="text-lg mb-6">{{ sb.title }}</h2>
               </template>
             </div>
           </aside>
@@ -91,10 +98,12 @@
           <button class="f-center gap-2"><i-mdi-cards-heart class="text-yellow-500" />{{ t('like', 0) }}</button>|
           <!-- TODO: make share a radial button -->
           <button class="f-center gap-2"><i-clarity-share-line class="text-yellow-500" /> {{ t('share') }}</button>|
-          <button class="f-center gap-2"><i-uim-download-alt class="text-yellow-500" />{{ t('download') }}</button>
+          <button @click="commenting = true" class="f-center gap-2">
+            <i-uim-comment-message class="text-yellow-500" />{{ t('comment', comments) }}
+          </button>
         </div>
 
-        <div v-if="storyboard.lists?.length" class="grid grid-cols-1 lg:grid-cols-3 p-16 bg-gray-700 bg-opacity-30">
+        <div v-if="board.lists?.length" class="grid grid-cols-1 lg:grid-cols-3 p-16 bg-gray-700 bg-opacity-30">
           <div class="flex gap-10 items-center justify-end">
             <button v-if="prevList" @click="onPageChange(page - 1)" class="f-center">
               <i-la-long-arrow-alt-left />
@@ -102,10 +111,10 @@
             <div v-if="prevList">
               <small class="text-xs uppercase">{{ t('previous') }}</small>
               <router-link
-                :to="{ name: 'StoryBoard', params: { id: storyboard.id }, query: { page: page - 1 } }"
+                :to="{ name: 'StoryBoard', params: { id: board.id }, query: { page: page - 1 } }"
                 class="block text-xl hover:underline"
               >
-                <pre>{{ prevList.title }}</pre>
+                {{ prevList.title }}
               </router-link>
             </div>
           </div>
@@ -114,10 +123,10 @@
             <div v-if="nextList">
               <small class="text-xs uppercase">{{ t('next') }}</small>
               <router-link
-                :to="{ name: 'StoryBoard', params: { id: storyboard.id }, query: { page: page + 1 } }"
+                :to="{ name: 'StoryBoard', params: { id: board.id }, query: { page: page + 1 } }"
                 class="block text-xl hover:underline"
               >
-                <pre>{{ nextList.title }}</pre>
+                {{ nextList.title }}
               </router-link>
             </div>
             <button v-if="nextList" @click="onPageChange(page + 1)" class="f-center">
@@ -131,15 +140,14 @@
 </template>
 
 <script lang="ts">
-import { computed, defineComponent, onMounted, onUnmounted, reactive, toRefs } from 'vue';
-import { formatRelative, subDays } from 'date-fns';
-import { ja } from 'date-fns/locale';
+import { computed, defineComponent, onMounted, onUnmounted, reactive, toRefs, watch } from 'vue';
 import { useI18n } from 'vue-i18n';
 import { useRoute, useRouter } from 'vue-router';
 import debounce from 'lodash.debounce';
 
-import { supabase } from '@/lib/supabase';
-import { Board, List } from '@/data/types/mock';
+import { Board } from '@/data/types/mock';
+import { db } from '@/use/db';
+import { abbr, formatDateRelative } from '@/utils';
 import Spinner from '@/components/ui/Spinner.vue';
 import Layout from '@/layouts/Default.vue';
 import AlertMessage from '@/components/shared/AlertMessage.vue';
@@ -154,11 +162,7 @@ export default defineComponent({
     const { t, locale } = useI18n();
     const route = useRoute();
     const router = useRouter();
-    //const { data, getById } = useBoards;
-
-    function handleBack() {
-      router.back();
-    }
+    const { data: store, getById } = db.boards;
 
     const filters = reactive({
       search: '',
@@ -167,76 +171,49 @@ export default defineComponent({
     });
 
     const state = reactive({
-      isLoading: false,
-      error: null,
-      storyboard: {} as Board,
-      recommended: [],
-      options: computed(() => [
-        {
-          label: true ? t('follow') : t('unfollow'), // `t('follow', props.board.owner)` (username/group)
-          key: '1',
-        },
-        {
-          label: t('download'),
-          key: '2',
-        },
-      ]),
+      owner: computed(() => store.board?.profiles?.username),
+      selectedListId: 0,
+      likeCount: 0,
+      comments: 0,
+      commenting: false,
+      recommended: [] as Board[],
       scrollProgress: 0,
-      pov: null, // view cards from pov of selected card.assignedTo
+      pov: null, // to view cards from pov of selected card.assignedTo
     });
 
-    async function fetchBoardById(id: number) {
-      try {
-        state.isLoading = true;
-        const { data, error } = await supabase
-          .from('boards')
-          .select(
-            'id, title, slug, image_url, description, is_public, updated_at, lists ( id, position, title, slug, description, publish_date, gems, board_id, cards ( id, position, text, details, label, color, text_color, list_id ))'
-          )
-          .eq('id', id)
-          .order('position')
-          .order('position', { foreignTable: 'lists' })
-          .order('position', { foreignTable: 'lists.cards' })
-          .single();
-        if (error) throw error;
+    const options = computed(() => [
+      {
+        label: true ? t('follow', { user: state.owner }) : t('unfollow', { user: state.owner }),
+        key: '1',
+      },
+      {
+        label: t('download'),
+        key: '2',
+      },
+    ]);
 
-        state.storyboard = data;
-      } catch (e) {
-        state.error = e.error_description || e.message;
-      } finally {
-        state.isLoading = false;
-      }
-    }
     onMounted(async () => {
-      await fetchBoardById(Number(route.params.id));
+      await getById(Number(route.params.id));
       document.getElementById('scrollzone')?.addEventListener('scroll', handleDebouncedScroll);
     });
 
     const index = computed(() => filters.page - 1);
-    const prevList = computed(() => state.storyboard?.lists?.[index.value - 1]);
-    const list = computed(() => state.storyboard?.lists?.[index.value]);
-    const nextList = computed(() => state.storyboard?.lists?.[index.value + 1]);
+    const prevList = computed(() => store.board?.lists?.[index.value - 1]);
+    const list = computed(() => store.board?.lists?.[index.value]);
+    const nextList = computed(() => store.board?.lists?.[index.value + 1]);
 
     const title = computed(() => list.value?.title);
-    const abbrTitle = computed(() =>
-      list.value?.title
-        .split(/\s/)
-        .reduce((res: string, word: string) => (res += word.slice(0, 1)), '')
-        .substring(0, 3)
-    );
 
-    const storyboardLists = computed(() =>
-      state.storyboard.lists?.map(({ id, title }) => ({ value: id, label: title }))
-    );
-
-    const handleSelectPov = (evt: any) => {
-      state.pov = evt.target.value;
-    };
+    //const storyboardLists = computed(() => store.board?.lists?.map(({ id, title }) => ({ value: id, label: title })));
 
     const onPageChange = (page: number) => {
       router.push({ query: { page } });
       //filters.page = page;
     };
+
+    function handleBack() {
+      router.back();
+    }
 
     function handleSelect(key: string) {
       switch (key) {
@@ -245,33 +222,33 @@ export default defineComponent({
           break;
         case '2':
           // toast if not logged in
-          console.log('Download:', state.storyboard.id);
+          console.log('Download:', store.board?.id);
           break;
         default:
           break;
       }
     }
 
-    function handleUpdateValue(value: number) {
-      console.log('list select value: ' + JSON.stringify(value));
-      // find list index and go to page
+    //const selectedListId = computed(() => list.value?.id); // computed readonly error
+    watch(
+      () => list.value?.id,
+      (id) => {
+        if (id) state.selectedListId = id;
+      },
+      { immediate: true }
+    );
+    function handleSelectListId(value: number) {
+      //console.log('select list value: ' + JSON.stringify(value));
+      const page = Number(store.board?.lists?.findIndex((l) => l.id === value)) + 1;
+      if (page > 0) onPageChange(page);
     }
 
-    function rand(min = 0, max = 999) {
-      return Math.floor(Math.random() * (max - min + 1)) + min;
-    }
+    const handleSelectPov = (evt: any) => {
+      state.pov = evt.target.value;
+    };
 
     function formatDate(date: string, mock = false) {
-      if (!date) return;
-
-      if (mock) date = subDays(new Date(), rand(0, 5)).toString();
-      const today = new Date();
-      switch (locale.value) {
-        case 'ja':
-          return formatRelative(new Date(date), today, { locale: ja });
-        default:
-          return formatRelative(new Date(date), today);
-      }
+      return formatDateRelative(date, locale.value, mock);
     }
 
     function handleScroll(event: any) {
@@ -287,19 +264,21 @@ export default defineComponent({
 
     return {
       t,
-      handleBack,
-      formatDate,
+      abbr,
+      ...toRefs(store),
       ...toRefs(filters),
       ...toRefs(state),
-      handleSelect,
-      handleUpdateValue,
-      onPageChange,
-      list,
+      options,
       title,
-      abbrTitle,
       prevList,
+      list,
       nextList,
-      storyboardLists,
+      onPageChange,
+      handleBack,
+      handleSelect,
+
+      handleSelectListId,
+      formatDate,
     };
   },
 });

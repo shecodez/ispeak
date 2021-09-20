@@ -2,7 +2,8 @@ import { reactive } from 'vue';
 
 import { List, Card } from '@/data/types/mock';
 import { supabase } from '@/lib/supabase';
-import { data as boardState } from './useBoards';
+import { data as boardStore } from './useBoards';
+import { add as addAct } from '@/use/db/useActivity';
 
 type State = {
   isLoading: boolean;
@@ -20,15 +21,16 @@ async function add(list: List, card: Card): Promise<null | Card> {
     const { body, error } = await supabase.from('cards').insert({ ...card, list_id: list.id });
     if (error) throw error;
 
-    const data: Card = body ? { ...body[0], cards: [] } : null;
-    const idx = Number(boardState.currentBoard?.lists?.findIndex((l) => l.id === data.list_id));
+    const data: Card = body ? { ...body[0] } : null;
+    const idx = Number(boardStore.board?.lists?.findIndex((l) => l.id === data.list_id));
     if (idx >= 0) {
-      boardState.currentBoard?.lists?.[idx].cards?.push(data);
+      boardStore.board?.lists?.[idx].cards?.push(data);
     }
-    return data; // TODO: is return needed?
-  } catch (e) {
+    await addAct({ text: `added **${card.text}** to ${list.title}`, board_id: list.board_id });
+    return data;
+  } catch (e: any) {
     state.error = e.error_description || e.message;
-    return null; // TODO: is return needed?
+    return null;
   } finally {
     state.isLoading = false;
   }
@@ -39,38 +41,66 @@ async function update(card: Card): Promise<null | Card> {
     state.isLoading = true;
     const { body, error } = await supabase
       .from('cards')
-      .update({ text: card.text, hint: card.hint, bg_color: card.bg_color, text_color: card.text_color })
+      .update({
+        text: card.text,
+        //audio_url: card.audio_url,
+        details: card.details,
+        color: card.color,
+        label: card.label,
+        text_color: card.text_color,
+      })
       .match({ id: card.id });
     //.eq('id', list.id).single();
     if (error) throw error;
 
     const data: Card = body ? { ...body[0] } : null;
-    const listIdx = Number(boardState.currentBoard?.lists?.findIndex((l) => l.id === data.list_id));
-    const idx = Number(boardState.currentBoard?.lists?.[listIdx].cards?.findIndex((c) => c.id === data.id));
+    const list = boardStore.board?.lists?.find((l) => l.id === data.list_id);
+    const listIdx = Number(boardStore.board?.lists?.findIndex((l) => l.id === data.list_id));
+    const idx = Number(boardStore.board?.lists?.[listIdx].cards?.findIndex((c) => c.id === data.id));
     if (idx >= 0) {
-      boardState.currentBoard?.lists?.[listIdx].cards?.splice(idx, 1, data);
+      boardStore.board?.lists?.[listIdx].cards?.splice(idx, 1, data);
     }
-    return data; // TODO: is return needed?
-  } catch (e) {
+    await addAct({ text: `added ${card.text} to ${list?.title}`, board_id: list?.board_id });
+    return data;
+  } catch (e: any) {
     state.error = e.error_description || e.message;
-    return null; // TODO: is return needed?
+    return null;
   } finally {
     state.isLoading = false;
   }
 }
 
-async function del(card: Card) {
+// internal only - doesnt update boardStore.currentboard
+async function deleteById(id: number) {
   try {
     state.isLoading = true;
-    await supabase.from('cards').delete().eq('id', card.id);
+    const { error } = await supabase.from('cards').delete().eq('id', id);
+    if (error) throw error;
 
-    const listIdx = Number(boardState.currentBoard?.lists?.findIndex((l) => l.id === card.list_id));
-    const idx = Number(boardState.currentBoard?.lists?.[listIdx].cards?.findIndex((c) => c.id === card.id));
-    if (idx >= 0) {
-      boardState.currentBoard?.lists?.[listIdx].cards?.splice(idx, 1);
-    }
-  } catch (e) {
+    return true;
+  } catch (e: any) {
     state.error = e.error_description || e.message;
+    return false;
+  } finally {
+    state.isLoading = false;
+  }
+}
+
+async function del(card: Card): Promise<boolean> {
+  try {
+    state.isLoading = true;
+    if (!deleteById(Number(card.id))) return false;
+
+    const listIdx = Number(boardStore.board?.lists?.findIndex((l) => l.id === card.list_id));
+    const idx = Number(boardStore.board?.lists?.[listIdx].cards?.findIndex((c) => c.id === card.id));
+    if (idx >= 0) {
+      boardStore.board?.lists?.[listIdx].cards?.splice(idx, 1);
+    }
+    await addAct({ text: `archived ${card.text}`, board_id: boardStore.board?.id });
+    return true;
+  } catch (e: any) {
+    state.error = e.error_description || e.message;
+    return false;
   } finally {
     state.isLoading = false;
   }

@@ -1,5 +1,5 @@
 <template>
-  <Layout>
+  <Layout :title="title">
     <main class="flex items-center justify-center h-full">
       <div v-if="user" class="text-center">
         <p class="mb-2">
@@ -91,10 +91,9 @@
 </template>
 
 <script lang="ts">
-import { computed, defineComponent, reactive, toRefs } from 'vue';
+import { computed, defineComponent, reactive, toRefs, watch } from 'vue';
 import { useI18n } from 'vue-i18n';
 import { useRoute, useRouter } from 'vue-router';
-import { useTitle } from '@vueuse/core';
 import useValidate from '@vuelidate/core';
 import { required, email, requiredIf } from '@vuelidate/validators';
 
@@ -124,14 +123,19 @@ export default defineComponent({
       formAct: route.fullPath.split('/')[2] || 'login',
       isValid: true,
     });
+    watch(
+      () => route.fullPath,
+      (url) => {
+        state.formAct = url.split('/')[2];
+      }
+    );
 
     const setFormAct = (type: 'login' | 'signup' | 'reset') => {
       state.formAct = type;
       router.push({ path: `/auth/${type}` });
     };
 
-    const title = computed(() => `${t(state.formAct)} · 🎬 ${import.meta.env.VITE_APP_NAME}`);
-    useTitle(title);
+    const title = computed(() => t(state.formAct));
 
     const credentials = reactive<Credentials>({
       //username: '',
@@ -173,6 +177,7 @@ export default defineComponent({
       user,
       ...toRefs(state),
       setFormAct,
+      title,
       ...toRefs(credentials),
       v$,
       submitForm,

@@ -11,7 +11,8 @@
 </template>
 
 <script lang="ts">
-import { defineComponent } from 'vue';
+import { computed, defineComponent } from 'vue';
+import { useTitle } from '@vueuse/core';
 
 import Header from '@/components/shared/Header.vue';
 import Footer from '@/components/shared/Footer.vue';
@@ -19,7 +20,17 @@ import Footer from '@/components/shared/Footer.vue';
 export default defineComponent({
   name: 'AuthLayout',
   components: { Header, Footer },
-  setup() {},
+  props: {
+    title: {
+      type: String,
+      required: true,
+    },
+  },
+  setup(props) {
+    const appName = import.meta.env.VITE_APP_NAME;
+    const tabTitle = computed(() => `${props.title} · 🗒️ ${appName}`);
+    useTitle(tabTitle);
+  },
 });
 </script>
 

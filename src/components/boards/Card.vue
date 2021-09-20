@@ -1,5 +1,5 @@
 <template>
-  <div class="relative">
+  <div :id="`card-${card.id}`" :data-text="card.text" class="relative">
     <n-card size="small" hoverable @click="goToEdit">
       <slot>
         <b>{{ card.text }}</b>
@@ -23,7 +23,6 @@ import { useRouter } from 'vue-router';
 import tinycolor from 'tinycolor2';
 
 import { Card, NTagColor } from '@/data/types/mock';
-import { useCards } from '@/use/db';
 
 export default defineComponent({
   name: 'Card',
@@ -39,7 +38,6 @@ export default defineComponent({
   setup(props) {
     const { t } = useI18n();
     const router = useRouter();
-    const { data } = useCards;
 
     const labelColor = computed(() => {
       const c = {} as NTagColor;
@@ -54,7 +52,7 @@ export default defineComponent({
       router.push({ name: 'Board.List.EditCard', params: { listId: props.card.list_id!, cardId: props.card.id! } });
     }
 
-    return { t, ...toRefs(data), labelColor, goToEdit };
+    return { t, labelColor, goToEdit };
   },
 });
 </script>

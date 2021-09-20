@@ -8,17 +8,17 @@
 
       <n-dropdown @select="handleSelect" :options="options" placement="bottom-start">
         <n-button text size="tiny" color="#9d9ea2" style="margin-left: auto">
-          <template #icon><i-ellipsis-h /></template>
+          <template #icon><i-entypo-dots-three-horizontal /></template>
         </n-button>
       </n-dropdown>
     </div>
 
     <div class="flex items-center gap-2 mb-4">
-      <n-avatar :style="{ color: 'white', backgroundColor: 'gray' }">
-        {{ abbrTitle(board.title) }}
+      <n-avatar class="flex-shrink-0">
+        {{ abbr(board.title) }}
       </n-avatar>
       <b class="hover:underline text-lg">
-        <router-link :to="{ name: 'Board', params: { id: board.id } }">
+        <router-link :to="{ name: 'ViewBoard', params: { id: board.id } }">
           {{ board.title }}
         </router-link>
       </b>
@@ -41,15 +41,15 @@
 import { defineComponent, PropType, reactive, toRefs } from 'vue';
 import { useI18n } from 'vue-i18n';
 import { useRouter } from 'vue-router';
-import { EllipsisH as IEllipsisH } from '@vicons/fa';
 
 import { Board } from '@/data/types/mock';
+import { abbr } from '@/utils';
 import AvatarGroup from '@/components/ui/AvatarGroup.vue';
 import ConfirmDeleteDialog from '@/components/ui/ConfirmDeleteDialog.vue';
 
 export default defineComponent({
   name: 'BoardIndexCard',
-  components: { IEllipsisH, AvatarGroup, ConfirmDeleteDialog },
+  components: { AvatarGroup, ConfirmDeleteDialog },
   props: {
     board: {
       type: Object as PropType<Board>,
@@ -69,13 +69,6 @@ export default defineComponent({
       isDeleting: false,
     });
 
-    function abbrTitle(title: string) {
-      return title
-        .split(/\s/)
-        .reduce((res: string, word: string) => (res += word.slice(0, 1)), '')
-        .substring(0, 3);
-    }
-
     const options = [
       {
         label: 'View Board',
@@ -90,18 +83,6 @@ export default defineComponent({
         key: '3',
       },
     ];
-
-    async function deleteBoard() {
-      const board = props.board;
-      if (board) {
-        await props.del(board);
-      }
-      close();
-    }
-
-    function close() {
-      state.isDeleting = false;
-    }
 
     function handleSelect(key: string) {
       switch (key) {
@@ -119,7 +100,19 @@ export default defineComponent({
       }
     }
 
-    return { t, ...toRefs(state), abbrTitle, options, handleSelect, deleteBoard, close };
+    async function deleteBoard() {
+      const board = props.board;
+      if (board) {
+        await props.del(board);
+      }
+      close();
+    }
+
+    function close() {
+      state.isDeleting = false;
+    }
+
+    return { t, abbr, ...toRefs(state), options, handleSelect, deleteBoard, close };
   },
 });
 </script>

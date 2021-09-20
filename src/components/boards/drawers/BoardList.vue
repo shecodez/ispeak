@@ -1,8 +1,8 @@
 <template>
   <aside class="flex flex-col gap-4 h-full">
-    <n-input v-model:value="q" size="large" placeholder="Search boards by title...">
+    <n-input v-if="!listOnly" v-model:value="q" size="large" placeholder="Search boards by title...">
       <template #prefix>
-        <n-icon><i-search /></n-icon>
+        <n-icon><i-uil-search /></n-icon>
       </template>
     </n-input>
 
@@ -11,11 +11,10 @@
       <template v-for="board in boards" :key="board.id">
         <n-avatar>{{ abbrTitle(board.title) }}</n-avatar> {{ board.title }}
       </template> -->
-
       <h5>My Boards:</h5>
       <template v-for="board in boards" :key="board.id">
         <div class="flex items-center rounded bg-white">
-          <n-avatar size="large" :style="{ color: 'white', backgroundColor: 'gray' }">
+          <n-avatar size="large">
             {{ abbrTitle(board.title) }}
           </n-avatar>
           <div class="flex-1 px-3 font-semibold text-xs">
@@ -25,7 +24,7 @@
       </template>
     </div>
 
-    <div class="text-center flex flex-col gap-2">
+    <div v-if="!listOnly" class="text-center flex flex-col gap-2">
       <router-link to="/boards" v-if="currentRouteName !== 'Boards'">Go to boards</router-link>
       <button @click="addBoard" class="btn primary-blue">
         <div class="f-center gap-2 text-xs uppercase text-white py-1">
@@ -38,26 +37,29 @@
 </template>
 
 <script lang="ts">
-import { computed, defineComponent, ref, toRefs } from 'vue';
+import { computed, defineComponent, PropType, ref, toRefs } from 'vue';
 import { useI18n } from 'vue-i18n';
 import { useRouter, useRoute } from 'vue-router';
-import { Search as ISearch } from '@vicons/fa';
 
 import { useBoards } from '@/use/db';
+import { Board } from '@/data/types/mock';
 
 export default defineComponent({
   name: 'BoardList',
-  components: { ISearch },
   props: {
     boards: {
-      type: Array,
-      default: [],
+      type: Array as PropType<Board[]>,
+      required: true,
+    },
+    listOnly: {
+      type: Boolean,
+      default: false,
     },
   },
-  setup() {
+  setup(props) {
     const { t } = useI18n();
     const router = useRouter();
-    const { data: state, add } = useBoards;
+    const { add } = useBoards;
 
     const currentRouteName = computed(() => useRoute().name);
 
@@ -71,11 +73,11 @@ export default defineComponent({
     }
 
     async function addBoard() {
-      const data = await add({ title: t('untitled'), position: state.boards.length });
+      const data = await add({ title: t('untitled'), position: props.boards.length });
       router.push(`/boards/${data?.id}`);
     }
 
-    return { t, q, currentRouteName, ...toRefs(state), abbrTitle, addBoard };
+    return { t, q, currentRouteName, abbrTitle, addBoard };
   },
 });
 </script>
