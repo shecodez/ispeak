@@ -52,6 +52,7 @@ import { Board as iBoard } from '@/data/types/mock';
 import { db } from '@/use/db';
 import AvatarGroup from '@/components/ui/AvatarGroup.vue';
 import ConfirmDeleteDialog from '@/components/ui/ConfirmDeleteDialog.vue';
+import { useToast } from 'vue-toastification';
 
 export default defineComponent({
   name: 'BoardIdHeader',
@@ -65,6 +66,7 @@ export default defineComponent({
   setup(props) {
     const { t } = useI18n();
     const router = useRouter();
+    const toast = useToast();
     const { data: store, updateTitle: updateBoardTitle, updateVisibility, del } = db.boards;
 
     const state = reactive({
@@ -81,13 +83,19 @@ export default defineComponent({
     async function toggleIsPublic() {
       const is_public = !state.isPublic;
       await updateVisibility(props.board, is_public);
-      //state.isPublic = is_public;
+      state.isPublic = is_public;
     }
 
     async function deleteBoard() {
       const { board } = props;
-      if (board) await del(board);
-      close();
+      if (board) {
+        const success = await del(board); // deleteById(Number(route.params.id))
+        if (success) {
+          close();
+          router.replace({ name: 'Boards' });
+          toast.success(t('board_deleted'));
+        }
+      }
     }
 
     function close() {
@@ -95,7 +103,7 @@ export default defineComponent({
     }
 
     function handleBack() {
-      router.back();
+      router.go(-1); // same as router.back()?
     }
 
     const options = computed(() => [

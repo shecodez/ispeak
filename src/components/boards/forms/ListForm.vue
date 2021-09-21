@@ -57,7 +57,7 @@ import InPlaceConfirmDelete from '@/components/ui/ConfirmDeleteInline.vue';
 export default defineComponent({
   name: 'ListForm',
   props: {
-    data: {
+    routeParamsBoard: {
       type: Object as PropType<Board>,
     },
   },

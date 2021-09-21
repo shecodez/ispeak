@@ -14,7 +14,9 @@
       <p v-if="!activity.length">{{ t('activity', activity.length) }}</p>
       <template v-else v-for="act in activity" :key="act.id">
         <div class="flex gap-2 items-start">
-          <n-avatar size="small" class="flex-shrink-0">{{ act.profiles?.username.charAt(0) }}</n-avatar>
+          <n-avatar :src="act.profiles?.avatar_url" round size="small" class="flex-shrink-0">
+            <span v-if="!act.profiles?.avatar_url">{{ act.profiles?.username.charAt(0) }}</span>
+          </n-avatar>
           <div>
             <p>
               <b>{{ act.profiles?.username }}</b>
@@ -83,8 +85,8 @@ export default defineComponent({
     async function deleteBoard() {
       const success = await deleteById(Number(route.params.id));
       if (success) {
+        router.replace({ name: 'Boards' });
         toast.success(t('board_deleted'));
-        router.push({ name: 'Boards ' });
       }
     }
 

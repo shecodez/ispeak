@@ -34,7 +34,7 @@
           </n-badge>
         </n-list-item>
       </template>
-      <div v-if="isLoggedIn" @click="openDrawer('profile')" class="f-center py-2">
+      <div v-if="isLoggedIn" @click="openDrawer('profile')" class="f-center cursor-pointer py-2">
         <n-avatar round src="https://avatars.githubusercontent.com/u/14142384?v=4" />
       </div>
       <n-list-item v-if="isLoggedIn">
@@ -51,25 +51,25 @@
   </n-list>
 
   <n-drawer v-model:show="drawer" :width="320" placement="left" :on-update:show="handleClose">
-    <n-drawer-content :title="title.toUpperCase()" closable body-style="background-color: #eee">
-      <div v-if="showCalendar">Calendar</div>
+    <n-drawer-content :title="t('menu').toUpperCase()" closable body-style="background-color: #eee">
+      <Calendar v-if="showCalendar" />
       <BoardList v-if="showBoards" :boards="boards" />
-      <div v-if="showAnalytics">Calendar</div>
-      <div v-if="showNotifications">Notifications</div>
+      <Analytics v-if="showAnalytics" />
+      <NotificationList v-if="showNotifications" />
       <Profile v-if="showProfile" :profile="profile" />
-      <div v-if="showSettings">Settings</div>
+      <Settings v-if="showSettings" />
     </n-drawer-content>
   </n-drawer>
 </template>
 
 <script lang="ts">
 import { computed, defineComponent, onMounted, PropType, reactive, toRefs } from 'vue';
-import FaStickyNote from 'virtual:vite-icons/fa/sticky-note';
 import BiCalendar2EventFill from 'virtual:vite-icons/bi/calendar2-event-fill';
-import FaSolidFolderOpen from 'virtual:vite-icons/fa-solid/folder-open';
-import FaSolidChartPie from 'virtual:vite-icons/fa-solid/chartPie';
-import FaSolidBell from 'virtual:vite-icons/fa-solid/bell';
 import FaCog from 'virtual:vite-icons/fa/cog';
+import FaSolidBell from 'virtual:vite-icons/fa-solid/bell';
+import FaSolidChartPie from 'virtual:vite-icons/fa-solid/chartPie';
+import FaSolidFolderOpen from 'virtual:vite-icons/fa-solid/folder-open';
+import FaStickyNote from 'virtual:vite-icons/fa/sticky-note';
 
 import { useI18n } from 'vue-i18n';
 import { useRoute } from 'vue-router';
@@ -77,12 +77,28 @@ import { useRoute } from 'vue-router';
 import { Board, Profile as iProfile } from '@/data/types/mock';
 import { useAuth } from '@/use/auth';
 import { supabase } from '@/lib/supabase';
+import Analytics from '@/components/boards/drawers/Analytics.vue';
 import BoardList from '@/components/boards/drawers/BoardList.vue';
+import Calendar from '@/components/me/drawers/Calendar.vue';
+import NotificationList from '@/components/me/drawers/NotificationList.vue';
+import Settings from '@/components/me/drawers/Settings.vue';
 import Profile from '@/components/users/Profile.vue';
 
 export default defineComponent({
   name: 'Sidebar',
-  components: { FaStickyNote, FaSolidFolderOpen, FaSolidChartPie, FaSolidBell, FaCog, BoardList, Profile },
+  components: {
+    FaStickyNote,
+    FaSolidFolderOpen,
+    FaSolidChartPie,
+    FaSolidBell,
+    FaCog,
+    BoardList,
+    Profile,
+    NotificationList,
+    Settings,
+    Analytics,
+    Calendar,
+  },
   setup() {
     const { t } = useI18n();
     const { auth, logout } = useAuth;
@@ -179,11 +195,13 @@ export default defineComponent({
       if (!show) {
         state.drawer = false;
 
-        state.showCalendar = false;
-        state.showBoards = false;
         state.showAnalytics = false;
+        state.showBoards = false;
+        state.showCalendar = false;
         state.showNotifications = false;
         state.showSettings = false;
+        state.showProfile = false;
+
         state.title = '';
       }
     }

@@ -51,6 +51,11 @@ body,
   @apply bg-yellow-500 hover:bg-yellow-400 shadow;
 }
 
+button:disabled,
+button[disabled] {
+  @apply filter grayscale cursor-not-allowed;
+}
+
 .btn {
   @apply px-3 py-2 font-semibold rounded;
 }

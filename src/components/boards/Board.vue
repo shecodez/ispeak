@@ -40,7 +40,7 @@ import List from '@/components/boards/List.vue';
 export default defineComponent({
   name: 'Board',
   props: {
-    data: {
+    routeParamsBoard: {
       type: Object as PropType<Board>,
     },
   },
@@ -58,30 +58,6 @@ export default defineComponent({
       isHideOverflowY: true,
     });
 
-    // if not props.board fetchboardById
-    // async function fetchBoardById(id: number) {
-    //   //if (props?.board?.id === Number(route.params.id)) return state.board = props.board;
-    //   try {
-    //     state.isLoading = true;
-    //     const { data, error } = await supabase
-    //       .from('boards')
-    //       .select(
-    //         'id, title, slug, image_url, description, is_public, updated_at, lists ( id, position, title, slug, description, publish_date, gems, board_id, cards ( id, position, text, details, label, color, text_color, list_id ))'
-    //       )
-    //       .eq('id', id)
-    //       .order('position')
-    //       .order('position', { foreignTable: 'lists' })
-    //       .order('position', { foreignTable: 'lists.cards' })
-    //       .single();
-    //     if (error) throw error;
-
-    //     state.board = data;
-    //   } catch (e) {
-    //     state.error = e.error_description || e.message;
-    //   } finally {
-    //     state.isLoading = false;
-    //   }
-    // }
     onMounted(async () => await getById(Number(route.params.id)));
     watch(
       () => route.params.id,

@@ -15,7 +15,7 @@
       <template v-for="board in boards" :key="board.id">
         <div class="flex items-center rounded bg-white">
           <n-avatar size="large">
-            {{ abbrTitle(board.title) }}
+            {{ abbr(board.title) }}
           </n-avatar>
           <div class="flex-1 px-3 font-semibold text-xs">
             <router-link :to="`/boards/${board.id}`">{{ board.title }}</router-link>
@@ -41,6 +41,7 @@ import { computed, defineComponent, PropType, ref, toRefs } from 'vue';
 import { useI18n } from 'vue-i18n';
 import { useRouter, useRoute } from 'vue-router';
 
+import { abbr } from '@/utils';
 import { useBoards } from '@/use/db';
 import { Board } from '@/data/types/mock';
 
@@ -65,19 +66,12 @@ export default defineComponent({
 
     const q = ref('');
 
-    function abbrTitle(title: string) {
-      return title
-        .split(/\s/)
-        .reduce((res: string, word: string) => (res += word.slice(0, 1)), '')
-        .substring(0, 3);
-    }
-
     async function addBoard() {
       const data = await add({ title: t('untitled'), position: props.boards.length });
       router.push(`/boards/${data?.id}`);
     }
 
-    return { t, q, currentRouteName, abbrTitle, addBoard };
+    return { t, abbr, q, currentRouteName, addBoard };
   },
 });
 </script>

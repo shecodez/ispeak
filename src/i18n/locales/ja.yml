@@ -73,7 +73,7 @@ editor: エディタ
 my_boards: 私のボード
 hot: トレンド
 saved: セーブしました
-bookmark: ブックマーク
+bookmark: ブックマーク ({count})
 bookmarked: ブックマーク
 stories: ストーリー
 story_boards: ストーリーボード
@@ -85,6 +85,11 @@ help: ヘルプ
 info: 情報
 calendar: カレンダー
 profile: プロフィール
+bio: バイオ
+edit_profile: プロファイル編集
+update_profile: プロファイルを更新する
+delete_profile: プロファイルを削除する
+profile_deleted: プロファイルが削除されました
 
 public: 公衆
 private: プライベート
@@ -97,6 +102,7 @@ create_new_board: ボードを追加します
 add_board: 新しいボード
 edit_title: タイトルを更新
 delete_board: ボードを削除
+board_deleted: ボードが削除されました
 board_settings: ボード設定
 edit_board: ボードを編集
 move_board: ボードを動かす
@@ -104,9 +110,11 @@ card: カード
 add_card: カードを追加
 edit_card: カードを更新
 delete_card: カードを削除
+card_deleted: カードが削除されました
 add_list: リストを追加
 edit_list: リストを編集
 delete_list: リストを削除
+list_deleted: リストが削除されました
 
 members: メンバー
 publish: 公開する
@@ -148,3 +156,6 @@ edit: 編集
 upload: アップロード
 followers: フォロワー
 following: 続く
+
+refresh: リフレッシュ
+notification: '{count} 通知'

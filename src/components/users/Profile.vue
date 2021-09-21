@@ -11,9 +11,11 @@
         <button class="absolute top-0 right-0 font-bold">{{ t('upload') }}</button>
       </div>
       <h3>{{ profile.username }}</h3>
-      <button v-if="isLoggedIn" class="btn primary-blue text-white mx-auto">
-        {{ t('edit') }}
-      </button>
+      <div v-if="isLoggedIn" class="mx-auto">
+        <router-link :to="{ name: 'EditProfile' }" class="btn primary-blue text-white">
+          {{ t('edit') }}
+        </router-link>
+      </div>
 
       <div class="flex w-full text-center capitalize items-center justify-around">
         <div class="flex flex-col">

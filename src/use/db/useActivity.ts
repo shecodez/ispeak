@@ -20,6 +20,8 @@ const state = reactive<State>({
 });
 
 async function allByBoardId(boardId: number, page = 1, limit = 10) {
+  if (!boardId) return;
+
   const startIdx = page * limit - limit;
   const endIdx = page * limit - 1;
 
@@ -31,9 +33,9 @@ async function allByBoardId(boardId: number, page = 1, limit = 10) {
       .eq('board_id', boardId);
     const { data, error } = await supabase
       .from('activity')
-      .select('id text created_at profiles ( username, avatar_url )')
+      .select('id, text, created_at, profiles ( username, avatar_url )')
       .range(startIdx, endIdx)
-      .order('created_at')
+      .order('created_at', { ascending: false })
       .eq('board_id', boardId);
     if (error) throw error;
     if (data === null) return (state.activity = []);
@@ -47,14 +49,10 @@ async function allByBoardId(boardId: number, page = 1, limit = 10) {
   }
 }
 
-async function getById(id: number) {
+async function getById(id: number, query = '*') {
   try {
     state.isLoading = true;
-    const { data, error } = await supabase
-      .from('activity')
-      .select('id text created_at profiles ( username, avatar_url )')
-      .eq('id', id)
-      .single();
+    const { data, error } = await supabase.from('activity').select(query).eq('id', id).single();
     if (error) throw error;
 
     state.act = data;

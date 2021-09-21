@@ -73,7 +73,7 @@ editor: editor
 my_boards: My Boards
 hot: hot
 saved: saved
-bookmark: bookmark
+bookmark: bookmark ({count}) | bookmarks ({count})
 bookmarked: bookmarked
 stories: Stories
 story_boards: Story Boards
@@ -85,6 +85,11 @@ help: Help
 info: Info
 calendar: calendar
 profile: profile
+bio: bio
+edit_profile: Edit profile
+update_profile: Update profile
+delete_profile: Delete profile
+profile_deleted: Profile deleted
 
 public: public
 private: private
@@ -97,6 +102,7 @@ create_new_board: Create New Board
 add_board: Add Board
 edit_title: Edit Title
 delete_board: Delete Board
+board_deleted: Board deleted
 board_settings: Board Settings
 edit_board: Edit Board
 move_board: Move Board
@@ -104,9 +110,11 @@ card: Card
 add_card: Add Card
 edit_card: Update Card
 delete_card: Delete Card
+card_deleted: Card deleted
 add_list: Add List
 edit_list: Edit List
 delete_list: Delete List
+list_deleted: List deleted
 
 members: members
 publish: publish
@@ -148,3 +156,6 @@ edit: edit
 upload: upload
 followers: followers
 following: following
+
+refresh: refresh
+notification: '{count} notification | {count} notifications'

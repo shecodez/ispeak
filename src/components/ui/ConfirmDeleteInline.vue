@@ -1,7 +1,7 @@
 <template>
   <div class="flex items-center gap-2" :class="css">
     <button @click="canDelete ? deleteIt() : prepareToDelete()" type="button" class="btn" :class="btnCss">
-      🗑️
+      <span>🗑️</span>
       <span v-if="canDelete">{{ t('confirm') }}</span>
       <span v-else>&nbsp;{{ label }}</span>
       <span class="sr-only">Delete</span>

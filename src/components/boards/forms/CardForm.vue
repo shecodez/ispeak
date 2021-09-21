@@ -103,7 +103,7 @@ import InPlaceConfirmDelete from '@/components/ui/ConfirmDeleteInline.vue';
 export default defineComponent({
   name: 'CardForm',
   props: {
-    data: {
+    routeParamsBoard: {
       type: Object as PropType<Board>,
     },
   },

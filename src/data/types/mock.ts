@@ -11,7 +11,7 @@ export interface Credentials {
 }
 
 export interface Profile {
-  id: string; //uid
+  id?: string; //uid
 
   avatar_url?: string;
   bio?: string;

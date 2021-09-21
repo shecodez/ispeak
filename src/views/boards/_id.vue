@@ -1,12 +1,11 @@
 <template>
-  <ProgressBar label="for decoration only" :value="100" />
   <Spinner v-if="isLoading" />
   <Layout v-if="title" :title="title">
     <template v-slot:header>
       <BoardHeader v-if="board" :board="board" />
     </template>
 
-    <router-view :data="board"></router-view>
+    <router-view :routeParamsBoard="board"></router-view>
 
     <n-tooltip trigger="hover" :show-arrow="false">
       <template #trigger>
@@ -21,7 +20,7 @@
   </Layout>
 
   <n-drawer v-model:show="drawer" :width="320" placement="right" :on-update:show="handleClose">
-    <n-drawer-content title="Activity Log" closable body-style="background-color: #eee">
+    <n-drawer-content :title="t('menu').toUpperCase()" closable body-style="background-color: #eee">
       <ActivityList />
     </n-drawer-content>
   </n-drawer>
@@ -52,7 +51,7 @@ export default defineComponent({
     ActivityList,
   },
   props: {
-    data: {
+    routeParamsBoard: {
       type: Object as PropType<Board>,
     },
     id: {
@@ -72,26 +71,6 @@ export default defineComponent({
 
     const state = reactive({
       drawer: false,
-      // activity: [
-      //   {
-      //     id: 1,
-      //     text: 'moved card.text from list.title to list.title.',
-      //     created_at: new Date(),
-      //     profiles: { username: 'shecodez' },
-      //   },
-      //   {
-      //     id: 2,
-      //     text: 'created card.text on list.title.',
-      //     created_at: new Date(),
-      //     profiles: { username: 'shecodez' },
-      //   },
-      //   {
-      //     id: 3,
-      //     text: 'deleted card.text from list.title.',
-      //     created_at: new Date(),
-      //     profiles: { username: 'user4995802' },
-      //   },
-      // ],
     });
 
     onMounted(async () => await getById(Number(route.params.id)));

@@ -41,8 +41,7 @@ async function add(board: Board, list: List): Promise<null | List> {
 
     const data: List = body ? { ...body[0], cards: [] } : null;
     boardStore.board?.lists?.push(data);
-    await addAct({ text: `added **${list.title}** to board`, board_id: list.board_id });
-
+    await addAct({ text: `added **${data.title}** to board`, board_id: data.board_id });
     return data;
   } catch (e: any) {
     state.error = e.error_description || e.message;
@@ -52,7 +51,7 @@ async function add(board: Board, list: List): Promise<null | List> {
   }
 }
 
-async function update(list: List): Promise<null | List> {
+async function update(list: List, isIsolatedUpdate = false): Promise<null | List> {
   try {
     state.isLoading = true;
     const { body, error } = await supabase
@@ -75,7 +74,7 @@ async function update(list: List): Promise<null | List> {
     if (idx >= 0) {
       boardStore.board?.lists?.splice(idx, 1, { ...boardStore.board?.lists[idx], ...data });
     }
-    await addAct({ text: `updated list ${list.title}`, board_id: list.board_id });
+    if (!isIsolatedUpdate) await addAct({ text: `updated *list* ${data.title}`, board_id: data.board_id });
     return data;
   } catch (e: any) {
     state.error = e.error_description || e.message;
@@ -86,19 +85,25 @@ async function update(list: List): Promise<null | List> {
 }
 
 async function updateTitle(list: List, title: string) {
-  await update({ ...list, title });
-  await addAct({ text: `renamed list to **${title}** (from ${list.title})`, board_id: list.board_id });
+  const data = await update({ ...list, title }, true);
+  if (data) {
+    await addAct({ text: `renamed list to **${title}** (from ${list.title})`, board_id: data.board_id });
+  }
 }
 
 async function updatePublishDate(list: List, publish_date: string | null) {
-  await update({ ...list, publish_date });
-  const message = !!publish_date ? 'published' : 'draft';
-  await addAct({ text: `changed status of ${list.title} to **${message}**`, board_id: list.board_id });
+  const data = await update({ ...list, publish_date }, true);
+  if (data) {
+    const message = !!publish_date ? 'published' : 'draft';
+    await addAct({ text: `changed status of ${data.title} to **${message}**`, board_id: data.board_id });
+  }
 }
 
 async function updateBackground(list: List, image_url: string) {
-  await update({ ...list, image_url });
-  await addAct({ text: `updated ${list.title} background image`, board_id: list.board_id });
+  const data = await update({ ...list, image_url }, true);
+  if (data) {
+    await addAct({ text: `updated ${data.title} background image`, board_id: data.board_id });
+  }
 }
 
 /**
@@ -120,7 +125,7 @@ async function sort(list: List) {
     return data;
   } catch (e: any) {
     state.error = e.error_description || e.message;
-    return false; // TODO: is return needed?
+    return false;
   } finally {
     //state.isLoading = false;
   }
@@ -152,5 +157,3 @@ async function del(list: List): Promise<boolean> {
 }
 
 export { state as data, getById, add, update, updateTitle, updatePublishDate, updateBackground, sort, deleteById, del };
-
-// TODO: await addAct({ text:`moved **${card.text}** from ${list.title} to ${list.title}`, board_id: route.params.id })`

@@ -113,7 +113,7 @@ export default defineComponent({
     async function togglePublishDate() {
       const publish_date = !!state.publishDate ? null : new Date().toISOString();
       await updatePublishDate(props.list, publish_date);
-      //state.publishDate = publish_date;
+      state.publishDate = publish_date;
     }
 
     async function deleteList() {
@@ -179,7 +179,9 @@ export default defineComponent({
       const cardText = document.getElementById(dragged.id)?.getAttribute('data-text');
 
       //console.log(`moved **${cardText}** from ${fromList} to ${toList}`);
-      await add({ text: `moved **${cardText}** from ${fromList} to ${toList}`, board_id: Number(route.params.id) });
+      if (from.id !== to.id) {
+        await add({ text: `moved **${cardText}** from ${fromList} to ${toList}`, board_id: Number(route.params.id) });
+      }
     }
 
     return {

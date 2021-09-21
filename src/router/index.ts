@@ -185,7 +185,13 @@ const routes: Array<RouteRecordRaw> = [
   {
     path: '/@me',
     name: '@me',
-    component: () => import('@/views/Me.vue'),
+    component: () => import('@/views/me/index.vue'),
+    meta: { requiresAuth: true },
+  },
+  {
+    path: '/@me/edit',
+    name: 'EditProfile',
+    component: () => import('@/views/me/edit.vue'),
     meta: { requiresAuth: true },
   },
   {
@@ -215,13 +221,11 @@ router.beforeEach(async (to, from, next) => {
   const requiresAuth = to.matched.some((route) => route.meta.requiresAuth);
   const requiresUnauth = to.matched.some((route) => route.meta.requiresUnauth);
 
-  const isAuth = !!supabase.auth.user();
+  const isAuth = !!(await supabase.auth.user());
 
   if (requiresAuth && !isAuth) {
     toast('you must be logged in');
-    next('/login');
-    //TODO: save the location we were at to come back later
-    // query: { redirect: to.fullPath },
+    next({ name: 'AuthLogin', query: { redirect: to.fullPath } });
   } else if (requiresUnauth && isAuth) next('/');
   else next();
 });

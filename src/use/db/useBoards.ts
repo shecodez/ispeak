@@ -48,7 +48,7 @@ async function all(query = '*', page = 1, limit = 10) {
 }
 
 async function allByUserId(userId: string | undefined, query = '*', page = 1, limit = 25) {
-  if (!userId) userId = supabase.auth.user()?.id;
+  if (!userId) return;
   const startIdx = page * limit - limit;
   const endIdx = page * limit - 1;
 
@@ -71,6 +71,10 @@ async function allByUserId(userId: string | undefined, query = '*', page = 1, li
   } finally {
     state.isLoading = false;
   }
+}
+
+async function allMyBoards(query = '*', page = 1, limit = 25) {
+  await allByUserId(supabase.auth.user()?.id, query, page, limit);
 }
 
 async function getById(
@@ -106,9 +110,9 @@ async function add(board: Board): Promise<null | Board> {
     const { body, error } = await supabase.from('boards').insert(board);
     if (error) throw error;
 
-    await addAct({ text: `created board named **${board.title}**`, board_id: board.id });
     const data: Board = body ? { ...body[0], lists: [] } : null;
     state.boards.push(data);
+    await addAct({ text: `created board named **${data.title}**`, board_id: data.id });
     return data;
   } catch (e: any) {
     state.error = e.error_description || e.message;
@@ -118,7 +122,7 @@ async function add(board: Board): Promise<null | Board> {
   }
 }
 
-async function update(board: Board): Promise<null | Board> {
+async function update(board: Board, isIsolatedUpdate = false): Promise<null | Board> {
   try {
     state.isLoading = true;
     const { body, error } = await supabase
@@ -141,7 +145,7 @@ async function update(board: Board): Promise<null | Board> {
     const idx = state.boards.findIndex((b) => b.id === data.id);
     state.boards.splice(idx, 1, { ...state.boards[idx], ...data });
     if (state.board?.id === board.id) state.board = { ...state.board, ...data };
-    await addAct({ text: `updated **${board.title}**`, board_id: board.id });
+    if (!isIsolatedUpdate) await addAct({ text: `updated this board`, board_id: board.id });
     return data;
   } catch (e: any) {
     state.error = e.error_description || e.message;
@@ -152,18 +156,18 @@ async function update(board: Board): Promise<null | Board> {
 }
 
 async function updateTitle(board: Board, title: string) {
-  await update({ ...board, title });
+  await update({ ...board, title }, true);
   await addAct({ text: `renamed board to **${title}** (from ${board.title})`, board_id: board.id });
 }
 
 async function updateVisibility(board: Board, is_public: boolean) {
-  await update({ ...board, is_public });
+  await update({ ...board, is_public }, true);
   const message = is_public ? 'visible to the public' : 'visible to its members only';
   await addAct({ text: `changed board to **${message}**`, board_id: board.id });
 }
 
 async function updateBackground(board: Board, image_url: string) {
-  await update({ ...board, image_url });
+  await update({ ...board, image_url }, true);
   await addAct({ text: `updated board background image`, board_id: board.id });
 }
 
@@ -193,7 +197,7 @@ async function sort(board: Board) {
   }
 }
 
-async function deleteById(id: number) {
+async function deleteById(id: number, isInternalUse = false) {
   try {
     state.isLoading = true;
     const { error } = await supabase.from('boards').delete().eq('id', id);
@@ -202,7 +206,7 @@ async function deleteById(id: number) {
     const idx = state.boards.findIndex((b) => b.id === id);
     state.boards.splice(idx, 1);
     if (state.board?.id === id) state.board = null;
-    await addAct({ text: `archived board_id:${id}`, board_id: id });
+    //if (!isInternalUse) await addAct({ text: `archived board_id:${id}`, board_id: id });
     return true; //toast.success('Board deleted.');
   } catch (e: any) {
     state.error = e.error_description || e.message;
@@ -213,8 +217,8 @@ async function deleteById(id: number) {
 }
 
 async function del(board: Board): Promise<boolean> {
-  const success = await deleteById(Number(board.id));
-  if (success) await addAct({ text: `archived ${board.title}`, board_id: board.id });
+  const success = await deleteById(Number(board.id), true);
+  //if (success) await addAct({ text: `archived **${board.title}**`, board_id: board.id });
   return success;
 }
 
@@ -222,6 +226,7 @@ export {
   state as data,
   all,
   allByUserId,
+  allMyBoards,
   getById,
   add,
   update,

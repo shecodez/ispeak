@@ -1,5 +1,5 @@
 <template>
-  <div style="display: flex">
+  <div class="flex items-center">
     <template v-for="(item, i) in items" :key="item">
       <n-tooltip trigger="hover" :show-arrow="false">
         <template #trigger>
@@ -12,23 +12,41 @@
         {{ item }}
       </n-tooltip>
     </template>
-    <n-avatar v-if="showAddBtn || gtMax" round size="small" class="plus-btn">
-      <n-icon v-if="!gtMax">+</n-icon>
-      <span v-else>{{ `+${items.length - 3}` }}</span>
-    </n-avatar>
+    <button v-if="showAddBtn || isGtMax" @click="drawer = true" class="f-center">
+      <n-avatar round size="small" class="plus-btn">
+        <n-icon v-if="!isGtMax">+</n-icon>
+        <span v-else>{{ `+${items.length - 3}` }}</span>
+      </n-avatar>
+    </button>
   </div>
+
+  <n-drawer v-model:show="drawer" :width="320" placement="right">
+    <n-drawer-content :title="t('menu').toUpperCase()" closable body-style="background-color: #eee">
+      <MemberList :members="items" :boardId="boardId" />
+    </n-drawer-content>
+  </n-drawer>
 </template>
 
 <script lang="ts">
-import { computed, defineComponent } from 'vue';
+import { computed, defineComponent, reactive, toRefs } from 'vue';
+import { useI18n } from 'vue-i18n';
+
+import MemberList from '../users/drawer/MemberList.vue';
 
 export default defineComponent({
-  name: 'AvatarGroup',
-  props: ['items', 'showAddBtn'],
+  name: 'AvatarGroup', //TODO: rename to BoardMembersInline
+  components: { MemberList },
+  props: ['items', 'showAddBtn', 'boardId'],
   setup(props) {
-    const gtMax = computed(() => props.items.length > 3);
+    const { t } = useI18n();
 
-    return { gtMax };
+    const state = reactive({
+      drawer: false,
+    });
+
+    const isGtMax = computed(() => props.items.length > 3);
+
+    return { t, ...toRefs(state), isGtMax };
   },
 });
 </script>
@@ -47,7 +65,6 @@ export default defineComponent({
 }
 
 .plus-btn {
-  cursor: pointer;
   background-color: #ffd700;
   transform: none !important;
 }

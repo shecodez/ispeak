@@ -26,7 +26,7 @@ async function add(list: List, card: Card): Promise<null | Card> {
     if (idx >= 0) {
       boardStore.board?.lists?.[idx].cards?.push(data);
     }
-    await addAct({ text: `added **${card.text}** to ${list.title}`, board_id: list.board_id });
+    await addAct({ text: `added **${data.text}** to ${list.title}`, board_id: list.board_id });
     return data;
   } catch (e: any) {
     state.error = e.error_description || e.message;
@@ -36,7 +36,7 @@ async function add(list: List, card: Card): Promise<null | Card> {
   }
 }
 
-async function update(card: Card): Promise<null | Card> {
+async function update(card: Card, isIsolatedUpdate = false): Promise<null | Card> {
   try {
     state.isLoading = true;
     const { body, error } = await supabase
@@ -54,13 +54,13 @@ async function update(card: Card): Promise<null | Card> {
     if (error) throw error;
 
     const data: Card = body ? { ...body[0] } : null;
-    const list = boardStore.board?.lists?.find((l) => l.id === data.list_id);
+    //const list = boardStore.board?.lists?.find((l) => l.id === data.list_id);
     const listIdx = Number(boardStore.board?.lists?.findIndex((l) => l.id === data.list_id));
     const idx = Number(boardStore.board?.lists?.[listIdx].cards?.findIndex((c) => c.id === data.id));
     if (idx >= 0) {
       boardStore.board?.lists?.[listIdx].cards?.splice(idx, 1, data);
     }
-    await addAct({ text: `added ${card.text} to ${list?.title}`, board_id: list?.board_id });
+    if (!isIsolatedUpdate) await addAct({ text: `updated **${data.text}**`, board_id: boardStore.board?.id });
     return data;
   } catch (e: any) {
     state.error = e.error_description || e.message;
