@@ -9,7 +9,7 @@
           <n-tag v-if="card.label" size="small" round :color="labelColor">
             {{ card.label }}
           </n-tag>
-          <AvatarGroup v-if="card.assigned_to" :items="card.assigned_to" />
+          <AvatarGroup v-if="card.assigned_to?.length" :items="card.assigned_to" />
         </n-space>
       </template>
     </n-card>
@@ -23,9 +23,11 @@ import { useRouter } from 'vue-router';
 import tinycolor from 'tinycolor2';
 
 import { Card, NTagColor } from '@/data/types/mock';
+import AvatarGroup from '@/components/ui/AvatarGroup.vue';
 
 export default defineComponent({
   name: 'Card',
+  components: { AvatarGroup },
   props: {
     card: {
       type: Object as PropType<Card>,

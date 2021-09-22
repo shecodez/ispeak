@@ -62,7 +62,8 @@ async function updateUsername(username: string) {
   await update({ ...profile, username });
 }
 
-async function updateAvatarUrl(profile: Profile, avatar_url: string) {
+async function updateAvatarUrl(avatar_url: string) {
+  const profile = state.profile;
   await update({ ...profile, avatar_url });
 }
 

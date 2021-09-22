@@ -2,11 +2,7 @@
   <div class="sb-container flex flex-col gap-3 border rounded-lg p-4">
     <div class="sb-header flex items-center justify-between">
       <div class="flex gap-3 items-center">
-        <n-avatar :src="board.profiles?.avatar_url" :size="48" round style="flex-shrink: 0">
-          <span v-if="!!!board.profiles?.avatar_url" class="text-xl font-bold">
-            {{ board.profiles?.username.charAt(0) }}
-          </span>
-        </n-avatar>
+        <Avatar v-model:path="board.profiles.avatar_url" :username="board.profiles.username" size="w-12 h-12" />
         <div class="flex flex-col">
           <router-link :to="{ name: 'StoryBoardIntro', params: { id: board.id } }">
             <b>{{ board.title }}</b>
@@ -49,8 +45,10 @@ import { useI18n } from 'vue-i18n';
 
 import { Board } from '@/data/types/mock';
 import { rand, formatDateDistance } from '@/utils';
+import Avatar from '@/components/shared/Avatar.vue';
 
 export default defineComponent({
+  components: { Avatar },
   name: 'StoryBoardIndexCard',
   props: {
     board: {

@@ -5,7 +5,7 @@
         <p class="mb-2">
           {{ t('logged_in_as', { email: user?.email }) }}
         </p>
-        <button @click.prevent="logout" class="btn primary-red">{{ t('logout') }}</button>
+        <LogoutButton />
       </div>
 
       <div v-else class="container max-w-lg mx-auto">
@@ -101,6 +101,7 @@ import { useAuth } from '@/use/auth';
 import { Credentials } from '@/data/types/mock';
 import Layout from '@/layouts/AuthLayout.vue';
 import AlertMessage from '@/components/shared/AlertMessage.vue';
+import LogoutButton from '@/components/shared/LogoutButton.vue';
 
 export enum AuthType {
   login = 'login',
@@ -110,7 +111,7 @@ export enum AuthType {
 
 export default defineComponent({
   name: 'Auth',
-  components: { Layout, AlertMessage },
+  components: { Layout, AlertMessage, LogoutButton },
   setup() {
     const { t } = useI18n();
     const route = useRoute();

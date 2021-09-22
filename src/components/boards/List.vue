@@ -35,7 +35,7 @@
         :list="list.cards"
         group="cards"
         @change="log"
-        @move="checkMove"
+        @end="drop"
         itemKey="id"
         :animation="200"
         ghost-class="ghost"
@@ -123,19 +123,19 @@ export default defineComponent({
 
     const options = computed(() => [
       {
-        label: !!state.publishDate ? 'Unpublish List' : 'Publish List',
+        label: t('add_card'),
         key: '1',
       },
       {
-        label: t('edit_list'),
+        label: !!state.publishDate ? 'Unpublish List' : 'Publish List',
         key: '2',
       },
       {
-        label: t('delete_list'),
+        label: t('edit_list'),
         key: '3',
       },
       {
-        label: t('add_card'),
+        label: t('delete_list'),
         key: '4',
       },
     ]);
@@ -145,16 +145,16 @@ export default defineComponent({
 
       switch (key) {
         case '1':
-          togglePublishDate();
+          router.push({ name: 'Board.List.NewCard', params: { listId } });
           break;
         case '2':
-          router.push({ name: 'Board.EditList', params: { listId } });
+          togglePublishDate();
           break;
         case '3':
-          state.isDeleting = true;
+          router.push({ name: 'Board.EditList', params: { listId } });
           break;
         case '4':
-          router.push({ name: 'Board.List.NewCard', params: { listId } });
+          state.isDeleting = true;
           break;
         default:
           break;
@@ -167,18 +167,19 @@ export default defineComponent({
 
     async function log(e: any) {
       // const { element, oldIndex, newIndex } = e.added; // e.removed
+      // console.log('@change log', e);
       await sort(props.list); // sort from list and to list
     }
 
-    // NOTE: not sure how to handle this...?
-    async function checkMove(e: any) {
-      const { from, dragged, to } = e;
+    // NOTE: not sure on the best way to handle this activity..
+    async function drop(e: any) {
+      const { from, item, to } = e;
 
       const fromList = document.getElementById(from.id)?.getAttribute('data-title');
       const toList = document.getElementById(to.id)?.getAttribute('data-title');
-      const cardText = document.getElementById(dragged.id)?.getAttribute('data-text');
+      const cardText = document.getElementById(item.id)?.getAttribute('data-text');
 
-      //console.log(`moved **${cardText}** from ${fromList} to ${toList}`);
+      // console.log('@end: drop', `moved **${cardText}** from ${fromList} to ${toList}`);
       if (from.id !== to.id) {
         await add({ text: `moved **${cardText}** from ${fromList} to ${toList}`, board_id: Number(route.params.id) });
       }
@@ -196,7 +197,7 @@ export default defineComponent({
       sort,
       close,
       log,
-      checkMove,
+      drop,
     };
   },
 });

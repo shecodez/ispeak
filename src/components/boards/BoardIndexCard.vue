@@ -30,7 +30,7 @@
         <i-mdi-lock v-else />
         {{ board.is_public ? t('public') : t('private') }}
       </div>
-      <AvatarGroup :items="['AAA', 'BEE', 'CDC', 'DD']" :showAddBtn="true" />
+      <AvatarGroup :items="boardMembers" :boardId="board.id" showAddBtn />
     </div>
   </div>
 
@@ -67,6 +67,7 @@ export default defineComponent({
 
     const state = reactive({
       isDeleting: false,
+      boardMembers: [],
     });
 
     const options = [

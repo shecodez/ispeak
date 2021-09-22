@@ -14,15 +14,19 @@
       <p v-if="!activity.length">{{ t('activity', activity.length) }}</p>
       <template v-else v-for="act in activity" :key="act.id">
         <div class="flex gap-2 items-start">
-          <n-avatar :src="act.profiles?.avatar_url" round size="small" class="flex-shrink-0">
+          <!-- <n-avatar :src="act.profiles?.avatar_url" round size="small" class="flex-shrink-0">
             <span v-if="!act.profiles?.avatar_url">{{ act.profiles?.username.charAt(0) }}</span>
-          </n-avatar>
+          </n-avatar> -->
+          <Avatar
+            v-model:path="act.profiles.avatar_url"
+            :username="act.profiles.username"
+            css="flex-shrink-0"
+            size="w-7 h-7"
+          />
           <div>
-            <p>
-              <b>{{ act.profiles?.username }}</b>
-              {{ act.text }}
-            </p>
-            <small class="text-gray-400">{{ formatDate(act.created_at) }}</small>
+            <b>{{ act.profiles?.username }}</b>
+            <span class="act-markdown" v-html="Marked.parse(act.text)" />
+            <small class="text-gray-400 block">{{ formatDate(act.created_at) }}</small>
           </div>
         </div>
       </template>
@@ -39,15 +43,18 @@ import { computed, defineComponent, onMounted, PropType, reactive, ref, toRefs, 
 import { useI18n } from 'vue-i18n';
 import { useRoute, useRouter } from 'vue-router';
 import { useToast } from 'vue-toastification';
+import { Marked } from '@ts-stack/markdown';
+//import DOMPurify from 'dompurify';
 
 import { Activity } from '@/data/types/mock';
 import { db } from '@/use/db';
 import { formatDateDistance } from '@/utils';
 import ConfirmDeleteInline from '@/components/ui/ConfirmDeleteInline.vue';
+import Avatar from '@/components/shared/Avatar.vue';
 
 export default defineComponent({
   name: 'ActivityList',
-  components: { ConfirmDeleteInline },
+  components: { ConfirmDeleteInline, Avatar },
   props: {
     // activity: {
     //   type: Array as PropType<Activity[]>,
@@ -94,7 +101,17 @@ export default defineComponent({
       return formatDateDistance(date, locale.value, mock);
     }
 
-    return { t, ...toRefs(store), ...toRefs(state), deleteBoard, formatDate };
+    return { t, Marked, ...toRefs(store), ...toRefs(state), deleteBoard, formatDate };
   },
 });
 </script>
+
+<style>
+.act-markdown > p {
+  display: inline;
+  margin-left: 0.225em;
+}
+.act-markdown > p > a {
+  text-decoration: underline;
+}
+</style>

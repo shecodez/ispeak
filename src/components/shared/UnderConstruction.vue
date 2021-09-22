@@ -1,5 +1,5 @@
 <template>
-  <img class="mx-auto w-3xl" src="src/assets/under-construction.png" alt="Under Construction" />
+  <img class="mx-auto w-3xl" src="/src/assets/under-construction.png" alt="Under Construction" />
   <h2 class="text-2xl font-bold text-center capitalize">🚧 {{ t('under_construction_message', { wip }) }} 👷👷‍♀️</h2>
 </template>
 

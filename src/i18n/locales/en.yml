@@ -25,7 +25,7 @@ shop: shop
 contact: contact
 sign_up: sign up
 
-manage_your_lists: Manage your Lists of
+manage_and_organize: Manage & Organize
 easier: easier!
 dialogues: dialogues
 tasks: tasks
@@ -104,6 +104,8 @@ edit_title: Edit Title
 delete_board: Delete Board
 board_deleted: Board deleted
 board_settings: Board Settings
+recent_boards: recent boards
+go_to_boards: go to boards
 edit_board: Edit Board
 move_board: Move Board
 card: Card
@@ -154,6 +156,7 @@ list: '{count} list | {count} lists'
 
 edit: edit
 upload: upload
+uploading: uploading...
 followers: followers
 following: following
 

@@ -126,7 +126,7 @@ export interface Activity {
   board_id?: number;
   boards?: Board;
   //list_id?: string;
-  //card_id?: string;
+  card_id?: number;
 
   created_at?: string;
 }

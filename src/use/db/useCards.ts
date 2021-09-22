@@ -26,7 +26,13 @@ async function add(list: List, card: Card): Promise<null | Card> {
     if (idx >= 0) {
       boardStore.board?.lists?.[idx].cards?.push(data);
     }
-    await addAct({ text: `added **${data.text}** to ${list.title}`, board_id: list.board_id });
+    await addAct({
+      text: `added [${data.text}](${import.meta.env.BASE_URL}/boards/${boardStore.board?.id}/lists/${
+        data.list_id
+      }/cards/${data.id}/edit) to ${list.title}`,
+      board_id: list.board_id,
+      card_id: data.id,
+    });
     return data;
   } catch (e: any) {
     state.error = e.error_description || e.message;
@@ -60,7 +66,14 @@ async function update(card: Card, isIsolatedUpdate = false): Promise<null | Card
     if (idx >= 0) {
       boardStore.board?.lists?.[listIdx].cards?.splice(idx, 1, data);
     }
-    if (!isIsolatedUpdate) await addAct({ text: `updated **${data.text}**`, board_id: boardStore.board?.id });
+    if (!isIsolatedUpdate)
+      await addAct({
+        text: `updated [${data.text}](${import.meta.env.BASE_URL}/boards/${boardStore.board?.id}/lists/${
+          data.list_id
+        }/cards/${data.id}/edit)`,
+        board_id: boardStore.board?.id,
+        card_id: data.id,
+      });
     return data;
   } catch (e: any) {
     state.error = e.error_description || e.message;

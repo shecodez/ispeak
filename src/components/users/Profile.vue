@@ -1,53 +1,47 @@
 <template>
   <div class="flex flex-col gap-8 h-full">
     <div class="flex flex-col gap-4 items-center">
-      <div class="flex w-full items-center justify-between">
-        <button><i-fa-regular-question-circle /></button>
-        <button><i-fa-cog /></button>
-      </div>
-
-      <div class="relative w-32 h-32 rounded-full" :class="!profile.avatar_url && 'bg-gray-400'">
-        <img v-if="profile.avatar_url" src="profile.avatar_url" alt="avatar" />
-        <button class="absolute top-0 right-0 font-bold">{{ t('upload') }}</button>
-      </div>
+      <!-- <n-avatar :src="profile?.avatar_url" :size="128" round style="flex-shrink: 0; flex-grow: 0">
+        <span v-if="!!!profile?.avatar_url" class="text-4xl font-bold">
+          {{ profile?.username.charAt(0) }}
+        </span>
+      </n-avatar> -->
+      <Avatar v-model:path="profile.avatar_url" :username="profile.username" size="w-32 h-32" />
       <h3>{{ profile.username }}</h3>
-      <div v-if="isLoggedIn" class="mx-auto">
-        <router-link :to="{ name: 'EditProfile' }" class="btn primary-blue text-white">
-          {{ t('edit') }}
-        </router-link>
+      <div class="mx-auto">
+        <button class="btn primary-blue text-white">
+          {{ t('follow') }}
+        </button>
       </div>
 
       <div class="flex w-full text-center capitalize items-center justify-around">
         <div class="flex flex-col">
-          <h3>#</h3>
+          <h3>0</h3>
           <h5>{{ t('followers') }}</h5>
         </div>
         <div class="flex flex-col">
-          <h3>#</h3>
+          <h3>{{ storyBoardCount }}</h3>
           <h5>{{ t('story_boards') }}</h5>
         </div>
         <div class="flex flex-col">
-          <h3>#</h3>
+          <h3>0</h3>
           <h5>{{ t('following') }}</h5>
         </div>
       </div>
     </div>
 
     <div v-if="profile.bio">
-      <h3>bio:</h3>
+      <h3>{{ t('bio') }}:</h3>
       <p>{{ profile.bio }}</p>
     </div>
 
-    <div>
-      <BoardList :boards="boards" listOnly />
-    </div>
+    <BoardList :label="t('recent_boards')" :boards="boards" listOnly />
 
-    <button v-if="isLoggedIn" @click="logout" class="btn primary-red mt-auto">
-      <div class="f-center gap-2 text-xs uppercase text-white py-1">
-        <i-ant-design-logout-outlined />
-        <span class="">{{ t('logout') }}</span>
-      </div>
-    </button>
+    <div class="liked">
+      <h2 class="font-bold mb-2">💗 {{ t('like', likes.length) }}</h2>
+      <hr />
+      <!-- <BoardList :boards="likes" listOnly /> -->
+    </div>
   </div>
 </template>
 
@@ -57,7 +51,7 @@ import { useI18n } from 'vue-i18n';
 
 import { Board, Profile } from '@/data/types/mock';
 import { supabase } from '@/lib/supabase';
-import { useAuth } from '@/use/auth';
+import Avatar from '@/components/shared/Avatar.vue';
 import BoardList from '@/components/boards/drawers/BoardList.vue';
 
 export default defineComponent({
@@ -68,30 +62,35 @@ export default defineComponent({
       required: true,
     },
   },
-  components: { BoardList },
-  setup() {
+  components: { Avatar, BoardList },
+  setup(props) {
     const { t } = useI18n();
-    const { auth, logout } = useAuth;
 
     const state = reactive({
       isLoading: false,
       error: null,
-      //profile: {} as Profile,
       boards: [] as Board[],
-      isLoggedIn: computed(() => !!auth.userSession?.user),
+      storyBoardCount: 0,
+      likes: [],
     });
     async function fetchUserTop3Boards() {
+      const userId = props.profile.id;
       try {
         state.isLoading = true;
+        const { count } = await supabase
+          .from('boards')
+          .select('*', { count: 'exact', head: true })
+          .eq('user_id', userId);
         const { data, error } = await supabase
           .from('boards')
           .select('id, title, user_id')
           .limit(3)
           .order('updated_at', { ascending: false })
-          .eq('user_id', supabase.auth.user()?.id);
+          .eq('user_id', userId);
         if (error) throw error;
         if (data === null) return (state.boards = []);
 
+        state.storyBoardCount = Number(count);
         state.boards = data;
       } catch (e) {
         state.error = e.error_description || e.message;
@@ -104,7 +103,6 @@ export default defineComponent({
     return {
       t,
       ...toRefs(state),
-      logout,
     };
   },
 });

@@ -1,6 +1,6 @@
 <template>
   <aside class="flex flex-col gap-4 h-full">
-    <n-input v-if="!listOnly" v-model:value="q" size="large" placeholder="Search boards by title...">
+    <n-input v-if="!listOnly" clearable v-model:value="query" size="large" placeholder="Search boards by title...">
       <template #prefix>
         <n-icon><i-uil-search /></n-icon>
       </template>
@@ -11,8 +11,8 @@
       <template v-for="board in boards" :key="board.id">
         <n-avatar>{{ abbrTitle(board.title) }}</n-avatar> {{ board.title }}
       </template> -->
-      <h5>My Boards:</h5>
-      <template v-for="board in boards" :key="board.id">
+      <h5 v-if="label">{{ label }}</h5>
+      <template v-for="board in filtered" :key="board.id">
         <div class="flex items-center rounded bg-white">
           <n-avatar size="large">
             {{ abbr(board.title) }}
@@ -25,7 +25,7 @@
     </div>
 
     <div v-if="!listOnly" class="text-center flex flex-col gap-2">
-      <router-link to="/boards" v-if="currentRouteName !== 'Boards'">Go to boards</router-link>
+      <router-link to="/boards" v-if="currentRouteName !== 'Boards'">{{ t('go_to_boards') }}</router-link>
       <button @click="addBoard" class="btn primary-blue">
         <div class="f-center gap-2 text-xs uppercase text-white py-1">
           <i-mdi-plus-circle-outline />
@@ -52,6 +52,10 @@ export default defineComponent({
       type: Array as PropType<Board[]>,
       required: true,
     },
+    label: {
+      type: String,
+      default: '',
+    },
     listOnly: {
       type: Boolean,
       default: false,
@@ -64,14 +68,19 @@ export default defineComponent({
 
     const currentRouteName = computed(() => useRoute().name);
 
-    const q = ref('');
+    const query = ref('');
+
+    const filtered = computed(() => {
+      const q = query.value.toLowerCase();
+      return props.boards.filter((b) => b.title.includes(q));
+    });
 
     async function addBoard() {
       const data = await add({ title: t('untitled'), position: props.boards.length });
       router.push(`/boards/${data?.id}`);
     }
 
-    return { t, abbr, q, currentRouteName, addBoard };
+    return { t, abbr, query, filtered, currentRouteName, addBoard };
   },
 });
 </script>

@@ -4,8 +4,10 @@
 
 <script lang="ts">
 import { defineComponent } from 'vue';
+import AlertMessage from './components/shared/AlertMessage.vue';
 
 export default defineComponent({
+  components: { AlertMessage },
   name: 'App',
   setup() {},
 });

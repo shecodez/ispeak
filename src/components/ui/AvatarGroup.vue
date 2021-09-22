@@ -1,20 +1,18 @@
 <template>
   <div class="flex items-center">
-    <template v-for="(item, i) in items" :key="item">
+    <template v-for="item in items.slice(0, 3)" :key="item.id">
       <n-tooltip trigger="hover" :show-arrow="false">
         <template #trigger>
-          <div class="avatar-container f-center">
-            <n-avatar v-if="i < 3" round size="small">
-              {{ item.charAt(0) }}
-            </n-avatar>
+          <div class="avatar-group-container f-center">
+            <Avatar v-model:path="item.avatar_url" :username="item.username" size="avatar-group-item w-7 h-7" />
           </div>
         </template>
-        {{ item }}
+        {{ item.username }}
       </n-tooltip>
     </template>
-    <button v-if="showAddBtn || isGtMax" @click="drawer = true" class="f-center">
+    <button v-if="showAddBtn || isGtMax" @click="drawer = true" class="f-center avatar-group-container">
       <n-avatar round size="small" class="plus-btn">
-        <n-icon v-if="!isGtMax">+</n-icon>
+        <n-icon v-if="!isGtMax"><i-mdi-plus /></n-icon>
         <span v-else>{{ `+${items.length - 3}` }}</span>
       </n-avatar>
     </button>
@@ -28,15 +26,29 @@
 </template>
 
 <script lang="ts">
-import { computed, defineComponent, reactive, toRefs } from 'vue';
+import { computed, defineComponent, PropType, reactive, toRefs } from 'vue';
 import { useI18n } from 'vue-i18n';
 
+import { Profile } from '@/data/types/mock';
 import MemberList from '../users/drawer/MemberList.vue';
+import Avatar from '../shared/Avatar.vue';
 
 export default defineComponent({
-  name: 'AvatarGroup', //TODO: rename to BoardMembersInline
-  components: { MemberList },
-  props: ['items', 'showAddBtn', 'boardId'],
+  name: 'AvatarGroup',
+  components: { MemberList, Avatar },
+  props: {
+    items: {
+      type: Array as PropType<Profile[]>,
+      required: true,
+    },
+    showAddBtn: {
+      type: Boolean,
+      default: false,
+    },
+    boardId: {
+      type: Number,
+    },
+  },
   setup(props) {
     const { t } = useI18n();
 
@@ -51,19 +63,16 @@ export default defineComponent({
 });
 </script>
 
-<style scoped>
-.n-avatar {
+<style>
+.avatar-group-item {
   border: 1px solid #f4f6f8;
 }
-
-.avatar-container:not(:first-child) {
-  margin-left: -0.4rem;
-}
-
-.n-avatar:hover {
+.avatar-group-item:hover {
   transform: scale(1.13);
 }
-
+.avatar-group-container:not(:first-child) {
+  margin-left: -0.4rem;
+}
 .plus-btn {
   background-color: #ffd700;
   transform: none !important;

@@ -1,16 +1,18 @@
 <template>
-  <button @click="logout()" class="btn f-center space-x-1" :class="color">
-    <i-ant-design-logout-outlined />
-    <span v-if="iconOnly" class="sr-only">logout</span>
-    <span v-else class="capitalize">{{ t('logout') }}</span>
+  <button v-if="isLoggedIn" @click="logout" class="btn primary-red" :class="css">
+    <div class="f-center gap-2 text-xs uppercase text-white py-1">
+      <i-ant-design-logout-outlined />
+      <span v-if="!iconOnly" class="uppercase">{{ t('logout') }}</span>
+    </div>
+    <span class="sr-only">logout</span>
   </button>
 </template>
 
 <script lang="ts">
-import { defineComponent } from 'vue';
+import { computed, defineComponent } from 'vue';
 import { useI18n } from 'vue-i18n';
 
-import { useAuthState } from '@/firebase';
+import { useAuth } from '@/use/auth';
 
 export default defineComponent({
   name: 'LogoutButton',
@@ -19,16 +21,18 @@ export default defineComponent({
       type: Boolean,
       default: false,
     },
-    color: {
+    css: {
       type: String,
-      default: 'bg-red-500',
+      default: '',
     },
   },
   setup() {
     const { t } = useI18n();
-    const { logout } = useAuthState();
+    const { auth, logout } = useAuth;
 
-    return { logout, t };
+    const isLoggedIn = computed(() => !!auth.userSession?.user);
+
+    return { t, isLoggedIn, logout };
   },
 });
 </script>

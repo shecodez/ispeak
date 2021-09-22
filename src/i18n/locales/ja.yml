@@ -25,7 +25,7 @@ shop: ショップ
 contact: コンタクト
 sign_up: サインアップ
 
-manage_your_lists: リストを管理する
+manage_and_organize: 管理と整理
 easier: より簡単に！
 dialogues: 対話
 tasks: タスク
@@ -104,6 +104,8 @@ edit_title: タイトルを更新
 delete_board: ボードを削除
 board_deleted: ボードが削除されました
 board_settings: ボード設定
+recent_boards: 最近のボード
+go_to_boards: ボードページに移動
 edit_board: ボードを編集
 move_board: ボードを動かす
 card: カード
@@ -154,6 +156,7 @@ list: '{count} リスト'
 
 edit: 編集
 upload: アップロード
+uploading: アップロード中...
 followers: フォロワー
 following: 続く
 

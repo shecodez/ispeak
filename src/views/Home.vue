@@ -7,7 +7,7 @@
         <main class="cta flex-1 flex flex-col justify-around">
           <div class="w-4/5 mx-auto">
             <h1 class="text-2xl md:text-5xl lg:text-7xl leading-tight font-bold mb-12">
-              {{ t('manage_your_lists') }} <br />
+              {{ t('manage_and_organize') }} <br />
               <span class="typed-text capitalize">{{ typeText }}</span>
               <span class="cursor" :class="{ typing: isTyping }">&nbsp;</span>
               {{ t('easier') }}
@@ -70,7 +70,7 @@ export default defineComponent({
   setup() {
     const { t } = useI18n();
     const { auth, login } = useAuth;
-    useTitle(`${t('home')} · 🎬 ${import.meta.env.VITE_APP_NAME}`);
+    useTitle(`${t('home')} · 🗒️ ${import.meta.env.VITE_APP_NAME}`);
 
     const state = reactive({
       email: '',
@@ -89,10 +89,10 @@ export default defineComponent({
         [
           {
             id: 7,
-            text: 'Build a tool that manages audio dialogues to make studying 日本語 easier!',
+            text: `Build a tool🛠️ to help manage my study 'to-dos' so I can learn 日本語 easier!`,
             label: 'MVP',
             color: '#b6ffe0',
-            assigned_to: ['shecodez'],
+            assigned_to: [{ id: 1337, username: 'shecodez', avatar_url: 'shecodez-1632322889036.jpg' }],
           },
           8,
         ],
@@ -100,7 +100,7 @@ export default defineComponent({
       ],
     });
 
-    const typeArr = computed(() => [t('dialogues'), t('tasks'), t('todos')]);
+    const typeArr = computed(() => [t('stories'), t('tasks'), t('todos')]);
 
     async function submitEmail() {
       await login({ email: state.email });

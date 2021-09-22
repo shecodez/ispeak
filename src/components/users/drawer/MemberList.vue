@@ -1,6 +1,6 @@
 <template>
   <aside class="flex flex-col gap-4 h-full">
-    <n-input v-if="!listOnly" v-model:value="q" size="large" placeholder="Search board members...">
+    <n-input v-if="!listOnly" clearable v-model:value="query" size="large" placeholder="Search board members...">
       <template #prefix>
         <n-icon><i-uil-search /></n-icon>
       </template>
@@ -12,7 +12,7 @@
         <n-avatar>{{ abbrTitle(board.title) }}</n-avatar> {{ board.title }}
       </template> -->
       <h5>{{ t('board_members') }}:</h5>
-      <template v-for="member in members" :key="member.id">
+      <template v-for="member in filtered" :key="member.id">
         <div class="flex items-center rounded bg-white">
           <n-avatar round size="large" :src="member.profiles.avatar_url">
             <span v-if="!member.profiles.avatar_url">{{ member.profiles.username.charAt(0) }}</span>
@@ -87,10 +87,16 @@ export default defineComponent({
     //const { invite } = useMembers;
 
     const state = reactive({
-      q: '',
+      query: '',
       inputValue: '',
       emails: [],
     });
+
+    const filtered = computed(() => {
+      const q = state.query.toLowerCase();
+      return props.members.filter((m) => m.username.includes(q));
+    });
+
     const options = computed(() => {
       if (state.inputValue === null) {
         return [];
@@ -121,7 +127,7 @@ export default defineComponent({
       // }
     }
 
-    return { t, ...toRefs(state), options, sendInvite };
+    return { t, ...toRefs(state), filtered, options, sendInvite };
   },
 });
 </script>

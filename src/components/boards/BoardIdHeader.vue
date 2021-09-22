@@ -28,7 +28,7 @@
           </template>
         </n-input>
 
-        <AvatarGroup :items="['AAA', 'BEE', 'CDC', 'DD']" :showAddBtn="true" />
+        <AvatarGroup :items="boardMembers" :boardId="board.id" showAddBtn />
 
         <n-dropdown @select="handleSelect" :options="options" placement="bottom-start">
           <n-button text size="tiny" color="#9d9ea2">
@@ -73,6 +73,7 @@ export default defineComponent({
       title: computed(() => props.board.title),
       isPublic: computed(() => props.board.is_public),
       isDeleting: false,
+      boardMembers: [],
     });
 
     async function updateTitle(title: string) {
@@ -108,21 +109,22 @@ export default defineComponent({
 
     const options = computed(() => [
       {
-        label: state.isPublic ? 'Make Private' : 'Go Public',
+        label: t('add_list'),
         key: '1',
       },
       {
-        label: t('edit_board'),
+        label: state.isPublic ? 'Make Private' : 'Go Public',
         key: '2',
       },
       {
-        label: t('delete_board'),
+        label: t('edit_board'),
         key: '3',
       },
       {
-        label: t('add_list'),
+        label: t('delete_board'),
         key: '4',
       },
+
       // {
       //   label: 'Change Background',
       //   key: '5',
@@ -132,16 +134,16 @@ export default defineComponent({
     function handleSelect(key: string) {
       switch (key) {
         case '1':
-          toggleIsPublic();
+          router.push(`/boards/${props.board.id}/lists/new`);
           break;
         case '2':
-          router.push(`/boards/${props.board.id}/edit`);
+          toggleIsPublic();
           break;
         case '3':
-          state.isDeleting = true;
+          router.push(`/boards/${props.board.id}/edit`);
           break;
         case '4':
-          router.push(`/boards/${props.board.id}/lists/new`);
+          state.isDeleting = true;
           break;
         default:
           break;

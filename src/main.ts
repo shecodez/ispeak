@@ -12,6 +12,8 @@ import 'vue-toastification/dist/index.css';
 import 'virtual:windi.css';
 
 import App from './App.vue';
+import focus from './directives/focus';
+import markdown from './directives/markdown';
 
 const app = createApp(App);
 
@@ -19,14 +21,8 @@ app.config.errorHandler = (err, vm, info) => {
   // TODO: send to sentry
 };
 
-// Register a global custom directive called `v-focus`
-app.directive('focus', {
-  // When the bound element is mounted into the DOM...
-  mounted(el) {
-    // Focus the element
-    el.focus();
-  },
-});
+app.directive('focus', focus);
+app.directive('markdown', markdown);
 
 app.use(i18n);
 app.use(router);

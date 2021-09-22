@@ -1,7 +1,7 @@
 <template>
   <div class="wrapper relative min-w-screen min-h-screen text-gray-900">
     <div class="frosted-glass">
-      <div class="absolute inset-0 flex flex-col overflow-hidden">
+      <div class="absolute inset-0 flex flex-col overflow-auto">
         <Header />
         <slot />
         <Footer />

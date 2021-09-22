@@ -11,11 +11,23 @@ export async function count(table: string) {
     if (error) throw error;
 
     return count;
-  } catch (e) {
+  } catch (e: any) {
     console.error(e.error_description || e.message);
     return 0;
   }
 }
+
+const downloadImage = async (bucketName: string, fileName: string) => {
+  try {
+    const { data, error } = await supabase.storage.from(bucketName).download(fileName);
+    if (error) throw error;
+
+    return URL.createObjectURL(data);
+  } catch (e: any) {
+    console.error(e.error_description || e.message);
+    return null;
+  }
+};
 
 /*export default {
   get user() {

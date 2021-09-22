@@ -1,11 +1,13 @@
 <template>
-  <div>
-    <img v-if="src" :src="src" alt="Avatar" class="avatar image" :class="css" />
-    <div v-else class="avatar no-image f-center" :class="css">U</div>
+  <div class="relative" :class="css">
+    <img v-if="src" :src="src" alt="Avatar" class="rounded-full" :class="size" />
+    <span v-else class="f-center font-bold rounded-full bg-gray-400" :class="size">
+      {{ username?.charAt(0) }}
+    </span>
 
-    <div class="hidden" :style="{ width: size }">
-      <label class="button primary block" for="single">
-        {{ uploading ? 'Uploading ...' : 'Upload' }}
+    <div v-if="allowUpload" :class="size" class="h-0">
+      <label class="absolute top-0 right-0 font-bold cursor-pointer" for="single">
+        {{ uploading ? t('uploading') : t('upload') }}
       </label>
       <input
         class="invisible absolute"
@@ -20,57 +22,72 @@
 </template>
 
 <script lang="ts">
-import { defineComponent, ref, toRefs, watch } from 'vue';
+import { defineComponent, onMounted, reactive, ref, toRefs, watch } from 'vue';
+import { useI18n } from 'vue-i18n';
+
 import { supabase } from '@/lib/supabase';
 
 export default defineComponent({
   props: {
-    css: {
+    size: {
       type: String,
-      default: 'w-11 h-11',
+      default: 'w-12 h-12',
     },
+    allowUpload: {
+      type: Boolean,
+      default: false,
+    },
+    username: String,
     path: String,
+    css: String,
   },
   emits: ['upload', 'update:path'],
-  setup(prop, { emit }) {
-    const { path } = toRefs(prop);
-    const size = ref('10em');
-    const uploading = ref(false);
-    const src = ref('');
+  setup(props, { emit }) {
+    const { t } = useI18n();
+
+    const { path } = toRefs(props);
+    const state = reactive({
+      src: '',
+      uploading: false,
+      error: null,
+    });
     const files = ref();
+    onMounted(() => downloadImage());
 
     const downloadImage = async () => {
       try {
         const { data, error } = await supabase.storage.from('avatars').download(path.value);
         if (error) throw error;
-        src.value = URL.createObjectURL(data);
-      } catch (error) {
-        console.error('Error downloading image: ', error.message);
+
+        state.src = URL.createObjectURL(data);
+      } catch (e) {
+        state.error = e.error_description || e.message;
+        console.error('Error downloading image: ', e.message);
       }
     };
 
     const uploadAvatar = async (evt: any) => {
       files.value = evt.target.files;
       try {
-        uploading.value = true;
+        state.uploading = true;
         if (!files.value || files.value.length === 0) {
           throw new Error('You must select an image to upload.');
         }
 
         const file = files.value[0];
         const fileExt = file.name.split('.').pop();
-        const fileName = `${Math.random()}.${fileExt}`;
+        const fileName = `${props.username}-${Date.now()}.${fileExt}`;
         const filePath = `${fileName}`;
-
         let { error: uploadError } = await supabase.storage.from('avatars').upload(filePath, file);
-
         if (uploadError) throw uploadError;
+
         emit('update:path', filePath);
-        emit('upload');
-      } catch (error) {
-        alert(error.message);
+        emit('upload', filePath);
+      } catch (e) {
+        state.error = e.error_description || e.message;
+        alert(e.message);
       } finally {
-        uploading.value = false;
+        state.uploading = false;
       }
     };
 
@@ -79,22 +96,12 @@ export default defineComponent({
     });
 
     return {
+      t,
       path,
-      size,
-      uploading,
-      src,
+      ...toRefs(state),
       files,
       uploadAvatar,
     };
   },
 });
 </script>
-
-<style scoped>
-.avatar {
-  @apply rounded-full;
-}
-.avatar.no-image {
-  @apply bg-gray-400 text-white text-xl font-bold;
-}
-</style>

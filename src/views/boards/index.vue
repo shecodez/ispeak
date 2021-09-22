@@ -47,7 +47,6 @@ import { defineComponent, onMounted, toRefs } from 'vue';
 import { useI18n } from 'vue-i18n';
 import { useRouter } from 'vue-router';
 
-import { supabase } from '@/lib/supabase';
 import { db } from '@/use/db';
 import AlertMessage from '@/components/shared/AlertMessage.vue';
 import Layout from '@/layouts/Minimalist.vue';
@@ -66,9 +65,9 @@ export default defineComponent({
   setup() {
     const { t } = useI18n();
     const router = useRouter();
-    const { data: store, allByUserId, add, del } = db.boards;
+    const { data: store, allMyBoards, add, del } = db.boards;
 
-    onMounted(async () => await allByUserId(supabase.auth.user()?.id));
+    onMounted(async () => await allMyBoards());
 
     const options = [
       {
@@ -83,7 +82,7 @@ export default defineComponent({
     }
 
     function handleBack() {
-      console.log('Go Back');
+      router.go(-1); // same as router.back()?
     }
 
     function handleSelect(key: string) {
