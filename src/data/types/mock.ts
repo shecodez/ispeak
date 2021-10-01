@@ -15,7 +15,7 @@ export interface Profile {
 
   avatar_url?: string;
   bio?: string;
-  username: string;
+  username?: string;
 
   // liked?: []; //id: boardId
   // saved?: []; //id: boardId & listId

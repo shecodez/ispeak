@@ -64,6 +64,8 @@
 
 <script lang="ts">
 import { computed, defineComponent, onMounted, reactive, toRefs } from 'vue';
+import { useI18n } from 'vue-i18n';
+import { useRoute } from 'vue-router';
 import BiCalendar2EventFill from 'virtual:vite-icons/bi/calendar2-event-fill';
 import FaCog from 'virtual:vite-icons/fa/cog';
 import FaSolidBell from 'virtual:vite-icons/fa-solid/bell';
@@ -71,9 +73,8 @@ import FaSolidChartPie from 'virtual:vite-icons/fa-solid/chartPie';
 import FaSolidFolderOpen from 'virtual:vite-icons/fa-solid/folder-open';
 import FaStickyNote from 'virtual:vite-icons/fa/sticky-note';
 
-import { useI18n } from 'vue-i18n';
-import { useRoute } from 'vue-router';
-
+import { Board } from '@/data/types/mock';
+import { supabase } from '@/lib/supabase';
 import { useAuth } from '@/use/auth';
 import { db } from '@/use/db';
 import Analytics from '@/components/boards/drawers/Analytics.vue';
@@ -110,8 +111,8 @@ export default defineComponent({
     } = db.boards;
 
     onMounted(async () => {
-      await getMe();
-      await allMyBoards();
+      if (!store.profile) await getMe();
+      // if (!boards.length) await allMyBoards(); doesn't work/infinite loop
     });
 
     const state = reactive({
@@ -124,27 +125,31 @@ export default defineComponent({
       showSettings: false,
       showProfile: false,
       isLoggedIn: computed(() => !!auth.userSession?.user),
+      isLoading: false,
+      boards: [] as Board[],
+      count: 0,
+      error: null,
     });
-    // async function fetchUserBoards() {
-    //   try {
-    //     state.isLoading = true;
-    //     const { data, error, count } = await supabase
-    //       .from('boards')
-    //       .select('id, title, user_id')
-    //       .order('updated_at', { ascending: false })
-    //       .eq('user_id', supabase.auth.user()?.id);
-    //     if (error) throw error;
-    //     if (data === null) return (state.boards = []);
+    async function fetchUserBoards() {
+      try {
+        state.isLoading = true;
+        const { data, error, count } = await supabase
+          .from('boards')
+          .select('id, title, user_id')
+          .order('updated_at', { ascending: false })
+          .eq('user_id', supabase.auth.user()?.id);
+        if (error) throw error;
+        if (data === null) return (state.boards = []);
 
-    //     state.boards = data;
-    //     state.count = Number(count);
-    //   } catch (e) {
-    //     state.error = e.error_description || e.message;
-    //   } finally {
-    //     state.isLoading = false;
-    //   }
-    // }
-    // onMounted(async () => await fetchUserBoards());
+        state.boards = data;
+        state.count = Number(count);
+      } catch (e) {
+        state.error = e.error_description || e.message;
+      } finally {
+        state.isLoading = false;
+      }
+    }
+    onMounted(async () => await fetchUserBoards());
 
     // async function fetchProfile() {
     //   try {

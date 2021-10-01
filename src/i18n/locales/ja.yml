@@ -162,3 +162,5 @@ following: 続く
 
 refresh: リフレッシュ
 notification: '{count} 通知'
+
+send_invite: 招待状を{count}つ送信 | {count}つの招待状を送信します

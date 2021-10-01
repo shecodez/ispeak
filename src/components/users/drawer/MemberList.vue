@@ -52,7 +52,7 @@
       <button @click="sendInvite" class="btn primary-blue" :disabled="!!!emails.length">
         <div class="f-center gap-2 text-xs uppercase text-white py-1">
           <i-mdi-email-send-outline />
-          <span class="">{{ t('send_invites') }}</span>
+          <span class="">{{ t('send_invite', emails.length) }}</span>
         </div>
       </button>
     </div>

@@ -47,6 +47,7 @@ export default defineComponent({
     },
     boardId: {
       type: Number,
+      default: -1,
     },
   },
   setup(props) {

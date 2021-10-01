@@ -162,3 +162,5 @@ following: following
 
 refresh: refresh
 notification: '{count} notification | {count} notifications'
+
+send_invite: send {count} invite | send {count} invites
