@@ -21,7 +21,8 @@ export default defineComponent({
   name: 'ConfirmDeleteInline',
   props: {
     onDelete: {
-      type: Function,
+      type: async () => {},
+      required: true,
     },
     label: {
       type: String,
@@ -45,7 +46,7 @@ export default defineComponent({
       //console.log('PREPARE DELETE');
     };
     const deleteIt = () => {
-      if (props.onDelete) props.onDelete();
+      if (props.onDelete) props.onDelete;
       canDelete.value = false;
       //console.log('DELETE IT');
     };

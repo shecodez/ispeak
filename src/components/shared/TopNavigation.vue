@@ -36,11 +36,11 @@ import { defineComponent, ref } from 'vue';
 
 import ToggleDark from '@/components/shared/ToggleDark.vue';
 import SwitchLocale from '@/components/shared/SwitchLocale.vue';
-import NotificationMenu from '@/components/shared/NotificationMenu.vue';
+//import NotificationMenu from '@/components/shared/NotificationMenu.vue';
 
 export default defineComponent({
   name: 'Topnav',
-  components: { ToggleDark, SwitchLocale, NotificationMenu },
+  components: { ToggleDark, SwitchLocale },
   setup() {
     const appName = import.meta.env.VITE_APP_NAME;
 
@@ -51,9 +51,9 @@ export default defineComponent({
     };
 
     const navListItems = [
-      { tooltip: 'toggle theme', component: ToggleDark },
-      { tooltip: 'notifications', component: NotificationMenu },
-      { tooltip: 'change locale', component: SwitchLocale },
+      { text: false, tooltip: 'toggle theme', component: ToggleDark },
+      //{ text: false, tooltip: 'notifications', component: NotificationMenu },
+      { text: false, tooltip: 'change locale', component: SwitchLocale },
     ];
 
     return { appName, navListItems, showMenu, toggleMenu };

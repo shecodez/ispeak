@@ -9,8 +9,9 @@
 </template>
 
 <script lang="ts">
-import { defineComponent } from 'vue';
+import { defineComponent, PropType } from 'vue';
 
+import { Tag as iTag } from '@/data/types/mock';
 import Tag from '@/components/shared/TagLink.vue';
 
 export default defineComponent({
@@ -18,7 +19,7 @@ export default defineComponent({
   components: { Tag },
   props: {
     tags: {
-      type: Array,
+      type: Array as PropType<iTag[]>,
       default: [],
     },
     showCount: {

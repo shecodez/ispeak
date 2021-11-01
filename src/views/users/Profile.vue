@@ -1,10 +1,10 @@
 <template>
   <form class="form-widget" @submit.prevent="updateProfile">
-    <Avatar v-model:path="avatar_url" @upload="updateProfile" />
+    <Avatar v-model:path="avatar_url" @upload="updateAvatarUrl" />
 
     <div>
       <label for="email">Email</label>
-      <input id="email" type="text" :value="store.user?.email" disabled />
+      <input id="email" type="text" :value="auth.userSession?.user?.email" disabled />
     </div>
 
     <div>
@@ -27,7 +27,8 @@
     </div>
 
     <div>
-      <button class="button block" @click="signOut" :disabled="isLoading">Sign Out</button>
+      <!-- <button class="button block" @click="signOut" :disabled="isLoading">Sign Out</button> -->
+      <LogoutButton />
     </div>
   </form>
 </template>
@@ -35,88 +36,32 @@
 <script lang="ts">
 import { defineComponent, onMounted, reactive, toRefs } from 'vue';
 
-import { store } from '@/store';
-import { supabase } from '@/supabase';
+//import { store } from '@/store';
+import { useAuth } from '@/use/auth';
+import { db } from '@/use/db';
 import Avatar from '@/components/shared/Avatar.vue';
+import LogoutButton from '@/components/shared/LogoutButton.vue';
 
 export default defineComponent({
   name: 'Profile',
-  components: { Avatar },
+  components: { Avatar, LogoutButton },
   setup() {
-    const state = reactive({
-      isLoading: false,
+    const { state, getMe, update, updateAvatarUrl } = db.profiles;
+    const { auth } = useAuth;
+
+    const form = reactive({
       username: '',
       website: '',
       avatar_url: '',
     });
 
-    async function getProfile() {
-      try {
-        state.isLoading = true;
-        store.user = supabase.auth.user();
-
-        let { data, error, status } = await supabase
-          .from('profiles')
-          .select(`username, website, avatar_url`)
-          .eq('id', store.user?.id)
-          .single();
-
-        if (error && status !== 406) throw error;
-
-        if (data) {
-          state.username = data.username;
-          state.website = data.website;
-          state.avatar_url = data.avatar_url;
-        }
-      } catch (error) {
-        alert(error.message);
-      } finally {
-        state.isLoading = false;
-      }
-    }
+    const updateProfile = () => update({ ...form });
 
     onMounted(() => {
-      getProfile();
+      getMe();
     });
 
-    async function updateProfile() {
-      try {
-        state.isLoading = true;
-        store.user = supabase.auth.user();
-
-        const updates = {
-          id: store.user?.id,
-          username: state.username,
-          website: state.website,
-          avatar_url: state.avatar_url,
-          updated_at: new Date(),
-        };
-
-        let { error } = await supabase.from('profiles').upsert(updates, {
-          returning: 'minimal', // Don't return the value after inserting
-        });
-
-        if (error) throw error;
-      } catch (error) {
-        alert(error.message);
-      } finally {
-        state.isLoading = false;
-      }
-    }
-
-    async function signOut() {
-      try {
-        state.isLoading = true;
-        let { error } = await supabase.auth.signOut();
-        if (error) throw error;
-      } catch (error) {
-        alert(error.message);
-      } finally {
-        state.isLoading = false;
-      }
-    }
-
-    return { store, ...toRefs(state), getProfile, updateProfile, signOut };
+    return { auth, ...toRefs(state), ...toRefs(form), updateProfile, updateAvatarUrl };
   },
 });
 </script>

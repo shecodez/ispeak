@@ -26,7 +26,7 @@
         <footer class="modal-footer flex space-x-2 -mb-1 mt-3">
           <slot name="footer">
             <slot name="action">
-              <button class="btn primary-green ml-auto" @click="onAction">Submit</button>
+              <button class="btn primary-green ml-auto" @click="submit">Submit</button>
             </slot>
             <button @click="close" aria-label="close modal" class="btn border ml-auto">Cancel</button>
           </slot>
@@ -59,7 +59,6 @@ export default defineComponent({
     },
     onAction: {
       type: Function,
-      default: () => {},
     },
     noBg: {
       type: Boolean,
@@ -100,7 +99,9 @@ export default defineComponent({
       { target: document }
     );
 
-    return { t, showModal, close, modal };
+    const submit = () => props.onAction;
+
+    return { t, showModal, close, modal, submit };
   },
 });
 </script>

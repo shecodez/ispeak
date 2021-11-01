@@ -1,5 +1,6 @@
 <template>
-  <FixedFrame>
+  Tag _id
+  <!-- <FixedFrame>
     <Spinner v-if="isLoading" />
     <AlertMessage v-else-if="error" type="error" :message="error" />
     <template v-else>
@@ -10,11 +11,11 @@
         </div>
 
         <div class="flex-1">
-          <!-- <SagaList query="/kanbans" /> -->
+
         </div>
       </div>
     </template>
-  </FixedFrame>
+  </FixedFrame> -->
 </template>
 
 <script lang="ts">

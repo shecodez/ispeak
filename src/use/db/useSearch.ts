@@ -8,7 +8,7 @@ const toast = useToast();
 
 type State = {
   isLoading: boolean;
-  results: Board[] | Profile[];
+  results: any; //Board[] | Profile[];
   count: number;
   error: null | Error;
 };

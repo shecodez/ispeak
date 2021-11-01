@@ -17,16 +17,11 @@
           <!-- <n-avatar :src="act.profiles?.avatar_url" round size="small" class="flex-shrink-0">
             <span v-if="!act.profiles?.avatar_url">{{ act.profiles?.username.charAt(0) }}</span>
           </n-avatar> -->
-          <Avatar
-            v-model:path="act.profiles.avatar_url"
-            :username="act.profiles.username"
-            css="flex-shrink-0"
-            size="w-7 h-7"
-          />
+          <Avatar v-model:path="activityAvatarUrl" :username="activityUsername" css="flex-shrink-0" size="w-7 h-7" />
           <div>
             <b>{{ act.profiles?.username }}</b>
             <span class="act-markdown" v-html="Marked.parse(act.text)" />
-            <small class="text-gray-400 block">{{ formatDate(act.created_at) }}</small>
+            <small class="text-gray-400 block">{{ formatDate(act.created_at || '') }}</small>
           </div>
         </div>
       </template>
@@ -101,7 +96,19 @@ export default defineComponent({
       return formatDateDistance(date, locale.value, mock);
     }
 
-    return { t, Marked, ...toRefs(store), ...toRefs(state), deleteBoard, formatDate };
+    const activityAvatarUrl = computed(() => store.act?.profiles?.avatar_url);
+    const activityUsername = computed(() => store.act?.profiles?.username);
+
+    return {
+      t,
+      Marked,
+      ...toRefs(store),
+      ...toRefs(state),
+      deleteBoard,
+      formatDate,
+      activityAvatarUrl,
+      activityUsername,
+    };
   },
 });
 </script>

@@ -41,6 +41,13 @@ import { useI18n } from 'vue-i18n';
 //import { db } from '@/use/db';
 import { formatDateDistance } from '@/utils';
 
+interface Notifications {
+  id?: string | number;
+  title: string;
+  text: string;
+  created_at: string;
+}
+
 export default defineComponent({
   name: 'NotificationList',
   props: {
@@ -61,7 +68,7 @@ export default defineComponent({
 
     const state = reactive({
       q: '',
-      notifications: [], // as Notification[]
+      notifications: [] as Notifications[],
       isLoading: false,
       error: null,
     });

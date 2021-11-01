@@ -144,8 +144,8 @@ export default defineComponent({
 
     const title = computed(() => store.board?.title);
 
-    function formatDate(date: string, mock = false) {
-      return formatDateRelative(date, locale.value, mock);
+    function formatDate(date: string | undefined, mock = false) {
+      return formatDateRelative(date || '', locale.value, mock);
     }
 
     return { t, ...toRefs(store), ...toRefs(state), options, title, formatDate };

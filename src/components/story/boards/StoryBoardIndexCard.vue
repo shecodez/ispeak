@@ -2,7 +2,7 @@
   <div class="sb-container flex flex-col gap-3 border rounded-lg p-4">
     <div class="sb-header flex items-center justify-between">
       <div class="flex gap-3 items-center">
-        <Avatar v-model:path="board.profiles.avatar_url" :username="board.profiles.username" size="w-12 h-12" />
+        <Avatar v-model:path="boardUserAvatarUrl" :username="boardUserName" size="w-12 h-12" />
         <div class="flex flex-col">
           <router-link :to="{ name: 'StoryBoardIntro', params: { id: board.id } }">
             <b>{{ board.title }}</b>
@@ -31,7 +31,7 @@
       <p>{{ board.description }}</p>
     </div>
     <div class="sb-footer flex items-center text-gray-400">
-      <small class="italic">{{ formatDate(board.updated_at || board.inserted_at) }}</small>
+      <small class="italic">{{ formatDate(board.updated_at || board.inserted_at || '') }}</small>
       <div class="f-center gap-1 ml-auto">
         <i-flat-color-icons-alarm-clock /><small>{{ t('min', { count: rand(5, 160) }) }} </small>
       </div>
@@ -100,7 +100,10 @@ export default defineComponent({
       return formatDateDistance(date, locale.value, mock);
     }
 
-    return { t, owner, options, handleSelect, rand, formatDate };
+    const boardUserAvatarUrl = computed(() => props.board.profiles?.avatar_url);
+    const boardUserName = computed(() => props.board.profiles?.username);
+
+    return { t, owner, options, handleSelect, rand, formatDate, boardUserAvatarUrl, boardUserName };
   },
 });
 </script>

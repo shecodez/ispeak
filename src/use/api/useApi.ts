@@ -80,7 +80,7 @@ export const useApi = (endpoint: string, access_token?: string) => {
   watch([error], () => {
     // If 401 Unauthorised, redirect to login
     if (axios.isAxiosError(error.value)) {
-      if (error.value.response.status === 401 && router) {
+      if (error?.value?.response?.status === 401 && router) {
         router.push('/login'); // TODO: store path to go back after login
       }
     }

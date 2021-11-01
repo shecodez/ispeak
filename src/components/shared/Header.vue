@@ -57,7 +57,7 @@
 
   <n-drawer v-model:show="profileDrawer" :width="320" placement="right">
     <n-drawer-content :title="t('profile').toUpperCase()" closable body-style="background-color: #eee">
-      <Me :profile="profile" />
+      <Me v-if="profile" :profile="profile" />
     </n-drawer-content>
   </n-drawer>
 </template>

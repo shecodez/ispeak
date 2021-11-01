@@ -56,11 +56,11 @@ export default defineComponent({
 
     const downloadImage = async () => {
       try {
-        const { data, error } = await supabase.storage.from('avatars').download(path.value);
+        const { data, error } = await supabase.storage.from('avatars').download(path.value || '');
         if (error) throw error;
 
         state.src = URL.createObjectURL(data);
-      } catch (e) {
+      } catch (e: any) {
         state.error = e.error_description || e.message;
         console.error('Error downloading image: ', e.message);
       }
@@ -83,7 +83,7 @@ export default defineComponent({
 
         emit('update:path', filePath);
         emit('upload', filePath);
-      } catch (e) {
+      } catch (e: any) {
         state.error = e.error_description || e.message;
         alert(e.message);
       } finally {

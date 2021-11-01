@@ -33,7 +33,7 @@
                 <div class="flex flex-col gap-2">
                   <div class="animate-pulse h-3 bg-gray-200 rounded w-2/6 hidden md:block" />
                   <template v-for="card in cards[i]" :key="card">
-                    <div v-if="card.id" class="card-shadow bg-gray-300 bg-opacity-30">
+                    <div v-if="card.text" class="card-shadow bg-gray-300 bg-opacity-30">
                       <div class="absolute transform scale-110 -mt-18 md:-mt-24 lg:-mt-16">
                         <Card :card="card" />
                       </div>
@@ -57,6 +57,7 @@ import { computed, defineComponent, onMounted, reactive, toRefs } from 'vue';
 import { useI18n } from 'vue-i18n';
 import { useTitle } from '@vueuse/core';
 
+import { Color, Profile } from '@/data/types/mock';
 import { useAuth } from '@/use/auth';
 import PageHeader from '@/components/shared/Header.vue';
 import Footer from '@/components/shared/Footer.vue';
@@ -83,20 +84,20 @@ export default defineComponent({
       typeArrIdx: 0,
       charIdx: 0,
       cards: [
-        [1, 2],
-        [3, 4, 5],
-        [6],
+        [{ id: 1 }, { id: 2 }],
+        [{ id: 3 }, { id: 4 }, { id: 5 }],
+        [{ id: 6 }],
         [
           {
             id: 7,
-            text: `Build a tool🛠️ to help manage my study 'to-dos' so I can learn 日本語 easier!`,
+            text: `Build a tool🛠️ to help manage my study 'to-dos' to make learning 日本語 easier!`,
             label: 'MVP',
-            color: '#b6ffe0',
-            assigned_to: [{ id: 1337, username: 'shecodez', avatar_url: 'shecodez-1632322889036.jpg' }],
+            color: '#b6ffe0' as Color,
+            assigned_to: [{ id: '1337', username: 'shecodez', avatar_url: 'shecodez-1632322889036.jpg' }] as Profile[],
           },
-          8,
+          { id: 8 },
         ],
-        [9, 10, 11],
+        [{ id: 9 }, { id: 10 }, { id: 11 }],
       ],
     });
 

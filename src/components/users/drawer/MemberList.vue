@@ -14,12 +14,12 @@
       <h5>{{ t('board_members') }}:</h5>
       <template v-for="member in filtered" :key="member.id">
         <div class="flex items-center rounded bg-white">
-          <n-avatar round size="large" :src="member.profiles.avatar_url">
-            <span v-if="!member.profiles.avatar_url">{{ member.profiles.username.charAt(0) }}</span>
+          <n-avatar round size="large" :src="member.avatar_url">
+            <span v-if="!member.avatar_url">{{ member.username?.charAt(0) }}</span>
           </n-avatar>
           <div class="flex-1 px-3 font-semibold text-xs">
-            <router-link :to="`/${member.profiles.username}`">
-              {{ member.profiles.username }}
+            <router-link :to="`/${member.username}`">
+              {{ member.username }}
             </router-link>
           </div>
         </div>
@@ -63,14 +63,14 @@
 import { computed, defineComponent, onMounted, PropType, reactive, ref, toRefs } from 'vue';
 import { useI18n } from 'vue-i18n';
 
+import { Profile } from '@/data/types/mock';
 //import { useMembers } from '@/use/db';
-//import { Member } from '@/data/types/mock';
 
 export default defineComponent({
   name: 'MemberList',
   props: {
     members: {
-      type: Array, //as PropType<Member[]>,
+      type: Array as PropType<Profile[]>,
       required: true,
     },
     boardId: {
@@ -94,7 +94,7 @@ export default defineComponent({
 
     const filtered = computed(() => {
       const q = state.query.toLowerCase();
-      return props.members.filter((m) => m.username.includes(q));
+      return props.members.filter((m) => m.username?.includes(q));
     });
 
     const options = computed(() => {

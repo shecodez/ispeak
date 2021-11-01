@@ -1,5 +1,5 @@
 <template>
-  <Layout>
+  <Layout title="Enter">
     <div class="wrapper h-screen w-screen f-center">
       <div v-if="sent" class="container">
         <div class="sent-notification f-center gap-4 text-2xl font-semibold">

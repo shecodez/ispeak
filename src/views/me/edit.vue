@@ -1,7 +1,7 @@
 <template>
   <ProgressBar label="for decoration only" :value="100" />
   <Spinner v-if="isLoading" />
-  <Layout>
+  <Layout title="@me">
     <main class="m-6">
       <div class="flex items-center justify-between mb-4">
         <h1 class="text-2xl capitalize">{{ t('edit_profile') }}</h1>

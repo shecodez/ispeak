@@ -161,7 +161,7 @@ export default defineComponent({
 
         state.storyBoardCount = Number(count);
         state.boards = data;
-      } catch (e) {
+      } catch (e: any) {
         state.error = e.error_description || e.message;
       } finally {
         state.isLoading = false;

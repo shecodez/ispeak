@@ -2,7 +2,6 @@
   <div
     class="w-10 h-6 flex items-center bg-gray-300 rounded-full p-1 duration-300 cursor-pointer"
     :class="modelValue ? color : ''"
-    :aria-checked="modelValue.toString()"
     @click="toggle"
   >
     <div

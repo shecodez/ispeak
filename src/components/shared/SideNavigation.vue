@@ -27,8 +27,8 @@
         <template v-if="isLoggedIn">
           <router-link to="/@me" class="flex flex-col h-full f-center">
             <div class="w-12 h-12">
-              <img v-if="user?.avatar_url" class="rounded-full overflow-hidden" :src="user?.avatar_url" alt="Avatar" />
-              <div v-else class="rounded-full w-full h-full bg-gray-500 f-center">U</div>
+              <!-- <img v-if="user?.avatar_url" class="rounded-full overflow-hidden" :src="user?.avatar_url" alt="Avatar" /> -->
+              <div class="rounded-full w-full h-full bg-gray-500 f-center">U</div>
             </div>
           </router-link>
         </template>
@@ -55,6 +55,7 @@ import { computed, defineComponent, ref, toRefs } from 'vue';
 import { useI18n } from 'vue-i18n';
 import { useRouter } from 'vue-router';
 import { useToast } from 'vue-toastification';
+// @ts-ignore
 import FaSolidTags from 'virtual:vite-icons/fa-solid/tags';
 
 import { useAuth } from '@/use/auth';

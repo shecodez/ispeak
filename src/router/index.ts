@@ -72,19 +72,6 @@ const routes: Array<RouteRecordRaw> = [
     // }
   },
   {
-    path: '/v2/boards',
-    name: 'v2Boards',
-    component: () => import('@/views/v2/boards/index.vue'),
-    meta: { requiresAuth: true },
-  },
-  {
-    path: '/v2/boards/:id',
-    name: 'v2Board',
-    component: () => import('@/views/v2/boards/_id.vue'),
-    meta: { requiresAuth: true },
-    // NOTE: uses modals for board: edit, list: new/edit and card: new/edit
-  },
-  {
     path: '/',
     name: 'Home',
     component: Home,

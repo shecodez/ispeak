@@ -107,7 +107,7 @@ export interface Card {
   label?: string;
   color?: Color; // used for card background color or card label color
   text_color?: Color; //Color.light | Color.dark
-  assigned_to?: [];
+  assigned_to?: Profile[];
 
   user_id?: string;
   list_id?: number;

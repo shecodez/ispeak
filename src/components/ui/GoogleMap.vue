@@ -35,11 +35,13 @@ export default defineComponent({
       lng: coords.value.longitude,
     }));
 
+    // @ts-ignore
     const loader = new Loader({ apiKey });
     const mapEl = ref<HTMLElement | null>(null);
     let map = ref<google.maps.Map | null>(null);
     onMounted(async () => {
       await loader.load();
+      // @ts-ignore
       map.value = new google.maps.Map(mapEl.value, {
         center: officePosition.value,
         zoom: 16, // 1-20

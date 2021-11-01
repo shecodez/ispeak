@@ -22,8 +22,14 @@
 </template>
 
 <script lang="ts">
-import { defineComponent, ref, watch } from 'vue';
+import { defineComponent, PropType, ref, watch } from 'vue';
 import { onClickOutside, useToggle } from '@vueuse/core';
+
+interface MenuListItem {
+  id: string | number;
+  title: string;
+  isChecked: boolean;
+}
 
 export default defineComponent({
   name: 'Menu',
@@ -33,7 +39,7 @@ export default defineComponent({
       default: false,
     },
     list: {
-      type: Array,
+      type: [] as PropType<MenuListItem[]>,
       default: [],
     },
     w: {
@@ -48,24 +54,19 @@ export default defineComponent({
   setup: (props) => {
     const menu = ref();
     const showMenu = ref(false);
-
     watch(
       () => props.isOpen,
       (isOpen) => {
         showMenu.value = isOpen;
       }
     );
-
-    const toggleMenu = useToggle(showMenu);
-
+    const toggleMenu = () => useToggle(showMenu);
     const closeMenu = () => {
       showMenu.value = false;
     };
-
     onClickOutside(menu, () => {
       showMenu.value = false;
     });
-
     return { menu, showMenu, toggleMenu, closeMenu };
   },
 });

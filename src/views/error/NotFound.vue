@@ -20,7 +20,7 @@
           <Card :card="card">
             <div class="flex flex-col gap-2 font-bold">
               <router-link to="/" class="ml-auto capitalize hover:underline"> {{ t('go_home') }} X </router-link>
-              <h1 class="text-4xl">{{ card.text }}</h1>
+              <h1 class="text-4xl">{{ text }}</h1>
             </div>
           </Card>
         </div>
@@ -35,7 +35,7 @@
 import { computed, defineComponent, ref } from 'vue';
 import { useI18n } from 'vue-i18n';
 
-import { Color } from '@/data/types/mock';
+import { Color, Card as iCard } from '@/data/types/mock';
 import Card from '@/components/boards/Card.vue';
 import Footer from '@/components/shared/Footer.vue';
 
@@ -45,15 +45,17 @@ export default defineComponent({
   setup() {
     const { t } = useI18n();
 
-    const card = ref({
+    const card = ref<iCard>({
       id: 1,
-      text: computed(() => t('page_not_found_message')),
+      text: 'Hmm., this page was not found',
       label: '404',
       color: Color.red,
-      assigned_to: ['iKanban!'],
+      assigned_to: [{ username: 'iKanban!' }],
     });
 
-    return { t, card };
+    const text = computed(() => t('page_not_found_message'));
+
+    return { t, card, text };
   },
 
   //TODO: add transitions: fade-in for card and slide up for both card and gif

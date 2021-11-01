@@ -35,7 +35,7 @@
         </n-list-item>
       </template>
       <div v-if="isLoggedIn" @click="openDrawer('profile')" class="f-center cursor-pointer py-2">
-        <Avatar v-model:path="profile.avatar_url" :username="profile.username" size="w-11 h-11" />
+        <Avatar v-model:path="profileAvatarUrl" :username="profileUsername" size="w-11 h-11" />
       </div>
       <n-list-item v-if="isLoggedIn">
         <n-tooltip trigger="hover" :show-arrow="false" placement="right">
@@ -56,7 +56,7 @@
       <BoardList :label="t('my_boards')" v-if="showBoards" :boards="boards" />
       <Analytics v-if="showAnalytics" />
       <NotificationList v-if="showNotifications" />
-      <Me v-if="showProfile" :profile="profile" />
+      <Me v-if="showProfile && profile" :profile="profile" />
       <Settings v-if="showSettings" />
     </n-drawer-content>
   </n-drawer>
@@ -66,14 +66,20 @@
 import { computed, defineComponent, onMounted, reactive, toRefs } from 'vue';
 import { useI18n } from 'vue-i18n';
 import { useRoute } from 'vue-router';
+// @ts-ignore
 import BiCalendar2EventFill from 'virtual:vite-icons/bi/calendar2-event-fill';
+// @ts-ignore
 import FaCog from 'virtual:vite-icons/fa/cog';
+// @ts-ignore
 import FaSolidBell from 'virtual:vite-icons/fa-solid/bell';
+// @ts-ignore
 import FaSolidChartPie from 'virtual:vite-icons/fa-solid/chartPie';
+// @ts-ignore
 import FaSolidFolderOpen from 'virtual:vite-icons/fa-solid/folder-open';
+// @ts-ignore
 import FaStickyNote from 'virtual:vite-icons/fa/sticky-note';
 
-import { Board } from '@/data/types/mock';
+import { ApiError, Board } from '@/data/types/mock';
 import { supabase } from '@/lib/supabase';
 import { useAuth } from '@/use/auth';
 import { db } from '@/use/db';
@@ -106,7 +112,7 @@ export default defineComponent({
     const { auth, logout } = useAuth;
     const { state: store, getMe } = db.profiles;
     const {
-      data: { boards },
+      data: { boards: dbBoards },
       allMyBoards,
     } = db.boards;
 
@@ -143,7 +149,7 @@ export default defineComponent({
 
         state.boards = data;
         state.count = Number(count);
-      } catch (e) {
+      } catch (e: any) {
         state.error = e.error_description || e.message;
       } finally {
         state.isLoading = false;
@@ -220,9 +226,12 @@ export default defineComponent({
       return routeUrl.toUpperCase().includes(id.toUpperCase());
     }
 
+    const profileAvatarUrl = computed(() => store.profile?.avatar_url);
+    const profileUsername = computed(() => store.profile?.username);
+
     return {
       t,
-      boards,
+      dbBoards,
       ...toRefs(store),
       ...toRefs(state),
       nav,
@@ -230,6 +239,8 @@ export default defineComponent({
       openDrawer,
       isActive,
       handleClose,
+      profileAvatarUrl,
+      profileUsername,
     };
   },
 });
